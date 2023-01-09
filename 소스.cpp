@@ -1,80 +1,81 @@
-﻿#include <iostream>
-#include "StudentManage.h"
+﻿#include "Function.h"
+
 
 void main()
 {
-	StudentManage* student = NULL;// studentManage::를 쓸시 경고문이 떠서 인터넷에 해결법 찾아 작성
-	enum search
+	enum mainSelect//메인화면 
 	{
-		name,
-		classnum
+		money=1,
+		allsum,
+		guguDan
 	};
-	enum sequence
+	enum noYes // No, Yes 설정
 	{
-		_classnum,//클래스 순서대로 출력
-		enrollnum // 등록된 순서대로 출력
+		No,
+		Yes
 	};
-	enum Del
-	{
-		Last,// 마지막 학생 삭제
-		All // 전체 학생 삭제
-	};
-	enum Select
-	{
-		Enroll = 1,
-		StudentList_Number,
-		StudentList_Class,
-		Student_Search,
-		Class_Search,
-		LastStudentDel,
-		AllDel,
-		End
-	};
-	int Select;
+	int main_select;
+	int noYes_select;
+	Function con;
 	while (1)
 	{
-
-		std::cout << "===== 학생관리 프로그램 ======" << std::endl;
-		std::cout << "	1. 학생 등록" << std::endl;
-		std::cout << "	2. 학생 목록<번호순>" << std::endl;
-		std::cout << "	3. 학생 목록<학년순>" << std::endl;
-		std::cout << "	4. 학생 검색" << std::endl;
-		std::cout << "	5. 학년 검색" << std::endl;
-		std::cout << "	6. 마지막 학생 삭제 " << std::endl;
-		std::cout << "	7. 학생 전체 삭제" << std::endl;
-		std::cout << "	8. 종료" << std::endl;
-		std::cout << " 입력 : ";
-		std::cin >> Select;
-		switch (Select)
+		system("cls");
+		std::cout << "1. 임금 계산" << std::endl;
+		std::cout << "2. 총합 계산" << std::endl;
+		std::cout << "3. 구구단" << std::endl;
+		std::cout << "선택 : ";
+		std::cin >> main_select;
+		std::cout << "숫자를 설정하실건가요?(No<0>,Yes<1>)";
+		std::cin >> noYes_select;
+		system("cls");
+		switch (main_select)
 		{
-		case Enroll:
-			student->EnrollStudent();
+		case money:
+			if (noYes_select == No)
+			{
+				std::cout << "일급 : " << con.Money();//return으로 결과값 도출(설정을 안할경우 디폴트 매개변수로 보냄)
+			}
+			else
+			{
+				int time;
+				std::cout << "시간 설정 :";
+				std::cin >> time;
+				std::cout << "일급 : " << con.Money(time);//return으로 결과값 도출
+			}
 			break;
-		case StudentList_Number:
-			student->StudentList(enrollnum);
+		case allsum:
+			if (noYes_select == No)
+			{
+				std::cout << "총합 : " << con.Sum();//return으로 결과값 도출(설정을 안할경우 디폴트 매개변수로 보냄)
+			}
+			else
+			{
+				int maxNum;
+				std::cout << "최댓값  설정 :";
+				std::cin >> maxNum;
+				std::cout << "총합 : " << con.Sum(maxNum);//return으로 결과값 도출
+			}
 			break;
-		case StudentList_Class:
-			student->StudentList(classnum);
+		case guguDan:
+			if (noYes_select == No)
+			{
+				con.Dan();//매개변수로 보내 구구단 페이지를 보여준다
+			}
+			else
+			{
+				int maxGNum;
+				int minGNum;
+				std::cout << "최댓값  설정(9이하) :";
+				std::cin >> maxGNum;
+				std::cout << "최솟값  설정(2이상) :";
+				std::cin >> minGNum;
+				con.Dan(minGNum,maxGNum);//함수로 매개 변수를 보내 구구단페이지를  보여준다
+			}
 			break;
-		case Student_Search:
-			student->Search(name);
-			break;
-		case Class_Search:
-			student->Search(_classnum);
-			break;
-		case LastStudentDel:
-			student->Delete(Last);
-			break;
-		case AllDel:
-			student->Delete(All);
-			break;
-		case End:
-			return;
+		default :
+				return;
 		}
-
+		system("pause");
 	}
 
-
-
 }
-
