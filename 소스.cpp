@@ -1,7 +1,14 @@
-﻿#include "Function.h"
+#include"Mecro.h"
+#include"MapDraw.h"
+#include"Map.h"
 
 void main()
 {
-	Function Fun;
-	Fun.Menu();
+
+	Map map;
+	map.MapDraw();
+
+	
+
+	
 }
