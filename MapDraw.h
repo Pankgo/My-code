@@ -26,11 +26,43 @@ public:
 			{
 				cout << "¦¢";
 				for (int x = 1; x < Width - 1; x++)
-					cout << " ";
+				{
+					cout << "  ";
+				}
 				cout << "¦¢";
 			}
 		}
 		return;
+	}
+	static void GameMapDraw(int Start_x, int Start_y, int Width, int Height)
+	{
+		for (int y = 0; y < Height; y++)
+		{
+			gotoxy(Start_x, Start_y + y);
+			if (y == 0)
+			{
+				cout << "¦£";
+				for (int x = 1; x < Width - 1; x++)
+					cout << "¦¨";
+				cout << "¦¤";
+			}
+			else if (y == Height - 1)
+			{
+				cout << "¦¦";
+				for (int x = 1; x < Width - 1; x++)
+					cout << "¦ª";
+				cout << "¦¥";
+			}
+			else
+			{
+				cout << "¦§";
+				for (int x = 1; x < Width - 1; x++)
+					cout << "¦«";
+				cout << "¦©";
+			}
+		}
+		return;
+
 	}
 	static void DrawPoint(string str, int x, int y)
 	{
@@ -67,3 +99,4 @@ public:
 	}
 	~MapDraw() {}
 };
+
