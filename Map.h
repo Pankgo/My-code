@@ -1,6 +1,7 @@
 #pragma once
 #include"Mecro.h"
 #include"MapDraw.h"
+
 class Map
 {
 private:
@@ -9,8 +10,8 @@ private:
 	int m_iWidth;
 	int m_iHeight;
 public:
-	void MapDraw();
-
+	void UIDraw();
 	Map();
 	~Map();
 };
+
