@@ -2,6 +2,7 @@
 #include"MapDraw.h"
 #include"Map.h"
 
+
 void main()
 {
 	Map map;
