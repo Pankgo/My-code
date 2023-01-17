@@ -1,6 +1,7 @@
 #pragma once
 #include"Mecro.h"
 #include"MapDraw.h"
+#include"MainGame.h"
 
 class Map
 {
@@ -9,7 +10,8 @@ private:
 	int m_iy;
 	int m_iWidth;
 	int m_iHeight;
-public:
+	int stone;
+public: 
 	void UIDraw();
 	Map();
 	~Map();
