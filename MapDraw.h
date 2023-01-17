@@ -1,7 +1,9 @@
 #pragma once
 #include"Mecro.h"
+#include"GameSet.h"
 class MapDraw
 {
+	int stoneP[75][75];
 public:
 	static void BoxDraw(int Start_x, int Start_y, int Width, int Height)
 	{
@@ -96,6 +98,11 @@ public:
 	{
 		COORD Pos = { x, y };
 		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
+	}
+	static inline void UpdateMapDraw(int width, int height, int px, int py, string player)// 업데이트 맵 그리기
+	{
+		GameMapDraw(0, 0, width, height);
+		DrawPoint(player, px, py);
 	}
 	~MapDraw() {}
 };
