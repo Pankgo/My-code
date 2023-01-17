@@ -1,10 +1,11 @@
 #pragma once
 #include"Mecro.h"
 #include"GameSet.h"
+#include <vector>
 class MapDraw
 {
-	int stoneP[75][75];
 public:
+
 	static void BoxDraw(int Start_x, int Start_y, int Width, int Height)
 	{
 		for (int y = 0; y < Height; y++)
@@ -36,7 +37,7 @@ public:
 		}
 		return;
 	}
-	static void GameMapDraw(int Start_x, int Start_y, int Width, int Height)
+	static void GameMapDraw(int Start_x, int Start_y, int Width, int Height)//스톤검사하여 없을경우 그대로 그리고 있을경우 검은돌인지 하얀돌인지 판별하여 맞는돌출력
 	{
 		for (int y = 0; y < Height; y++)
 		{
@@ -45,21 +46,29 @@ public:
 			{
 				cout << "┌";
 				for (int x = 1; x < Width - 1; x++)
+				{
 					cout << "┬";
+					
+				}
 				cout << "┐";
 			}
 			else if (y == Height - 1)
 			{
 				cout << "└";
 				for (int x = 1; x < Width - 1; x++)
+				{
 					cout << "┴";
+					
+				}
 				cout << "┘";
 			}
 			else
 			{
 				cout << "├";
 				for (int x = 1; x < Width - 1; x++)
+				{
 					cout << "┼";
+				}
 				cout << "┤";
 			}
 		}
@@ -99,11 +108,7 @@ public:
 		COORD Pos = { x, y };
 		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
 	}
-	static inline void UpdateMapDraw(int width, int height, int px, int py, string player)// 업데이트 맵 그리기
-	{
-		GameMapDraw(0, 0, width, height);
-		DrawPoint(player, px, py);
-	}
+
 	~MapDraw() {}
 };
 
