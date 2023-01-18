@@ -9,7 +9,8 @@ class PlayerInfo//플레이어 정보
 	
 	int py = 20;//초기 시작 위치 y값 
 	int px = 20;//초기 시작 위치 x값
-
+	int stonepx[100] = { 0, };
+	int stonepy[100] = { 0, };
 
 
 
