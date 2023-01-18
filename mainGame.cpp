@@ -7,12 +7,6 @@ enum Player
 };
 MainGame::MainGame()
 {
-	while (1)
-	{
-		Mainplay(F);
-		Mainplay(S);
-	}
-
 
 
 }
@@ -20,46 +14,36 @@ MainGame::MainGame()
 
 
 
-void MainGame::Mainplay(int playerType)
+void MainGame::Mainplay(int playerType,PlayerInfo *A,PlayerInfo *B)
 {
 	int player_turn = 0;
-	int player_x;
-	MapDraw::GameMapDraw(0, 0,);//초기맵그리기
 	switch (playerType) {
 	case F:
-		MapDraw::DrawPoint("●", p1->retPx(), p1->retPy());
+		MapDraw::DrawPoint("●", A->retPx(), A->retPy());
 		break;
 	case S:
-		MapDraw::DrawPoint("○", p2->retPx(), p2->retPy());
+		MapDraw::DrawPoint("○", B->retPx(), B->retPy());
 		break;
 	}//초기 플레이어 포인트 그리기
 	while (1)//움직일때마다 맵 업데이트
 	{
-		if(kbhit())
+		if(_kbhit())
 		{
-			int character = getch();
-			switch (playerType)
+			int character = _getch();
+			if (playerType == F)
 			{
-			case F:
-				CMove(p1, character,playerType);
-				break;
-			case S:
-				CMove(p2, character,playerType);
+				CMove(A, character);
+			}
+			else{
+				CMove(B, character);
 			}
 			continue;
 		}
-		else if (player_turn == 1)
-		{
-			player_turn = 0;
-
-			break;
-		}
-
 	}
 
 }
 
-void MainGame::CMove(PlayerInfo* A,int move,int character)//캐릭터동작함수
+void MainGame::CMove(PlayerInfo* A,int move)//캐릭터동작함수
 {
 
 	switch (move)
@@ -76,6 +60,7 @@ void MainGame::CMove(PlayerInfo* A,int move,int character)//캐릭터동작함수
 	case 80://아래화살표
 		A->Plusy(1);
 	case 32://스페이스바
+		A
 		break;
 	}
 
