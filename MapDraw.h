@@ -1,6 +1,7 @@
 #pragma once
 #include"Mecro.h"
 #include <vector>
+#include"PlayerInfo.h"
 class MapDraw
 {
 public:
@@ -106,6 +107,20 @@ public:
 	{
 		COORD Pos = { x, y };
 		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
+	}
+	static void StoneDraw(vector<Point> stoneList)//돌그리는 함수
+	{
+		vector<Point>::iterator iter;
+		int checkp1stone = 0;
+		int checkp2stone = 0;
+		for (iter = stoneList.begin(); iter < stoneList.end(); iter += 1)
+		{
+			if (iter->player == 1)
+			{
+				TextDraw("●", iter->x, iter->y);
+			}
+			TextDraw("○", iter->x, iter->y);
+		}
 	}
 
 	~MapDraw() {}
