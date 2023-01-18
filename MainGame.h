@@ -11,8 +11,8 @@ class MainGame
 	
 public:
 
-	void Mainplay(int playerType,PlayerInfo *A, PlayerInfo *B);
-	void CMove(PlayerInfo *A,int move);
+	static void Mainplay(int playerType,PlayerInfo *A, PlayerInfo *B,vector<Point>stoneList);
+	static void CMove(PlayerInfo *A,int move,vector<Point>stoneList);
 	MainGame();
 	
 };
