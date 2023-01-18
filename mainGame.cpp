@@ -14,7 +14,7 @@ MainGame::MainGame()
 
 
 
-void MainGame::Mainplay(int playerType,PlayerInfo *A,PlayerInfo *B)
+void MainGame::Mainplay(int playerType,PlayerInfo *A,PlayerInfo *B,vector<Point>stoneList)
 {
 	int player_turn = 0;
 	switch (playerType) {
@@ -27,23 +27,25 @@ void MainGame::Mainplay(int playerType,PlayerInfo *A,PlayerInfo *B)
 	}//초기 플레이어 포인트 그리기
 	while (1)//움직일때마다 맵 업데이트
 	{
-		if(_kbhit())
+		if (_kbhit())
 		{
 			int character = _getch();
 			if (playerType == F)
 			{
-				CMove(A, character);
+				CMove(A, character,stoneList);
 			}
-			else{
-				CMove(B, character);
+			else {
+				CMove(B, character,stoneList);
 			}
-			continue;
+			break;
 		}
+		continue;
+		
 	}
 
 }
 
-void MainGame::CMove(PlayerInfo* A,int move)//캐릭터동작함수
+void MainGame::CMove(PlayerInfo* A,int move, vector<Point> stoneList)//캐릭터동작함수
 {
 
 	switch (move)
@@ -59,8 +61,10 @@ void MainGame::CMove(PlayerInfo* A,int move)//캐릭터동작함수
 		break;
 	case 80://아래화살표
 		A->Plusy(1);
-	case 32://스페이스바
-		A
+		break;
+	case 32://스페이스바 돌저장
+		stoneList.push_back({ F, A->retPx(), A->retPy() });
+		A->EndTurn();
 		break;
 	}
 
