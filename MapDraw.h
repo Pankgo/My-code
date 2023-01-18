@@ -1,6 +1,5 @@
 #pragma once
 #include"Mecro.h"
-#include"GameSet.h"
 #include <vector>
 class MapDraw
 {
