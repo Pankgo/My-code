@@ -30,7 +30,10 @@ void Map::UIDraw()
 		switch (Select)
 		{
 			case Start:
-				MainGame game;
+				while (1)
+				{
+					MapDraw::GameMapDraw(0, 0, Map::m_Width, Map::m_Height);
+				}
 				break;
 			case Replay:
 				break;
