@@ -117,11 +117,11 @@ public:
 		{
 			if (iter->player == 1)
 			{
-				TextDraw("¡Ü", iter->x, iter->y);
+				TextDraw("¡Ü", iter->x * 2, iter->y);
 			}
 			else
 			{
-				TextDraw("¡Û", iter->x, iter->y);
+				TextDraw("¡Û", iter->x * 2, iter->y);
 			}
 
 		}
