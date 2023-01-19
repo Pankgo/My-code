@@ -48,20 +48,19 @@ void Map::UIDraw()
 				{
 					MapDraw::GameMapDraw(0, 0, Map::m_Width, Map::m_Height);
 					MapDraw::StoneDraw(stoneList);
-					MainGame::Mainplay(turn, &p1, &p2,stoneList);
+					MainGame::Mainplay(turn, &p1, &p2, &stoneList);
 					if (turn == F && p1.RetTurn() == TEnd)
 					{
 						turn = S;
-						p1.RetTurn() == TStart;
+						p1.StartTurn();
 					}
 					else if(turn == S && p2.RetTurn() == TEnd)
 					{
 						turn = F;
-						p2.RetTurn() == TEnd;
+						p2.StartTurn();
 					}
 
 				}
-
 				break;
 			case Replay:
 				break;
