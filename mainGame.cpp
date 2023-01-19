@@ -51,26 +51,26 @@ void MainGame::CMove(int playerType,PlayerInfo* A,int move, vector<Point> *stone
 	switch (move)
 	{
 	case 72://윗화살표
-		if (A->retPy() >0 )
+		if (A->retPy() >1)
 		{
 			A->Sety(-1);
 		}
 		break;
 	case 75://왼쪽화살표
-		if (A->retPx() > 0)
+		if (A->retPx() > 1)
 		{
 			A->Setx(-1);
 		}
 		break;
 	case 77://오른쪽화살표
-		if (A->retPx() < 20)
+		if (A->retPx() < 18)
 		{
 			A->Setx(1);
 			
 		}
 		break;
 	case 80://아래화살표
-		if (A->retPy() < 20)
+		if (A->retPy() < 18)
 		{
 			A->Sety(1);
 
@@ -80,10 +80,12 @@ void MainGame::CMove(int playerType,PlayerInfo* A,int move, vector<Point> *stone
 		if (playerType == F)
 		{
 			stoneList->push_back({ F, A->retPx(), A->retPy() });
+
 		}
 		else
 		{
 			stoneList->push_back({ S, A->retPx(), A->retPy() });
+			stoneList->push_back({ F, A->retPx(), A->retPy() });
 		}
 		A->EndTurn();
 		break;
@@ -91,3 +93,62 @@ void MainGame::CMove(int playerType,PlayerInfo* A,int move, vector<Point> *stone
 
 
 }
+
+int MainGame::WinCheck(int wincheck[45][90],int width,int height)//승리함수체크
+{
+	for (int x = 0; x < width; x++)
+	{
+		for(int y = 0; y < height; y++)
+		{
+			if (wincheck[y][x] == 1)
+			{
+
+				if (wincheck[y][x] == wincheck[y][x + 1] == wincheck[y][x + 2] == wincheck[y][x + 3] == wincheck[y][x + 4]==F)//가로
+				{
+					return F;
+				}
+				else if (wincheck[y][x] == wincheck[y + 1][x] == wincheck[y + 1][x] == wincheck[y + 1][x] == wincheck[y + 1][x]==F)//세로
+				{
+					return F;
+				}
+				else if (wincheck[y][x] == wincheck[y + 1][x+1] == wincheck[y + 2][x+2] == wincheck[y + 3][x+3] == wincheck[y + 4][x+4]==F)//오른쪽대각선
+				{
+					return F;
+				}
+				else if (wincheck[y][x] == wincheck[y + 1][x - 1] == wincheck[y + 2][x - 2] == wincheck[y + 3][x - 3] == wincheck[y + 4][x - 4]==F)//왼쪽 대각선
+				{
+					return F;
+				}
+
+			}
+			else if(wincheck[y][x] == 2)
+			{
+
+
+				if (wincheck[y][x] == wincheck[y][x + 1] == wincheck[y][x + 2] == wincheck[y][x + 3] == wincheck[y][x + 4]==S)//가로
+				{
+					return S;
+				}
+				else if (wincheck[y][x] == wincheck[y + 1][x] == wincheck[y + 1][x] == wincheck[y + 1][x] == wincheck[y + 1][x]==S)//세로
+				{
+					return S;
+				}
+				else if (wincheck[y][x] == wincheck[y + 1][x + 1] == wincheck[y + 2][x + 2] == wincheck[y + 3][x + 3] == wincheck[y + 4][x + 4]==S)//오른쪽대각선
+				{
+					return S;
+				}
+				else if (wincheck[y][x] == wincheck[y + 1][x - 1] == wincheck[y + 2][x - 2] == wincheck[y + 3][x - 3] == wincheck[y + 4][x - 4]==S)//왼쪽 대각선
+				{
+					return S;
+				}
+
+
+
+			}
+
+		}
+	}
+	return 0;
+	
+}
+
