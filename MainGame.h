@@ -13,6 +13,7 @@ public:
 
 	static void Mainplay(int playerType,PlayerInfo *A, PlayerInfo *B,vector<Point>*stoneList);
 	static void CMove(int playerType,PlayerInfo *A,int move,vector<Point>*stoneList);
+	static int WinCheck(int wincheck[45][90],int x,int y);
 	MainGame();
 	
 };
