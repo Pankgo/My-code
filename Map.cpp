@@ -5,14 +5,16 @@ static int map_Width;
 static int map_Height;
 enum Select
 {
-	Start = 1,
+	End,
+	Start,
 	Replay,
 	Setting,
 	Exit
 };
 enum Player
 {
-	F = 1,
+	N,
+	F,
 	S
 };
 enum Turn
@@ -32,6 +34,7 @@ Map::Map()
 
 void Map::UIDraw()
 {
+		int Game = Start;
 		int turn = F;
 		int Select;
 		MapDraw::DrawMidText("1.게임 시작", m_Width, 5);
@@ -44,19 +47,35 @@ void Map::UIDraw()
 		switch (Select)
 		{
 			case Start:
-				while (1)
+			
+				while (Game != End)
 				{
 					MapDraw::GameMapDraw(0, 0, Map::m_Width, Map::m_Height);
 					MapDraw::StoneDraw(stoneList);
 					MainGame::Mainplay(turn, &p1, &p2, &stoneList);
+					switch (Select = MainGame::WinCheck(wincheck, retMW(), retMH()))
+					{
+						case F:
+							cout << "첫번째 플레이어가 이겼습니다.";
+							Game = End;
+							break;
+						case S:
+							cout << "두번째 플레이어가 이겼습니다.";
+							Game = End;
+							break;
+						case N:
+							break;
+					}
 					if (turn == F && p1.RetTurn() == TEnd)
 					{
 						turn = S;
+						wincheck[p1.retPx()][p1.retPy()] = 1;
 						p1.StartTurn();
 					}
-					else if(turn == S && p2.RetTurn() == TEnd)
+					else //if(turn == S && p2.RetTurn() == TEnd)
 					{
 						turn = F;
+						wincheck[p2.retPx()][p2.retPy()] = 2;
 						p2.StartTurn();
 					}
 
