@@ -14,13 +14,21 @@ private:
 	int m_Width=20;
 	int m_Height=20;
 	std::vector<Point> stoneList;
+	int wincheck[45][90] ={0,};
 	PlayerInfo p1;
 	PlayerInfo p2;
 public: 
 	void UIDraw();
 	Map();
 	~Map();
-	void SaveStone();
+	inline int retMW()
+	{
+		return m_Width;
+	}
+	inline int retMH()
+	{
+		return m_Height;
+	}
 	
 };
 
