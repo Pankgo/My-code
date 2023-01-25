@@ -19,10 +19,10 @@ void MainGame::Mainplay(int playerType,PlayerInfo *A,PlayerInfo *B,vector<Point>
 	int player_turn = 0;
 	switch (playerType) {
 	case F:
-		MapDraw::DrawPoint("●", A->retPx(), A->retPy());
+		MapDraw::DrawPoint(A->RetMouse(), A->retPx(), A->retPy());
 		break;
 	case S:
-		MapDraw::DrawPoint("○", B->retPx(), B->retPy());
+		MapDraw::DrawPoint(B->RetMouse(), B->retPx(), B->retPy());
 		break;
 	}//초기 플레이어 포인트 그리기
 	while (1)//움직일때마다 맵 업데이트
@@ -88,6 +88,12 @@ void MainGame::CMove(int playerType,PlayerInfo* A,int move, vector<Point> *stone
 		}
 		A->EndTurn();
 		break;
+	case 98 : //무르기
+		A->Back();
+		A->EndTurn();
+		auto iter = stoneList->end()-1;
+		stoneList->erase(iter);
+		break;
 	}
 
 
@@ -95,23 +101,18 @@ void MainGame::CMove(int playerType,PlayerInfo* A,int move, vector<Point> *stone
 
 int MainGame::WinCheck(vector<Point> stoneList, int wincheck[45][90], int width, int height)//승리함수체크
 {
-	vector<Point>::iterator iter;
-	for (iter = stoneList.begin(); iter < stoneList.end(); iter++)//wincheck배열에 플레이어들의 돌 저장하기
-	{
-		wincheck[iter->y][iter->x] = iter->player;
-	}
 	for (int y = 1; y < height; y++)
 	{
 		for(int x = 1; x < width; x++)
 		{
-			if (wincheck[y][x] == 1)
+			if (wincheck[y][x] == F)
 			{
 
-				if (wincheck[y][x] == F && wincheck[y][x + 1] == F && wincheck[y][x + 2] == F&& wincheck[y][x + 3] == F && wincheck[y][x + 4]==F)//가로
+				if (wincheck[y][x] == F&&wincheck[y][x + 1] == F && wincheck[y][x + 2] == F&& wincheck[y][x + 3] == F && wincheck[y][x + 4]==F)//가로
 				{
 					return F;
 				}
-				else if (wincheck[y][x] == F&& wincheck[y + 1][x] == F && wincheck[y + 2][x] == F && wincheck[y + 3][x] == F && wincheck[y + 4][x]==F)//세로
+				else if (wincheck[y][x] == F && wincheck[y + 1][x] == F && wincheck[y + 2][x] == F && wincheck[y + 3][x] == F && wincheck[y + 4][x]==F)//세로
 				{
 					return F;
 				}
@@ -119,13 +120,13 @@ int MainGame::WinCheck(vector<Point> stoneList, int wincheck[45][90], int width,
 				{
 					return F;
 				}
-				else if (wincheck[y][x] == F && wincheck[y + 1][x - 1] == F && wincheck[y + 2][x - 2] == F &&wincheck[y + 3][x - 3] == F &&wincheck[y + 4][x - 4]==F)//왼쪽 대각선
+				else if (wincheck[y][x] == F &&wincheck[y + 1][x - 1] == F && wincheck[y + 2][x - 2] == F &&wincheck[y + 3][x - 3] == F &&wincheck[y + 4][x - 4]==F)//왼쪽 대각선
 				{
 					return F;
 				}
 
 			}
-			else if(wincheck[y][x] == 2)
+			else if(wincheck[y][x] == S)
 			{
 
 
@@ -133,7 +134,7 @@ int MainGame::WinCheck(vector<Point> stoneList, int wincheck[45][90], int width,
 				{
 					return S;
 				}
-				else if (wincheck[y][x] == S && wincheck[y + 1][x] == S && wincheck[y + 2][x] == S && wincheck[y + 3][x] == S && wincheck[y + 4][x]==S)//세로
+				else if (wincheck[y][x] == S &&wincheck[y + 1][x] == S && wincheck[y + 2][x] == S && wincheck[y + 3][x] == S && wincheck[y + 4][x]==S)//세로
 				{
 					return S;
 				}
