@@ -111,6 +111,7 @@ void Map::UIDraw()
 				switch (setting)
 				{
 				case 1:
+					system("cls");
 					break;
 				case 2:
 					break;
@@ -122,6 +123,69 @@ void Map::UIDraw()
 
 			}
 		}
+	}
+}
+void Set_Map()
+{
+	cout << "¸Ê °¡·Î ¼³Á¤ (20~90)";
+	cin >> Map::m_Width;
+	cout << "¸Ê ¼¼·Î ¼³Á¤ (20~45)";
+	cin >> Map::m_Height;
+}
+void Set_PlayerMouse()
+{
+	int select;
+	cout << "1 .¡Û ¡Ü";	
+	cout << "2.¢½ ¢¾";
+	cout << "3.¢Ñ ¢Ð";
+	cout << "4.¨ç ¨è";
+	cin >> select;
+	switch (select)
+	{
+	case 1:
+		p1.SetMouse("¡Û");
+		p2.SetMouse("¡Ü");
+		break;
+	case 2:
+		p1.SetMouse("¢½");
+		p2.SetMouse("¢¾");
+		break;
+	case 3:
+		p1.SetMouse("¢Ñ");
+		p2.SetMouse("¢Ð");
+		break;
+	case 4:
+		p1.SetMouse("¨ç");
+		p2.SetMouse("¨è");
+		break;
+	}
+}
+void Set_PlayerStone()
+{
+	int select;
+	cout << "1 .¡Û ¡Ü";
+	cout << "2.¢½ ¢¾";
+	cout << "3.¢Î ¢Ï";
+	cout << "4.¨ç ¨è";
+	cin >> select;
+	switch (select)
+	{
+	case 1:
+		p1.SetStone("¡Û");
+		p2.SetStone("¡Ü");
+		break;
+	case 2:
+		p1.SetStone("¢½");
+		p2.SetStone("¢¾");
+		break;
+	case 3:
+		p1.SetStone("¢Ñ");
+		p2.SetStone("¢Ð");
+		break;
+	case 4:
+		p1.SetStone("¨ç");
+		p2.SetStone("¨è");
+		break;
 	}
 }
 
