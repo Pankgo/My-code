@@ -108,7 +108,7 @@ public:
 		COORD Pos = { x, y };
 		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
 	}
-	static void StoneDraw(vector<Point> stoneList)//돌그리는 함수
+	static void StoneDraw(vector<Point> stoneList,PlayerInfo p1,PlayerInfo p2)//돌그리는 함수
 	{
 		vector<Point>::iterator iter;
 		int checkp1stone = 0;
@@ -117,11 +117,11 @@ public:
 		{
 			if (iter->player == 1)
 			{
-				TextDraw("●", iter->x * 2, iter->y);
+				TextDraw(p1.RetStone(), iter->x * 2, iter->y);
 			}
 			else
 			{
-				TextDraw("○", iter->x * 2, iter->y);
+				TextDraw(p2.RetStone(), iter->x * 2, iter->y);
 			}
 
 		}
