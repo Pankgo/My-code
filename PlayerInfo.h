@@ -8,6 +8,8 @@ class PlayerInfo//플레이어 정보
 	int py = 5;//초기 시작 위치 y값 
 	int px = 5;//초기 시작 위치 x값
 	int turn = 1;
+	string Mouse = "";
+	string Stone = "";
 
 
 
@@ -37,6 +39,14 @@ public:
 	int RetTurn()
 	{
 		return turn;
+	}
+	void SetMouse(string mouse)
+	{
+		Mouse = mouse;
+	}
+	void SetStone(string stone)
+	{
+		Stone = stone;
 	}
 
 
