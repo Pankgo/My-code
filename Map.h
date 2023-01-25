@@ -19,7 +19,6 @@ private:
 	PlayerInfo p2;
 public: 
 	void UIDraw();
-	void SetGame();
 	Map();
 	~Map();
 	inline int retMW()
@@ -31,6 +30,8 @@ public:
 		return m_Height;
 	}
 	void SetMap();
+	void SetPlayerStone();
+	void SetPlayerMouse();
 	
 };
 
