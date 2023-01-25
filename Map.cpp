@@ -25,18 +25,22 @@ enum Turn
 
 Map::Map()
 {
-	MapDraw::GameMapDraw(0, 0, Map::m_Width, Map::m_Height);
-	stoneList = vector<Point>();
-	//stoneStack = std::stack<Point>();
-	//stoneList.rbegin
+
+	
 }
 
 
 void Map::UIDraw()
 {
-		int Game = Start;
-		int turn = F;
-		int Select;
+	int Game = Start;
+	int turn = F;
+	int Select;
+	int setting;
+	while (1)
+	{
+		system("cls");
+		stoneList = vector<Point>();
+		MapDraw::GameMapDraw(0, 0, Map::m_Width, Map::m_Height);
 		MapDraw::DrawMidText("1.게임 시작", m_Width, 5);
 		MapDraw::DrawMidText("2.Replay", m_Width, 7);
 		MapDraw::DrawMidText("3.게임 설정", m_Width, 9);
@@ -46,51 +50,80 @@ void Map::UIDraw()
 		cin >> Select;
 		switch (Select)
 		{
-			case Start:
-			
-				while (Game != End)
+		case Start:
+
+			while (Game != End)
+			{
+				MapDraw::GameMapDraw(0, 0, Map::m_Width, Map::m_Height);
+				MapDraw::StoneDraw(stoneList);
+				MainGame::Mainplay(turn, &p1, &p2, &stoneList);
+				if (stoneList.size() >= 9)
 				{
-					MapDraw::GameMapDraw(0, 0, Map::m_Width, Map::m_Height);
-					MapDraw::StoneDraw(stoneList);
-					MainGame::Mainplay(turn, &p1, &p2, &stoneList);
-					switch (Select = MainGame::WinCheck(wincheck, retMW(), retMH()))
+					switch (Select = MainGame::WinCheck(stoneList, wincheck, retMW(), retMH()))
 					{
-						case F:
-							cout << "첫번째 플레이어가 이겼습니다.";
-							Game = End;
-							break;
-						case S:
-							cout << "두번째 플레이어가 이겼습니다.";
-							Game = End;
-							break;
-						case N:
-							break;
+					case F:
+						cout << "첫번째 플레이어가 이겼습니다.";
+						Game = End;
+						break;
+					case S:
+						cout << "두번째 플레이어가 이겼습니다.";
+						Game = End;
+						break;
+					case N:
+						break;
 					}
-					if (turn == F && p1.RetTurn() == TEnd)
-					{
-						turn = S;
-						wincheck[p1.retPx()][p1.retPy()] = 1;
-						p1.StartTurn();
-					}
-					else //if(turn == S && p2.RetTurn() == TEnd)
-					{
-						turn = F;
-						wincheck[p2.retPx()][p2.retPy()] = 2;
-						p2.StartTurn();
-					}
-
 				}
-				break;
-			case Replay:
-				break;
-			case Setting:
-				break;
-			case Exit:
-				return;
+				if (turn == F && p1.RetTurn() == TEnd)
+				{
+					turn = S;
+					wincheck[p1.retPx()][p1.retPy()] = 1;
+					p1.StartTurn();
+				}
+				else if (turn == S && p2.RetTurn() == TEnd)
+				{
+					turn = F;
+					wincheck[p2.retPx()][p2.retPy()] = 2;
+					p2.StartTurn();
+				}
+
+			}
+			Game = Start;
+			if (Select == F)
+			{
+				turn = S;
+			}
+			else
+			{
+				turn = F;
+			}
+			system("pause");
+			break;
+		case Replay:
+			break;
+		case Setting:
+			while (1)
+			{
+				cout << "1.맵 설정\n";
+				cout << "2.플레이어 컨트롤스톤 설정\n";
+				cout << "3.플레이어 스톤 설정\n";
+				cout << "4.종료";
+				cin >> setting;
+				switch (setting)
+				{
+				case 1:
+					break;
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				}
+
+			}
 		}
-
+	}
 }
 
-Map::~Map()
-{
-}
+
+
