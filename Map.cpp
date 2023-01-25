@@ -1,8 +1,6 @@
-#include "Map.h"
+#include"Map.h"
 #define WIDTH 20
 #define HEIGHT 20
-static int map_Width;
-static int map_Height;
 enum Select
 {
 	End,
@@ -25,13 +23,16 @@ enum Turn
 
 Map::Map()
 {
-
-	
+	p1.SetMouse("○");
+	p2.SetMouse("●");
+	p1.SetStone("○");
+	p2.SetStone("●");
 }
 
 
 void Map::UIDraw()
 {
+	int Set = Start;
 	int Game = Start;
 	int turn = F;
 	int Select;
@@ -39,7 +40,6 @@ void Map::UIDraw()
 	while (1)
 	{
 		system("cls");
-		stoneList = vector<Point>();
 		MapDraw::GameMapDraw(0, 0, Map::m_Width, Map::m_Height);
 		MapDraw::DrawMidText("1.게임 시작", m_Width, 5);
 		MapDraw::DrawMidText("2.Replay", m_Width, 7);
@@ -51,15 +51,43 @@ void Map::UIDraw()
 		switch (Select)
 		{
 		case Start:
-
+			p1.Back(10);
+			p2.Back(10);
+			p1.Startp();
+			p2.Startp();
+			stoneList.clear();
+			for (int y = 0; y < m_Height; y++)
+			{
+				for (int x = 0; x < m_Width; x++)
+				{
+					wincheck[y][x] = 0;
+				}
+			}
 			while (Game != End)
 			{
 				MapDraw::GameMapDraw(0, 0, Map::m_Width, Map::m_Height);
-				MapDraw::StoneDraw(stoneList);
+				cout << endl;
+				cout << "플레이어 1 무르기 횟수 : " << p1.RetBack();
+				cout << "플레이어 2 무르기 횟수 : " << p2.RetBack() << endl;
+				cout << "돌놓기 : SpaceBar";
+				cout << "무르기 : B";
+				MapDraw::StoneDraw(stoneList, p1, p2);
 				MainGame::Mainplay(turn, &p1, &p2, &stoneList);
+				if (turn == F && p1.RetTurn() == TEnd)
+				{
+					turn = S;
+					wincheck[p1.retPx()][p1.retPy()] = 1;
+					p1.StartTurn();
+				}
+				else if (turn == S && p2.RetTurn() == TEnd)
+				{
+					turn = F;
+					wincheck[p2.retPx()][p2.retPy()] = 2;
+					p2.StartTurn();
+				}
 				if (stoneList.size() >= 9)
 				{
-					switch (Select = MainGame::WinCheck(stoneList, wincheck, retMW(), retMH()))
+					switch (MainGame::WinCheck(stoneList, wincheck, retMW(), retMH()))
 					{
 					case F:
 						cout << "첫번째 플레이어가 이겼습니다.";
@@ -73,36 +101,18 @@ void Map::UIDraw()
 						break;
 					}
 				}
-				if (turn == F && p1.RetTurn() == TEnd)
-				{
-					turn = S;
-					wincheck[p1.retPx()][p1.retPy()] = 1;
-					p1.StartTurn();
-				}
-				else if (turn == S && p2.RetTurn() == TEnd)
-				{
-					turn = F;
-					wincheck[p2.retPx()][p2.retPy()] = 2;
-					p2.StartTurn();
-				}
 
 			}
 			Game = Start;
-			if (Select == F)
-			{
-				turn = S;
-			}
-			else
-			{
-				turn = F;
-			}
 			system("pause");
 			break;
 		case Replay:
 			break;
 		case Setting:
-			while (1)
+			Set = Start;
+			while (Set != End)
 			{
+				system("cls");
 				cout << "1.맵 설정\n";
 				cout << "2.플레이어 컨트롤스톤 설정\n";
 				cout << "3.플레이어 스톤 설정\n";
@@ -111,28 +121,32 @@ void Map::UIDraw()
 				switch (setting)
 				{
 				case 1:
-					system("cls");
+					SetMap();//맵넓이, 높이 설정
 					break;
 				case 2:
+					SetPlayerMouse();//플레이어 마우스 설정
 					break;
 				case 3:
+					SetPlayerStone();//플레이어 스톤 설정
 					break;
 				case 4:
+					Set = End;
 					break;
 				}
 
 			}
+			break;
 		}
 	}
 }
-void Set_Map()
+void Map::SetMap()
 {
 	cout << "맵 가로 설정 (20~90)";
 	cin >> Map::m_Width;
 	cout << "맵 세로 설정 (20~45)";
 	cin >> Map::m_Height;
 }
-void Set_PlayerMouse()
+void Map::SetPlayerMouse()
 {
 	int select;
 	cout << "1 .○ ●";	
@@ -143,24 +157,24 @@ void Set_PlayerMouse()
 	switch (select)
 	{
 	case 1:
-		p1.SetMouse("○");
-		p2.SetMouse("●");
+		Map::p1.SetMouse("○");
+		Map::p2.SetMouse("●");
 		break;
 	case 2:
-		p1.SetMouse("♡");
-		p2.SetMouse("♥");
+		Map::p1.SetMouse("♡");
+		Map::p2.SetMouse("♥");
 		break;
 	case 3:
-		p1.SetMouse("☞");
-		p2.SetMouse("☜");
+		Map::p1.SetMouse("☞");
+		Map::p2.SetMouse("☜");
 		break;
 	case 4:
-		p1.SetMouse("①");
-		p2.SetMouse("②");
+		Map::p1.SetMouse("①");
+		Map::p2.SetMouse("②");
 		break;
 	}
 }
-void Set_PlayerStone()
+void Map::SetPlayerStone()
 {
 	int select;
 	cout << "1 .○ ●";
@@ -171,23 +185,24 @@ void Set_PlayerStone()
 	switch (select)
 	{
 	case 1:
-		p1.SetStone("○");
-		p2.SetStone("●");
+		Map::p1.SetStone("○");
+		Map::p2.SetStone("●");
 		break;
 	case 2:
-		p1.SetStone("♡");
-		p2.SetStone("♥");
+		Map::p1.SetStone("♡");
+		Map::p2.SetStone("♥");
 		break;
 	case 3:
-		p1.SetStone("☞");
-		p2.SetStone("☜");
+		Map::p1.SetStone("☞");
+		Map::p2.SetStone("☜");
 		break;
 	case 4:
-		p1.SetStone("①");
-		p2.SetStone("②");
+		Map::p1.SetStone("①");
+		Map::p2.SetStone("②");
 		break;
 	}
 }
+Map::~Map() {}
 
 
 
