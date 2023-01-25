@@ -19,6 +19,7 @@ private:
 	PlayerInfo p2;
 public: 
 	void UIDraw();
+	void SetGame();
 	Map();
 	~Map();
 	inline int retMW()
