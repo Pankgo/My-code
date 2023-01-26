@@ -17,6 +17,7 @@ private:
 	int wincheck[45][90] ={0,};
 	PlayerInfo p1;
 	PlayerInfo p2;
+	int playerbackchance = 10;
 public: 
 	void UIDraw();
 	Map();
@@ -32,6 +33,7 @@ public:
 	void SetMap();
 	void SetPlayerStone();
 	void SetPlayerMouse();
+	void SetPlayerBackSpace();
 	
 };
 
