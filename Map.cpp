@@ -11,9 +11,9 @@ enum Select
 };
 enum Player
 {
-	N,
-	F,
-	S
+	None,
+	First,
+	Second
 };
 enum Turn
 {
@@ -27,6 +27,8 @@ Map::Map()
 	p2.SetMouse("●");
 	p1.SetStone("○");
 	p2.SetStone("●");
+	p1.Back(playerbackchance);
+	p2.Back(playerbackchance);
 }
 
 
@@ -34,7 +36,7 @@ void Map::UIDraw()
 {
 	int Set = Start;
 	int Game = Start;
-	int turn = F;
+	int turn = First;
 	int Select;
 	int setting;
 	while (1)
@@ -51,8 +53,9 @@ void Map::UIDraw()
 		switch (Select)
 		{
 		case Start:
-			p1.Back(10);
-			p2.Back(10);
+
+			p1.Back(playerbackchance);
+			p2.Back(playerbackchance);
 			p1.Startp();
 			p2.Startp();
 			stoneList.clear();
@@ -69,19 +72,18 @@ void Map::UIDraw()
 				cout << endl;
 				cout << "플레이어 1 무르기 횟수 : " << p1.RetBack();
 				cout << "플레이어 2 무르기 횟수 : " << p2.RetBack() << endl;
-				cout << "돌놓기 : SpaceBar";
-				cout << "무르기 : B";
+				cout << "돌놓기 : SpaceBar"<<" "<< "무르기 : B";
 				MapDraw::StoneDraw(stoneList, p1, p2);
 				MainGame::Mainplay(turn, &p1, &p2, &stoneList);
-				if (turn == F && p1.RetTurn() == TEnd)
+				if (turn == First && p1.RetTurn() == TEnd)
 				{
-					turn = S;
+					turn = Second;
 					wincheck[p1.retPx()][p1.retPy()] = 1;
 					p1.StartTurn();
 				}
-				else if (turn == S && p2.RetTurn() == TEnd)
+				else if (turn == Second && p2.RetTurn() == TEnd)
 				{
-					turn = F;
+					turn = First;
 					wincheck[p2.retPx()][p2.retPy()] = 2;
 					p2.StartTurn();
 				}
@@ -89,15 +91,15 @@ void Map::UIDraw()
 				{
 					switch (MainGame::WinCheck(stoneList, wincheck, retMW(), retMH()))
 					{
-					case F:
+					case First:
 						cout << "첫번째 플레이어가 이겼습니다.";
 						Game = End;
 						break;
-					case S:
+					case Second:
 						cout << "두번째 플레이어가 이겼습니다.";
 						Game = End;
 						break;
-					case N:
+					case None:
 						break;
 					}
 				}
@@ -116,7 +118,8 @@ void Map::UIDraw()
 				cout << "1.맵 설정\n";
 				cout << "2.플레이어 컨트롤스톤 설정\n";
 				cout << "3.플레이어 스톤 설정\n";
-				cout << "4.종료";
+				cout << "4.플레이어 무르기 횟수 설정\n";
+				cout << "5.종료";
 				cin >> setting;
 				switch (setting)
 				{
@@ -130,6 +133,9 @@ void Map::UIDraw()
 					SetPlayerStone();//플레이어 스톤 설정
 					break;
 				case 4:
+					SetPlayerBackSpace();//플레이어 무르기 횟수 설정
+					break;
+				case 5:
 					Set = End;
 					break;
 				}
@@ -201,6 +207,11 @@ void Map::SetPlayerStone()
 		Map::p2.SetStone("②");
 		break;
 	}
+}
+void Map::SetPlayerBackSpace()
+{
+	cout << "플레이어 무르기 횟수 설정 : ";
+	cin >> playerbackchance;
 }
 Map::~Map() {}
 
