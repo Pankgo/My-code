@@ -21,27 +21,32 @@ MainGame::MainGame()
 
 void MainGame::Mainplay(int playerType,PlayerInfo *A,PlayerInfo *B,vector<Point>*stoneList)
 {
-	int player_turn = 0;
+	PlayerInfo* info;
 	switch (playerType) {
-	case First:
-		MapDraw::DrawPoint(A->RetMouse(), A->retPx(), A->retPy());
+	case First: info = A;
+		//MapDraw::DrawPoint(A->RetMouse(), A->retPx(), A->retPy());
 		break;
 	case Second:
-		MapDraw::DrawPoint(B->RetMouse(), B->retPx(), B->retPy());
+		info = B;
+		//MapDraw::DrawPoint(B->RetMouse(), B->retPx(), B->retPy());
 		break;
 	}//초기 플레이어 포인트 그리기
+	MapDraw::DrawPoint(info->RetMouse(), info->retPx(), info->retPy());
+
 	while (1)//움직일때마다 맵 업데이트
 	{
 		if (_kbhit())
 		{
 			int character = _getch();
-			if (playerType == First)
+			CMove(playerType, info, character, stoneList);
+
+			/*if (playerType == First)
 			{
 				CMove(playerType,A, character,stoneList);
 			}
 			else {
 				CMove(playerType,B, character,stoneList);
-			}
+			}*/
 			break;
 		}
 		continue;
@@ -82,15 +87,7 @@ void MainGame::CMove(int playerType,PlayerInfo* A,int move, vector<Point> *stone
 		}
 		break;
 	case 32://스페이스바 돌저장
-		if (playerType == First)
-		{
-			stoneList->push_back({ First, A->retPx(), A->retPy() });
-
-		}
-		else
-		{
-			stoneList->push_back({ Second, A->retPx(), A->retPy() });
-		}
+		stoneList->push_back({ playerType, A->retPx(), A->retPy() });
 		A->EndTurn();
 		break;
 	case 98 : //무르기
