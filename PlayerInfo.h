@@ -10,8 +10,7 @@ class PlayerInfo//플레이어 정보
 	int turn = 1;
 	string Mouse = "";
 	string Stone = "";
-	int backchance = 10;
-
+	int backchance;
 
 
 public:
