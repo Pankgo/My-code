@@ -5,7 +5,8 @@
 #include"MainGame.h"
 #include"PlayerInfo.h"
 #include <vector>
-
+#include<fstream>
+#include<ctime>
 class Map
 {
 private:
