@@ -2,8 +2,13 @@
 
 enum Player
 {
-	F=1,
-	S
+	First=1,
+	Second
+};
+enum Check
+{
+	No,
+	Yes
 };
 MainGame::MainGame()
 {
@@ -18,10 +23,10 @@ void MainGame::Mainplay(int playerType,PlayerInfo *A,PlayerInfo *B,vector<Point>
 {
 	int player_turn = 0;
 	switch (playerType) {
-	case F:
+	case First:
 		MapDraw::DrawPoint(A->RetMouse(), A->retPx(), A->retPy());
 		break;
-	case S:
+	case Second:
 		MapDraw::DrawPoint(B->RetMouse(), B->retPx(), B->retPy());
 		break;
 	}//초기 플레이어 포인트 그리기
@@ -30,7 +35,7 @@ void MainGame::Mainplay(int playerType,PlayerInfo *A,PlayerInfo *B,vector<Point>
 		if (_kbhit())
 		{
 			int character = _getch();
-			if (playerType == F)
+			if (playerType == First)
 			{
 				CMove(playerType,A, character,stoneList);
 			}
@@ -77,22 +82,27 @@ void MainGame::CMove(int playerType,PlayerInfo* A,int move, vector<Point> *stone
 		}
 		break;
 	case 32://스페이스바 돌저장
-		if (playerType == F)
+		if (playerType == First)
 		{
-			stoneList->push_back({ F, A->retPx(), A->retPy() });
+			stoneList->push_back({ First, A->retPx(), A->retPy() });
 
 		}
 		else
 		{
-			stoneList->push_back({ S, A->retPx(), A->retPy() });
+			stoneList->push_back({ Second, A->retPx(), A->retPy() });
 		}
 		A->EndTurn();
 		break;
 	case 98 : //무르기
-		A->Back();
-		A->EndTurn();
-		auto iter = stoneList->end()-1;
-		stoneList->erase(iter);
+		if (A->RetBack() != 0)
+		{
+			A->Back();
+			A->EndTurn();
+			auto iter = stoneList->end() - 1;
+			stoneList->erase(iter);
+			break;
+		}
+
 		break;
 	}
 
@@ -105,46 +115,46 @@ int MainGame::WinCheck(vector<Point> stoneList, int wincheck[45][90], int width,
 	{
 		for(int x = 1; x < width; x++)
 		{
-			if (wincheck[y][x] == F)
+			if (wincheck[y][x] == First)
 			{
 
-				if (wincheck[y][x] == F&&wincheck[y][x + 1] == F && wincheck[y][x + 2] == F&& wincheck[y][x + 3] == F && wincheck[y][x + 4]==F)//가로
+				if (MainGame::WinRightCheck(y,x,wincheck,First) == Yes)//가로
 				{
-					return F;
+					return First;
 				}
-				else if (wincheck[y][x] == F && wincheck[y + 1][x] == F && wincheck[y + 2][x] == F && wincheck[y + 3][x] == F && wincheck[y + 4][x]==F)//세로
+				else if (MainGame::WinLeftCheck(y,x,wincheck,First) == Yes)//세로
 				{
-					return F;
+					return First;
 				}
-				else if (wincheck[y][x] == F && wincheck[y + 1][x+1] == F&& wincheck[y + 2][x+2] == F && wincheck[y + 3][x+3] == F && wincheck[y + 4][x+4]==F)//오른쪽대각선
+				else if (MainGame::WinRightDiagonalCheck(y,x,wincheck,First) == Yes )//오른쪽대각선
 				{
-					return F;
+					return First;
 				}
-				else if (wincheck[y][x] == F &&wincheck[y + 1][x - 1] == F && wincheck[y + 2][x - 2] == F &&wincheck[y + 3][x - 3] == F &&wincheck[y + 4][x - 4]==F)//왼쪽 대각선
+				else if (MainGame::WinLeftDiagonalCheck(y, x, wincheck, First) == Yes)//왼쪽 대각선
 				{
-					return F;
+					return First;
 				}
 
 			}
-			else if(wincheck[y][x] == S)
+			else if(wincheck[y][x] == Second)
 			{
 
 
-				if (wincheck[y][x] == S && wincheck[y][x + 1] == S && wincheck[y][x + 2] == S && wincheck[y][x + 3] == S && wincheck[y][x + 4]==S)//가로
+				if (MainGame::WinRightCheck(y, x, wincheck, Second) == Yes)//가로
 				{
-					return S;
+					return Second;
 				}
-				else if (wincheck[y][x] == S &&wincheck[y + 1][x] == S && wincheck[y + 2][x] == S && wincheck[y + 3][x] == S && wincheck[y + 4][x]==S)//세로
+				else if (MainGame::WinLeftCheck(y, x, wincheck, Second) == Yes)//세로
 				{
-					return S;
+					return Second;
 				}
-				else if (wincheck[y][x] == S && wincheck[y + 1][x + 1] == S && wincheck[y + 2][x + 2] == S && wincheck[y + 3][x + 3] == S && wincheck[y + 4][x + 4]==S)//오른쪽대각선
+				else if (MainGame::WinRightDiagonalCheck(y, x, wincheck, Second) == Yes)//오른쪽대각선
 				{
-					return S;
+					return Second;
 				}
-				else if (wincheck[y][x] == S && wincheck[y + 1][x - 1] == S && wincheck[y + 2][x - 2] == S && wincheck[y + 3][x - 3] == S && wincheck[y + 4][x - 4]==S)//왼쪽 대각선
+				else if (MainGame::WinLeftDiagonalCheck(y, x, wincheck, Second) == Yes)//왼쪽 대각선
 				{
-					return S;
+					return Second;
 				}
 
 
@@ -155,5 +165,38 @@ int MainGame::WinCheck(vector<Point> stoneList, int wincheck[45][90], int width,
 	}
 	return 0;
 	
+}
+
+int MainGame::WinRightCheck(int y, int x, int wincheck[45][90],int sequence)//가로
+{
+	if(wincheck[y][x] == sequence && wincheck[y][x + 1] == sequence && wincheck[y][x + 2] == sequence && wincheck[y][x + 3] == sequence && wincheck[y][x + 4] == sequence)
+	{
+		return Yes;
+	}
+	return No;
+}
+int MainGame::WinLeftCheck(int y, int x, int wincheck[45][90], int sequence)//세로
+{
+	if(wincheck[y][x] == sequence && wincheck[y + 1][x] == sequence && wincheck[y + 2][x] == sequence && wincheck[y + 3][x] == sequence && wincheck[y + 4][x] == sequence)
+	{
+		return Yes;
+	}
+	return No;
+}
+int MainGame::WinRightDiagonalCheck(int y, int x, int wincheck[45][90], int sequence)//오른쪽대각선
+{
+	if(wincheck[y][x] == sequence && wincheck[y + 1][x + 1] == sequence && wincheck[y + 2][x + 2] == sequence && wincheck[y + 3][x + 3] == sequence && wincheck[y + 4][x + 4] == sequence)
+	{
+		return Yes;
+	}
+	return No;
+}
+int MainGame::WinLeftDiagonalCheck(int y, int x, int wincheck[45][90], int sequence)//왼쪽 대각선
+{
+	if (wincheck[y][x] == sequence && wincheck[y + 1][x - 1] == sequence && wincheck[y + 2][x - 2] == sequence && wincheck[y + 3][x - 3] == sequence && wincheck[y + 4][x - 4] == sequence)
+	{
+		return Yes;
+	}
+	return No;
 }
 
