@@ -34,6 +34,8 @@ Map::Map()
 
 void Map::UIDraw()
 {
+	ofstream save;
+	ifstream replay;
 	int Set = Start;
 	int Game = Start;
 	int turn = First;
@@ -41,7 +43,10 @@ void Map::UIDraw()
 	int setting;
 	while (1)
 	{
+
 		system("cls");
+		clock_t start = clock();
+		vector<Point> ::iterator iter = stoneList.begin();
 		MapDraw::GameMapDraw(0, 0, Map::m_Width, Map::m_Height);
 		MapDraw::DrawMidText("1.게임 시작", m_Width, 5);
 		MapDraw::DrawMidText("2.Replay", m_Width, 7);
@@ -53,7 +58,6 @@ void Map::UIDraw()
 		switch (Select)
 		{
 		case Start:
-
 			p1.Back(playerbackchance);
 			p2.Back(playerbackchance);
 			p1.Startp();
@@ -69,13 +73,12 @@ void Map::UIDraw()
 			while (Game != End)
 			{
 				MapDraw::GameMapDraw(0, 0, Map::m_Width, Map::m_Height);
+				cout << "\n플레이어 1 무르기 횟수 : " << p1.RetBack()<<" 플레이어 2 무르기 횟수 : " << p2.RetBack() << endl;
+				cout << "돌놓기 : SpaceBar" << " " << "무르기 : B";
 				cout << endl;
-				cout << "플레이어 1 무르기 횟수 : " << p1.RetBack();
-				cout << "플레이어 2 무르기 횟수 : " << p2.RetBack() << endl;
-				cout << "돌놓기 : SpaceBar"<<" "<< "무르기 : B";
 				MapDraw::StoneDraw(stoneList, p1, p2);
 				MainGame::Mainplay(turn, &p1, &p2, &stoneList);
-				if (turn == First && p1.RetTurn() == TEnd)
+				if (turn == First && p1.RetTurn() == TEnd)//처음->두번째
 				{
 					turn = Second;
 					wincheck[p1.retPx()][p1.retPy()] = 1;
@@ -105,10 +108,48 @@ void Map::UIDraw()
 				}
 
 			}
+			save.open("test.txt");
+			if (replay.is_open())
+			{
+				//save << stoneList.size() << endl;
+				//save << p1.RetMouse() << p2.RetMouse() << endl;
+				for (vector<Point>::iterator iter = stoneList.begin(); iter < stoneList.end(); iter++)
+				{
+					save <<iter->x << " " << iter->y << " " << iter->player << endl;
+				}
+				save.close();
+			}
 			Game = Start;
 			system("pause");
 			break;
 		case Replay:
+			stoneList.clear();
+			MapDraw::GameMapDraw(0, 0, Map::m_Width, Map::m_Height);
+			replay.open("test.txt");
+			while (!replay.eof())
+			{
+				replay >> iter->x;
+				replay >> iter->y;
+				replay >> iter->player;
+				iter++;
+			}
+			iter = stoneList.begin();
+			if (start > 10000)
+			{
+				switch (iter->player)
+				{
+					case First:
+						MapDraw::TextDraw(p1.RetStone(), iter->x * 2, iter->y);
+						break;
+					case Second:
+						MapDraw::TextDraw(p2.RetStone(), iter->x * 2, iter->y);
+						break;
+				}		
+				start = clock();
+				iter++;
+			}
+
+			system("pause");
 			break;
 		case Setting:
 			Set = Start;
@@ -142,6 +183,8 @@ void Map::UIDraw()
 
 			}
 			break;
+		case Exit:
+			return;
 		}
 	}
 }
