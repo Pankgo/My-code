@@ -21,9 +21,10 @@ MainGame::MainGame()
 
 void MainGame::Mainplay(int playerType,PlayerInfo *A,PlayerInfo *B,vector<Point>*stoneList)
 {
-	PlayerInfo* info;
+	PlayerInfo* info =A;
 	switch (playerType) {
-	case First: info = A;
+	case First: 
+		info = A;
 		//MapDraw::DrawPoint(A->RetMouse(), A->retPx(), A->retPy());
 		break;
 	case Second:
