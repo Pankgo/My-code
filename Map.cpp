@@ -46,6 +46,7 @@ void Map::UIDraw()
 
 		system("cls");
 		clock_t start = clock();
+
 		vector<Point> ::iterator iter = stoneList.begin();
 		MapDraw::GameMapDraw(0, 0, Map::m_Width, Map::m_Height);
 		MapDraw::DrawMidText("1.게임 시작", m_Width, 5);
@@ -108,8 +109,8 @@ void Map::UIDraw()
 				}
 
 			}
-			save.open("test.txt");
-			if (replay.is_open())
+			save.open("stone.txt");
+			if (save.is_open())
 			{
 				//save << stoneList.size() << endl;
 				//save << p1.RetMouse() << p2.RetMouse() << endl;
@@ -125,30 +126,31 @@ void Map::UIDraw()
 		case Replay:
 			stoneList.clear();
 			MapDraw::GameMapDraw(0, 0, Map::m_Width, Map::m_Height);
-			replay.open("test.txt");
+			replay.open("stone.txt");
+			int x, y, playertype;
 			while (!replay.eof())
 			{
-				replay >> iter->x;
-				replay >> iter->y;
-				replay >> iter->player;
-				iter++;
+				replay >> x;
+				replay >> y;
+				replay >> playertype;
+				stoneList.push_back({ playertype, x, y });
 			}
 			iter = stoneList.begin();
-			if (start > 10000)
+			while (iter != stoneList.end())
 			{
-				switch (iter->player)
-				{
+					switch (iter->player)
+					{
 					case First:
 						MapDraw::TextDraw(p1.RetStone(), iter->x * 2, iter->y);
 						break;
 					case Second:
 						MapDraw::TextDraw(p2.RetStone(), iter->x * 2, iter->y);
 						break;
-				}		
-				start = clock();
-				iter++;
+					}
+					iter++;
+					Sleep(1000);
 			}
-
+			replay.close();
 			system("pause");
 			break;
 		case Setting:
