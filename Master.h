@@ -1,5 +1,8 @@
 #include<iostream>
+#include<fstream>
 #include<Windows.h>
+#include<string>
+#include<time.h>
 
 #define col GetStdHandle(STD_OUTPUT_HANDLE) 
 #define BLACK SetConsoleTextAttribute( col,0x0000 );
