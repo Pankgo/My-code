@@ -1,7 +1,8 @@
 #pragma once
 #include "Master.h"
 #include "DrawMap.h"
-
+#include "WordInfo.h"
+#define MAXCOUNT 5
 
 enum Menu {
 
@@ -17,6 +18,9 @@ class GameManager
 	int startX = map_width - 13;
 	int startY = 10;
 	int inboxTextx = map_width - 5, inboxTexty = map_height / 2 + 7;//박스안의 텍스트 입력 위치
+	vector<WordInfo> _curwordList;//현재 게임에 출력되는 단어리시트
+	string wordList[76];
+	WordInfo wordInfo;
 public:
 	void StartScreen();
 	void MainGame();
@@ -31,5 +35,6 @@ public:
 		DrawMap.DrawMidText(startX, startY+2, "3.종료");
 
 	}
+	void PrintStory();
 };
 	
