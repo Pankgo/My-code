@@ -50,6 +50,7 @@ void GameManager::PrintStory()//스토리 출력
 		if (start - end > 2)
 		{
 			system("cls");
+			DrawMap.DrawBox(map_width, map_height);
 			for (int i = prtstart; i <= prtend; i++)
 			{
 				DrawMap.DrawMidText(startX, startY+changey,group[i]);
@@ -65,9 +66,18 @@ void GameManager::PrintStory()//스토리 출력
 			{
 				count++;
 			}
+			
 			start = 0;
 			end = clock() / 1000;
-
+			if (_kbhit())
+			{
+				int key = _getch();
+				switch (key)
+				{
+				case 's':
+					break;
+				}
+			}
 		}
 	}
 }
@@ -107,25 +117,36 @@ void GameManager::MainGame()
 		}
 		break;
 	}
+	PrintStory();
 	DrawMap.DrawTextBox(map_width, map_height);
 	
 	endtime = clock() / 1000;
-	while (1)
+	while (1)//본게임
 	{
+		system("cls");
+		DrawMap.DrawBox(map_width, map_height);
+		DrawMap.DrawTextBox(map_width, map_height);
 		starttime = clock() / 1000;
 		if (starttime - endtime > 3)
 		{
 			while (1)
 			{
 				randnum = rand() % 76;// 76개의 숫자중 하나 랜덤으로 뽑기(중복있으면 다시)
-				for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)
+				for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//검사를 통해 같은 단어가 있을 경우 while문 컨티뉴
 				{
-					if(iter->)
+					if (iter->Checkword(wordList[randnum]))
+					{
+						continue;
+					}
 				}
 			}
-			
+			for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//게임에 출력되는 단어들 y좌표 변화
+			{
+				iter->setWord_y();
+			}
 			int x = rand() % 59 + 1;//x좌표만 랜덤으로 설정하고  y좌표는 1에서 시작하기때문에 건들필요 x
 			wordInfo.setWord(wordList[randnum],x);
+			_curwordList.push_back(wordInfo);
 		}
 	}
 
