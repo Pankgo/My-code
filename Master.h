@@ -4,6 +4,7 @@
 #include<vector>
 #include<string>
 #include<time.h>
+#include<conio.h>
 
 #define col GetStdHandle(STD_OUTPUT_HANDLE) 
 #define BLACK SetConsoleTextAttribute( col,0x0000 );
