@@ -30,9 +30,9 @@ public:
 		int startX = map_width - 13;
 		int startY = 10;
 
-		DrawMap.DrawMidText(startX,startY , "1.게임 시작");
-		DrawMap.DrawMidText(startX, startY+1, "2.랭크 출력");
-		DrawMap.DrawMidText(startX, startY+2, "3.종료");
+		DrawMap.Drawtext(startX,startY , "1.게임 시작");
+		DrawMap.Drawtext(startX, startY+1, "2.랭크 출력");
+		DrawMap.Drawtext(startX, startY+2, "3.종료");
 
 	}
 	void PrintStory();
