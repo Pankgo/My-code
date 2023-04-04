@@ -12,7 +12,7 @@ public:
         Cur.Y = y;
         SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Cur);
     }
-    void DrawMidText(int x,int y, string str)
+    void Drawtext(int x,int y, string str)
     {
         gotoxy(x, y);
         cout << str;
