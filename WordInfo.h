@@ -20,5 +20,9 @@ public:
 		}
 		return false;
 	}
+	void setWord_y()
+	{
+		word_y += 1;
+	}
 
 };
