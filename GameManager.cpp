@@ -78,6 +78,7 @@ void GameManager::MainGame()
 	string playername = "";
 	int life = 7;
 	int select;
+	char answer[30];
 	string word;
 	ifstream load;
 	load.open("Word.txt");
@@ -111,21 +112,38 @@ void GameManager::MainGame()
 
 	system("cls");
 	DrawMap.DrawBox(map_width, map_height);
+	DrawMap.gotoxy(inboxTextx, inboxTexty);
 	DrawMap.DrawTextBox(map_width, map_height);
-	endtime = clock();
+	endtime = clock()/1000;
 	while (life!=0)//본게임
 	{
 		
-		starttime = clock();
+		starttime = clock()/1000;
 		
-		DrawMap.DrawTextBox(map_width, map_height);
-		if (starttime - endtime > 1000)//시간간격을 레벨에 따라 설정 & 단어 새로히 생성
+		if (starttime - endtime > 0.5)//시간간격을 레벨에 따라 설정 & 단어 새로이 생성
 		{
-			endtime = clock();
+			for (int i = 0; i < life; i++)
+			{
+				DrawMap.Drawtext(0+i, map_height, "♥");
+			}
+			for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//게임에 출력되는 단어들 y좌표 변화
+			{
+				DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), "                ");
+				iter->setWord_y();
+				if (iter->getWord_y() >= map_height-1 )//해당단어가 맵밖으로 벗어나게 되면 벡터에서 삭제와 동시에 라이프 1깍임
+				{
+					_curwordList.erase(iter);
+					life--;
+					DrawMap.Drawtext(0 + life, map_height, " ");
+					break;
+				}
+			}
 			for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//현재 들어있는 문장 출력
 			{
 				DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), iter->getWord());
 			}
+			DrawMap.DrawTextBox(map_width, map_height);
+			DrawMap.gotoxy(inboxTextx, inboxTexty);
 			while (1)
 			{
 				randnum = rand() % 76;// 76개의 숫자중 하나 랜덤으로 뽑기(중복있으면 다시)
@@ -134,7 +152,6 @@ void GameManager::MainGame()
 					if (iter->Checkword(wordList[randnum]) == true)
 					{
 						continue;
-
 					}
 				}
 				break;
@@ -142,28 +159,28 @@ void GameManager::MainGame()
 			int x = rand() % 57 + 2;//x좌표만 랜덤으로 설정하고  y좌표는 1에서 시작하기때문에 건들필요 x
 			wordInfo.setWord(wordList[randnum],x);
 			_curwordList.push_back(wordInfo);
+			endtime = clock()/1000;
+		
 		}
-		for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//게임에 출력되는 단어들 y좌표 변화
+		if (_kbhit())
 		{
-			DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(),"                " );
-			iter->setWord_y();
-			if (iter->getWord_y() >= map_height-1)//해당단어가 맵밖으로 벗어나게 되면 벡터에서 삭제와 동시에 라이프 1깍임
+			word.clear();
+			gets_s(answer, sizeof(answer));
+			for (int i = 0; answer[i] != NULL; i++)
 			{
-				_curwordList.erase(iter);
-				life--;
+				word += answer[i];
+			}
+			for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//검사를 통해 같은 단어가 있을 경우 삭제
+			{
+				if (iter->Checkword(word) == true)
+				{
+					DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), "                ");
+					_curwordList.erase(iter);
+					break;
+				}
 			}
 		}
-		//if (_kbhit())
-		//{
-		//	word+=_getch();
-		//	for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//입력을 받았을 경우 맞을 경우 삭제
-		//	{
-		//		if (word == iter->getWord())
-		//		{
-		//			_curwordList.erase(iter);
-		//		}
-		//	}
-		//}
+		
 	}
 
 }
