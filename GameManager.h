@@ -1,6 +1,7 @@
 #pragma once
 #include "Master.h"
 #include "DrawMap.h"
+#include "PlayerInfo.h"
 #include "WordInfo.h"
 #define MAXCOUNT 5
 
@@ -21,6 +22,8 @@ class GameManager
 	vector<WordInfo> _curwordList;//현재 게임에 출력되는 단어리시트
 	string wordList[76];
 	WordInfo wordInfo;
+	PlayerInfo playerInfo;
+	vector<PlayerInfo> _PlayerRank;
 public:
 	void StartScreen();
 	void MainGame();
@@ -35,6 +38,7 @@ public:
 		DrawMap.Drawtext(startX, startY+2, "3.종료");
 
 	}
-	void PrintStory();
+	void Story();
+	void PrintStory(string group[26],int prtstart,int ptrend);
 };
 	
