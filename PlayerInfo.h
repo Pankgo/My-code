@@ -2,7 +2,6 @@
 
 class  PlayerInfo
 {
-	int playerLife = 7;
 	int point;
 	string name;
 	int stage;
@@ -12,10 +11,6 @@ public:
 	{
 		name = _name;
 	}
-	void SetLife()
-	{
-		playerLife--;
-	}
 	void SetPoint(int _point)
 	{
 		point += _point;
@@ -23,10 +18,6 @@ public:
 	void Setstage()
 	{
 		stage++;
-	}
-	int getLife()
-	{
-		return playerLife;
 	}
 	string getName()
 	{
@@ -39,5 +30,11 @@ public:
 	int GetPoint()
 	{
 		return point;
+	}
+	void Playerclear()
+	{
+		point = 0;
+		name = "";
+		stage = 1;
 	}
 };
