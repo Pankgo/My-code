@@ -7,6 +7,7 @@ void GameManager::StartScreen()//초기화면 메뉴출력(게임시작, 랭크 출력, 종료)
 	while (1)
 	{
 	
+		system("cls");
 		DrawMap.DrawBox(map_width,map_height);
 		DrawMap.DrawTextBox(map_width, map_height);
 		StartMenu();
@@ -18,22 +19,58 @@ void GameManager::StartScreen()//초기화면 메뉴출력(게임시작, 랭크 출력, 종료)
 			MainGame();
 			break;
 		case Rank:
-			//PrintRank();
+			PrintRank();
 			break;
 		case End:
 			return;
 		}
 	}
 }
-void GameManager::PrintStory()//스토리 출력
+void GameManager::PrintStory(string group[26],int prtstart,int prtend)
+{
+
+	if(prtend ==0)
+	{
+		return;
+	}
+	else
+	{
+		int end=0, start = 0;
+		if (prtstart != 0)
+		{
+			prtstart--;
+		}
+		prtend--;
+		PrintStory(group, prtstart, prtend);
+		end = clock() / 1000;
+		while (1)
+		{
+			start = clock() / 1000;
+			if (start - end > 1)
+			{
+				for (int i = prtstart; i < prtend; i++)
+				{
+					DrawMap.Drawtext(startX, startY + (i - prtstart), "                                           ");
+					DrawMap.Drawtext(startX, startY + (i - prtstart), group[i]);
+				}
+				break;
+			}
+		}
+	}
+	
+}
+
+
+void GameManager::Story()//스토리 출력
 {
 	ifstream load;
 	string group[26];
 	string line;
 	int start = 0, end = 0;
 	int count = 0;
-	int prtstart = 0, prtend = 0;
+	int prtstart = 20, prtend = 25;
 	int changey = 0;
+	int check = 6;
 	load.open("베네치아_스토리.txt");
 
 	while (!load.eof())
@@ -47,12 +84,19 @@ void GameManager::PrintStory()//스토리 출력
 	system("cls");		
 	DrawMap.DrawBox(map_width, map_height);
 	DrawMap.DrawTextBox(map_width, map_height);
-
-			while(26 - 6 > prtstart)
+	if (_kbhit())
+	{
+		if ('s' == _getch())return;
+	}
+	else
+	{
+		PrintStory(group, prtstart, prtend);
+	}
+	/*while(26 - 6 > prtstart)
+	{
+			start = clock() / 1000;
+			if (start - end > 1)
 			{
-				start = clock() / 1000;
-				if (start - end > 1)
-				{
 					end = clock() / 1000;
 
 					for (int i = prtstart; i < prtend; i++)
@@ -69,13 +113,14 @@ void GameManager::PrintStory()//스토리 출력
 				{
 					if('s' ==_getch()) break;
 				}
-			}
+			}*/
 }
 
 void GameManager::MainGame()
 {
 	srand(time(NULL));
 	string playername = "";
+	int stage = 1;
 	int life = 7;
 	int select;
 	char answer[30];
@@ -86,6 +131,7 @@ void GameManager::MainGame()
 	int randnum = 0;
 	int sequence = 0;
 	int starttime = 0, endtime = 0;
+	int stagespeed = 1;
 
 	while (!load.eof())//벡터에 출력할 단어 저장
 	{
@@ -93,7 +139,8 @@ void GameManager::MainGame()
 		wordList[sequence] = word;
 		sequence++;
 	}
-	PrintStory();
+	Story();
+	playerInfo.Playerclear();//점수와 이름, 스테이지 초기화
 	while (1)//스토리 출력 및 이름 입력
 	{
 		DrawMap.DrawBox(map_width, map_height);
@@ -107,6 +154,7 @@ void GameManager::MainGame()
 			system("pause");
 			continue;
 		}
+		playerInfo.Setname(playername);
 		break;
 	}
 
@@ -115,17 +163,21 @@ void GameManager::MainGame()
 	DrawMap.gotoxy(inboxTextx, inboxTexty);
 	DrawMap.DrawTextBox(map_width, map_height);
 	endtime = clock()/1000;
+
 	while (life!=0)//본게임
 	{
 		
 		starttime = clock()/1000;
 		
-		if (starttime - endtime > 0.5)//시간간격을 레벨에 따라 설정 & 단어 새로이 생성
+		if (starttime - endtime > 0.1)//시간간격을 레벨에 따라 설정 & 단어 새로이 생성
 		{
 			for (int i = 0; i < life; i++)
 			{
-				DrawMap.Drawtext(0+i, map_height, "♥");
+				DrawMap.Drawtext(5+i*2, map_height, "♥");
 			}
+			DrawMap.Drawtext(map_width, map_height, "스테이지");
+			DrawMap.Drawtext(map_width+8, map_height, to_string(stage));
+			DrawMap.Drawtext(map_width*2-5, map_height, to_string(playerInfo.GetPoint()));
 			for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//게임에 출력되는 단어들 y좌표 변화
 			{
 				DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), "                ");
@@ -134,7 +186,7 @@ void GameManager::MainGame()
 				{
 					_curwordList.erase(iter);
 					life--;
-					DrawMap.Drawtext(0 + life, map_height, " ");
+					DrawMap.Drawtext(5 + life*2, map_height, "  ");
 					break;
 				}
 			}
@@ -146,7 +198,7 @@ void GameManager::MainGame()
 			DrawMap.gotoxy(inboxTextx, inboxTexty);
 			while (1)
 			{
-				randnum = rand() % 76;// 76개의 숫자중 하나 랜덤으로 뽑기(중복있으면 다시)
+				randnum = rand() % 75;// 75개의 숫자중 하나 랜덤으로 뽑기(중복있으면 다시)
 				for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//검사를 통해 같은 단어가 있을 경우 while문 컨티뉴
 				{
 					if (iter->Checkword(wordList[randnum]) == true)
@@ -156,12 +208,13 @@ void GameManager::MainGame()
 				}
 				break;
 			}
-			int x = rand() % 57 + 2;//x좌표만 랜덤으로 설정하고  y좌표는 1에서 시작하기때문에 건들필요 x
+			int x = rand() % 100 +1;//x좌표만 랜덤으로 설정하고  y좌표는 1에서 시작하기때문에 건들필요 x
 			wordInfo.setWord(wordList[randnum],x);
 			_curwordList.push_back(wordInfo);
 			endtime = clock()/1000;
 		
 		}
+
 		if (_kbhit())
 		{
 			word.clear();
@@ -176,11 +229,32 @@ void GameManager::MainGame()
 				{
 					DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), "                ");
 					_curwordList.erase(iter);
+					playerInfo.SetPoint(10);
+					if (playerInfo.GetPoint() == stage * 150)
+					{
+						stage++;
+						stagespeed = 1 / stage;
+
+					}
 					break;
 				}
 			}
 		}
 		
 	}
+	DrawMap.Drawtext(map_width, map_height+1, "게임종료!");
+	system("pause");
+	_PlayerRank.push_back(playerInfo);
 
+}
+
+ void GameManager:: PrintRank()
+{
+	 int y = 0;
+	 for (vector<PlayerInfo>::iterator iter = _PlayerRank.begin(); iter < _PlayerRank.end(); iter++)//검사를 통해 같은 단어가 있을 경우 삭제
+	 {
+		 DrawMap.Drawtext(map_width, 5 + y,iter->getName());
+		 y++;
+	 }
+	 system("pause");
 }
