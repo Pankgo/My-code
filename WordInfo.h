@@ -25,4 +25,19 @@ public:
 		word_y += 1;
 	}
 
+	int getWord_x()
+	{
+		return word_x;
+	}
+	int getWord_y()
+	{
+		return word_y;
+	}
+	string getWord()
+	{
+		return wordName;
+	}
+
+
+
 };
