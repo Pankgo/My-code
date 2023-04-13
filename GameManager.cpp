@@ -26,12 +26,12 @@ void GameManager::StartScreen()//초기화면 메뉴출력(게임시작, 랭크 출력, 종료)
 		}
 	}
 }
-void GameManager::PrintStory(string group[26],int prtstart,int prtend)
+bool GameManager::PrintStory(string group[26],int prtstart,int prtend)
 {
 
 	if(prtend ==0)
 	{
-		return;
+		return false;
 	}
 	else
 	{
@@ -41,7 +41,10 @@ void GameManager::PrintStory(string group[26],int prtstart,int prtend)
 			prtstart--;
 		}
 		prtend--;
-		PrintStory(group, prtstart, prtend);
+		if (PrintStory(group, prtstart, prtend) == true)
+		{
+			return true;
+		}
 		end = clock() / 1000;
 		while (1)
 		{
@@ -55,6 +58,10 @@ void GameManager::PrintStory(string group[26],int prtstart,int prtend)
 				}
 				break;
 			}
+		}
+		if (_kbhit())
+		{
+			if ('s' == _getch()) return true;
 		}
 	}
 	
@@ -92,28 +99,6 @@ void GameManager::Story()//스토리 출력
 	{
 		PrintStory(group, prtstart, prtend);
 	}
-	/*while(26 - 6 > prtstart)
-	{
-			start = clock() / 1000;
-			if (start - end > 1)
-			{
-					end = clock() / 1000;
-
-					for (int i = prtstart; i < prtend; i++)
-					{
-						DrawMap.Drawtext(startX, startY + (i - prtstart), "                                           ");
-						DrawMap.Drawtext(startX, startY + (i - prtstart), group[i]);
-					}
-
-					if (6 > prtend) prtend++;
-					else prtstart++;
-				}
-
-				if (_kbhit())
-				{
-					if('s' ==_getch()) break;
-				}
-			}*/
 }
 
 void GameManager::MainGame()
@@ -129,16 +114,9 @@ void GameManager::MainGame()
 	load.open("Word.txt");
 	int saveitem = 0;//현재 단어가 출력되는 개수
 	int randnum = 0;
-	int sequence = 0;
 	int starttime = 0, endtime = 0;
 	int stagespeed = 1;
 
-	while (!load.eof())//벡터에 출력할 단어 저장
-	{
-		getline(load, word);
-		wordList[sequence] = word;
-		sequence++;
-	}
 	Story();
 	playerInfo.Playerclear();//점수와 이름, 스테이지 초기화
 	while (1)//스토리 출력 및 이름 입력
@@ -178,68 +156,40 @@ void GameManager::MainGame()
 			DrawMap.Drawtext(map_width, map_height, "스테이지");
 			DrawMap.Drawtext(map_width+8, map_height, to_string(stage));
 			DrawMap.Drawtext(map_width*2-5, map_height, to_string(playerInfo.GetPoint()));
-			for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//게임에 출력되는 단어들 y좌표 변화
-			{
-				DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), "                ");
-				iter->setWord_y();
-				if (iter->getWord_y() >= map_height-1 )//해당단어가 맵밖으로 벗어나게 되면 벡터에서 삭제와 동시에 라이프 1깍임
-				{
-					_curwordList.erase(iter);
-					life--;
-					DrawMap.Drawtext(5 + life*2, map_height, "  ");
-					break;
-				}
-			}
-			for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//현재 들어있는 문장 출력
-			{
-				DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), iter->getWord());
-			}
+			wordmanager.setwordY(&playerInfo,&_curwordList);//현재 게임에 출력되는 단어 y좌표 변환
+			wordmanager.PrintWord(&_curwordList);//단어출력
 			DrawMap.DrawTextBox(map_width, map_height);
-			DrawMap.gotoxy(inboxTextx, inboxTexty);
-			while (1)
-			{
-				randnum = rand() % 75;// 75개의 숫자중 하나 랜덤으로 뽑기(중복있으면 다시)
-				for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//검사를 통해 같은 단어가 있을 경우 while문 컨티뉴
-				{
-					if (iter->Checkword(wordList[randnum]) == true)
-					{
-						continue;
-					}
-				}
-				break;
-			}
-			int x = rand() % 100 +1;//x좌표만 랜덤으로 설정하고  y좌표는 1에서 시작하기때문에 건들필요 x
-			wordInfo.setWord(wordList[randnum],x);
-			_curwordList.push_back(wordInfo);
+			DrawMap.gotoxy(inboxTextx, inboxTexty);	
+			wordmanager.SetNewWord(&_curwordList);//새로운단어저장
 			endtime = clock()/1000;
 		
 		}
 
-		if (_kbhit())
-		{
-			word.clear();
-			gets_s(answer, sizeof(answer));
-			for (int i = 0; answer[i] != NULL; i++)
-			{
-				word += answer[i];
-			}
-			for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//검사를 통해 같은 단어가 있을 경우 삭제
-			{
-				if (iter->Checkword(word) == true)
-				{
-					DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), "                ");
-					_curwordList.erase(iter);
-					playerInfo.SetPoint(10);
-					if (playerInfo.GetPoint() == stage * 150)
-					{
-						stage++;
-						stagespeed = 1 / stage;
+		//if (_kbhit())
+		//{
+		//	word.clear();
+		//	gets_s(answer, sizeof(answer));
+		//	for (int i = 0; answer[i] != NULL; i++)
+		//	{
+		//		word += answer[i];
+		//	}
+		//	for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//검사를 통해 같은 단어가 있을 경우 삭제
+		//	{
+		//		if (iter->Checkword(word) == true)
+		//		{
+		//			DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), "                ");
+		//			_curwordList.erase(iter);
+		//			playerInfo.SetPoint(10);
+		//			if (playerInfo.GetPoint() == stage * 150)
+		//			{
+		//				stage++;
+		//				stagespeed = 1 / stage;
 
-					}
-					break;
-				}
-			}
-		}
+		//			}
+		//			break;
+		//		}
+		//	}
+		//}
 		
 	}
 	DrawMap.Drawtext(map_width, map_height+1, "게임종료!");
