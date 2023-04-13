@@ -5,8 +5,17 @@ class  PlayerInfo
 	int point;
 	string name;
 	int stage;
+	int life = 7;
 
 public:
+	void SetLife(int _life)
+	{
+		life += _life;
+	}
+	int getLife()
+	{
+		return life;
+	}
 	void Setname(string _name)
 	{
 		name = _name;
