@@ -24,9 +24,9 @@ public:
 	{
 		point += _point;
 	}
-	void Setstage()
+	void Setstage(int _stage)
 	{
-		stage++;
+		stage = _stage;
 	}
 	string getName()
 	{
