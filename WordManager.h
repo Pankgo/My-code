@@ -9,9 +9,8 @@ class WordManager
 	int map_width = 60, map_height = 30;
 	string wordList[76];//단어 저장
 	int sequence = 0;
-	string word;
 	ifstream load;
-
+	string word;
 
 public :
 	WordManager()
@@ -28,7 +27,7 @@ public :
 	{
 		return wordList[_str];
 	}
-	void setwordY(PlayerInfo *player,vector<WordInfo>*_curwordList)//y좌표 변환
+	bool setwordY(PlayerInfo *player,vector<WordInfo>*_curwordList)//y좌표 변환 및 목숨 확인
 	{
 		for (vector<WordInfo>::iterator iter = _curwordList->begin(); iter < _curwordList->end(); iter++)//게임에 출력되는 단어들 y좌표 변화
 		{
@@ -38,10 +37,15 @@ public :
 			{
 				_curwordList->erase(iter);
 				player->SetLife(-1);
+				if (player->getLife() == 0)
+				{
+					return false;//목숨이 0인경우 실패로 리턴
+				}
 				DrawMap.Drawtext(5 + player->getLife() * 2, map_height, "  ");
 				break;
 			}
 		}
+		return true;//아닌경우 true 리턴
 	}
 
 	void PrintWord(vector<WordInfo>* _curwordList)
@@ -60,7 +64,7 @@ public :
 		{
 			randnum = rand() % 75;// 75개의 숫자중 하나 랜덤으로 뽑기(중복있으면 다시)
 			for (vector<WordInfo>::iterator iter = _curwordList->begin(); iter < _curwordList->end(); iter++)//검사를 통해 같은 단어가 있을 경우 while문 컨티뉴
-			{
+			{ 
 				if (iter->Checkword(wordList[randnum]) == true)
 				{
 					continue;
@@ -71,6 +75,24 @@ public :
 		int x = rand() % 100 + 1;//x좌표만 랜덤으로 설정하고  y좌표는 1에서 시작하기때문에 건들필요 x
 		wordInfo.setWord(wordList[randnum], x);
 		_curwordList->push_back(wordInfo);
+	}
+	bool DelWord(char _word, string *checkWord)
+	{
+		switch (_word)
+		{
+		case 13://엔터
+			return true;
+		case 8 ://백스페이스
+			if (checkWord->length() != 0)
+			{
+				checkWord->pop_back();
+			}
+			return false;
+		default:
+			checkWord->push_back(_word);
+			return false;
+			
+		}
 	}
 
 
