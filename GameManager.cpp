@@ -103,6 +103,7 @@ void GameManager::Story()//스토리 출력
 
 void GameManager::MainGame()
 {
+	string checkword;
 	srand(time(NULL));
 	string playername = "";
 	int stage = 1;
@@ -117,7 +118,7 @@ void GameManager::MainGame()
 	int starttime = 0, endtime = 0;
 	int stagespeed = 1;
 
-	Story();
+	//Story();
 	playerInfo.Playerclear();//점수와 이름, 스테이지 초기화
 	while (1)//스토리 출력 및 이름 입력
 	{
@@ -140,8 +141,8 @@ void GameManager::MainGame()
 	DrawMap.DrawBox(map_width, map_height);
 	DrawMap.gotoxy(inboxTextx, inboxTexty);
 	DrawMap.DrawTextBox(map_width, map_height);
+	DrawMap.gotoxy(inboxTextx, inboxTexty);
 	endtime = clock()/1000;
-
 	while (life!=0)//본게임
 	{
 		
@@ -149,52 +150,55 @@ void GameManager::MainGame()
 		
 		if (starttime - endtime > 0.1)//시간간격을 레벨에 따라 설정 & 단어 새로이 생성
 		{
-			for (int i = 0; i < life; i++)
+			for (int i = 0; i < playerInfo.getLife(); i++)
 			{
 				DrawMap.Drawtext(5+i*2, map_height, "♥");
 			}
 			DrawMap.Drawtext(map_width, map_height, "스테이지");
 			DrawMap.Drawtext(map_width+8, map_height, to_string(stage));
 			DrawMap.Drawtext(map_width*2-5, map_height, to_string(playerInfo.GetPoint()));
-			wordmanager.setwordY(&playerInfo,&_curwordList);//현재 게임에 출력되는 단어 y좌표 변환
+			if(wordmanager.setwordY(&playerInfo,&_curwordList) == false) break;//현재 게임에 출력되는 단어 y좌표 변환
 			wordmanager.PrintWord(&_curwordList);//단어출력
-			DrawMap.DrawTextBox(map_width, map_height);
-			DrawMap.gotoxy(inboxTextx, inboxTexty);	
+			DrawMap.DrawTextBox(map_width, map_height);	
+			DrawMap.Drawtext(inboxTextx, inboxTexty,checkword);
 			wordmanager.SetNewWord(&_curwordList);//새로운단어저장
+		
 			endtime = clock()/1000;
 		
 		}
 
-		//if (_kbhit())
-		//{
-		//	word.clear();
-		//	gets_s(answer, sizeof(answer));
-		//	for (int i = 0; answer[i] != NULL; i++)
-		//	{
-		//		word += answer[i];
-		//	}
-		//	for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//검사를 통해 같은 단어가 있을 경우 삭제
-		//	{
-		//		if (iter->Checkword(word) == true)
-		//		{
-		//			DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), "                ");
-		//			_curwordList.erase(iter);
-		//			playerInfo.SetPoint(10);
-		//			if (playerInfo.GetPoint() == stage * 150)
-		//			{
-		//				stage++;
-		//				stagespeed = 1 / stage;
-
-		//			}
-		//			break;
-		//		}
-		//	}
-		//}
+		if (_kbhit())
+		{
+			if(wordmanager.DelWord((char)_getche(),&checkword) == true)
+			{
+				for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//검사를 통해 같은 단어가 있을 경우 삭제
+				{
+					if (iter->Checkword(checkword) == true)
+					{
+						DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), "                ");
+						_curwordList.erase(iter);
+						playerInfo.SetPoint(10);
+						if (playerInfo.GetPoint() == stage * 150)
+						{
+							stage++;
+							stagespeed = 1 / stage;
+						}
+						break;
+					}
+				}
+				DrawMap.Drawtext(inboxTextx, inboxTexty, "                ");
+				DrawMap.gotoxy(inboxTextx + checkword.length(), inboxTexty);
+				checkword.clear();
+			}
+			
+		}
 		
 	}
+	_curwordList.clear();
+	playerInfo.Setstage(stage);
 	DrawMap.Drawtext(map_width, map_height+1, "게임종료!");
 	system("pause");
-	_PlayerRank.push_back(playerInfo);
+	rank.setPlayerRank(playerInfo);//플레이어 저장
 
 }
 
