@@ -4,6 +4,7 @@
 #include "PlayerInfo.h"
 #include "WordInfo.h"
 #include "WordManager.h"
+#include "Rank.h"
 #define MAXCOUNT 5
 
 enum Menu {
@@ -24,6 +25,8 @@ class GameManager
 	PlayerInfo playerInfo;
 	vector<PlayerInfo> _PlayerRank;
 	WordManager wordmanager;
+	vector<PlayerInfo> _CheckRank;
+	_Rank rank;
 
 public:
 	void StartScreen();
