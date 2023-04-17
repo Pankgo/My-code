@@ -32,6 +32,10 @@ public:
 	void StartScreen();
 	void MainGame();
 	void PrintRank();
+	int GetMapWidth()
+	{
+		return map_width;
+	}
 	void StartMenu()
 	{
 		int startX = map_width - 13;
@@ -52,5 +56,19 @@ public:
 	}
 	void Story();
 	bool PrintStory(string group[26],int prtstart,int ptrend);
+	~GameManager()
+	{
+		ofstream recordRank;
+		recordRank.open("RankTxT.txt");
+		vector<PlayerInfo> ::iterator iter = rank.GetRank().begin();
+		
+		while(!recordRank.is_open())
+		{
+			recordRank << iter->getName();
+			recordRank << iter->GetPoint();
+			recordRank << iter->Getstage();
+			iter++;
+		}
+	}
 };
 	
