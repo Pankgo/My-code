@@ -118,7 +118,6 @@ void GameManager::MainGame()
 	int starttime = 0, endtime = 0;
 	int stagespeed = 1;
 
-	//Story();
 	playerInfo.Playerclear();//점수와 이름, 스테이지 초기화
 	while (1)//스토리 출력 및 이름 입력
 	{
@@ -204,11 +203,9 @@ void GameManager::MainGame()
 
  void GameManager:: PrintRank()
 {
-	 int y = 0;
-	 for (vector<PlayerInfo>::iterator iter = _PlayerRank.begin(); iter < _PlayerRank.end(); iter++)//검사를 통해 같은 단어가 있을 경우 삭제
-	 {
-		 DrawMap.Drawtext(map_width, 5 + y,iter->getName());
-		 y++;
-	 }
+	 rank.SortRank();
+	 system("cls");
+	 DrawMap.DrawBox(map_width, map_height);
+	 rank.PrintRank();
 	 system("pause");
 }
