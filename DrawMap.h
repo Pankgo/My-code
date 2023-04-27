@@ -3,6 +3,15 @@
 
 class DrawMap
 {
+    enum skill
+    {
+        No,
+        speedup,
+        speeddown,
+        doublepoint,
+        screenclear,
+        gamestop,
+    };
     int box_width = 10, box_height = 5;//텍스트 박스 넓이, 높이
 public:
     void gotoxy(int x, int y)
@@ -12,10 +21,32 @@ public:
         Cur.Y = y;
         SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Cur);
     }
-    void Drawtext(int x,int y, string str)
+    void Drawtext(int x,int y, string str,int type)
     {
+        switch (type)
+        {
+        case speedup:
+            RED;
+            break;
+        case speeddown:
+            BLUE;
+            break;
+        case doublepoint:
+            PUPPLE;
+            break;
+        case screenclear:
+            GOLD;
+            break;
+        case gamestop:
+            GREEN;
+            break;
+        default:
+            WHITE;
+            break;
+         }
         gotoxy(x, y);
         cout << str;
+        WHITE;
     }
     void DrawBox(int map_width,int map_height)//전체 맵그리기
     {
