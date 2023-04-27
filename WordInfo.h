@@ -5,8 +5,9 @@ class WordInfo
 	int word_x = 0;
 	int word_y = 1;//y좌표는 항상 고정
 	string wordName;
+	int wordskill = 0;
+	
 public:
-
 	void setWord(string name,int limitx)
 	{
 		wordName = name;
@@ -19,6 +20,14 @@ public:
 			return true;
 		}
 		return false;
+	}
+	int GetWordSkill()
+	{
+		return wordskill;
+	}
+	void SetwordSkill(int skill)
+	{
+		wordskill = skill;
 	}
 	void setWord_y()
 	{
