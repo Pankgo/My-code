@@ -8,6 +8,26 @@ class  PlayerInfo
 	int life = 7;
 
 public:
+	bool operator <(PlayerInfo compare)
+	{
+		if (this->stage < compare.Getstage())
+		{
+			return true;
+		}
+		return false;
+	}
+	bool operator ==(PlayerInfo compare)
+	{
+		if (this->stage == compare.Getstage())
+		{
+			if (this->point < compare.GetPoint())
+			{
+				return true;
+			}
+			return false;
+		}
+		return false;
+	}
 	void SetLife(int _life)
 	{
 		life += _life;
@@ -23,6 +43,10 @@ public:
 	void SetPoint(int _point)
 	{
 		point += _point;
+	}
+	void ResetPoint(int _point)
+	{
+		point = _point;
 	}
 	void Setstage(int _stage)
 	{
