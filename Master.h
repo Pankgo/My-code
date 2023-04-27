@@ -7,6 +7,7 @@
 #include<time.h>
 #include<conio.h>
 
+
 #define col GetStdHandle(STD_OUTPUT_HANDLE) 
 #define BLACK SetConsoleTextAttribute( col,0x0000 );
 #define DARK_BLUE SetConsoleTextAttribute( col,0x0001 );
@@ -25,3 +26,5 @@
 #define YELLOW SetConsoleTextAttribute( col,0x000e );
 
 using namespace std;
+
+
