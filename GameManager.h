@@ -13,9 +13,17 @@ enum Menu {
 	Rank,
 	End
 };
-
 class GameManager
 {
+	enum skill
+	{
+		No,
+		speedup,
+		speeddown,
+		doublepoint,
+		screenclear,
+		gamestop,
+	};
 	DrawMap DrawMap;//전체적인 게임배경 그리는 클래스
 	vector<WordInfo> _curwordList;//현재 게임에 출력되는 단어리시트
 	int map_width = 60, map_height = 30;//게임의 전체적인 x,y
@@ -32,6 +40,14 @@ public:
 	void StartScreen();
 	void MainGame();
 	void PrintRank();
+	GameManager()
+	{
+		rank.LoadRank();
+	}
+	~GameManager()
+	{
+		rank.SaveRank();
+	}
 	int GetMapWidth()
 	{
 		return map_width;
@@ -41,9 +57,9 @@ public:
 		int startX = map_width - 13;
 		int startY = 10;
 
-		DrawMap.Drawtext(startX,startY , "1.게임 시작");
-		DrawMap.Drawtext(startX, startY+1, "2.랭크 출력");
-		DrawMap.Drawtext(startX, startY+2, "3.종료");
+		DrawMap.Drawtext(startX,startY , "1.게임 시작", 0);
+		DrawMap.Drawtext(startX, startY+1, "2.랭크 출력", 0);
+		DrawMap.Drawtext(startX, startY+2, "3.종료", 0);
 
 	}
 	int GetmapY()
@@ -56,19 +72,5 @@ public:
 	}
 	void Story();
 	bool PrintStory(string group[26],int prtstart,int ptrend);
-	~GameManager()
-	{
-		ofstream recordRank;
-		recordRank.open("RankTxT.txt");
-		vector<PlayerInfo> ::iterator iter = rank.GetRank().begin();
-		
-		while(!recordRank.is_open())
-		{
-			recordRank << iter->getName();
-			recordRank << iter->GetPoint();
-			recordRank << iter->Getstage();
-			iter++;
-		}
-	}
 };
 	
