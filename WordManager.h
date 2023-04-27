@@ -1,6 +1,6 @@
 #pragma once
 #include"GameManager.h"
-
+#define NO 0
 
 class WordManager
 {
@@ -31,7 +31,7 @@ public :
 	{
 		for (vector<WordInfo>::iterator iter = _curwordList->begin(); iter < _curwordList->end(); iter++)//게임에 출력되는 단어들 y좌표 변화
 		{
-			DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), "                ");
+			DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), "                ",NO);
 			iter->setWord_y();
 			if (iter->getWord_y() >=  map_height-1)//해당단어가 맵밖으로 벗어나게 되면 벡터에서 삭제와 동시에 라이프 1깍임
 			{
@@ -41,7 +41,7 @@ public :
 				{
 					return false;//목숨이 0인경우 실패로 리턴
 				}
-				DrawMap.Drawtext(5 + player->getLife() * 2, map_height, "  ");
+				DrawMap.Drawtext(5 + player->getLife() * 2, map_height, "  ",NO);
 				break;
 			}
 		}
@@ -52,7 +52,7 @@ public :
 	{
 		for (vector<WordInfo>::iterator iter = _curwordList->begin(); iter < _curwordList->end(); iter++)//현재 들어있는 문장 출력
 		{
-			DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), iter->getWord());
+			DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), iter->getWord(),iter->GetWordSkill());
 		}
 	}
 
@@ -73,7 +73,8 @@ public :
 			break;
 		}
 		int x = rand() % 100 + 1;//x좌표만 랜덤으로 설정하고  y좌표는 1에서 시작하기때문에 건들필요 x
-		wordInfo.setWord(wordList[randnum], x);
+		wordInfo.setWord(wordList[randnum], x); 
+		wordInfo.SetwordSkill(rand() % 15 + 1);
 		_curwordList->push_back(wordInfo);
 	}
 	bool DelWord(char _word, string *checkWord)
