@@ -150,7 +150,7 @@ void GameManager::MainGame()
 		
 		starttime = clock()/1000;
 		
-		if (starttime - endtime > stagespeed)//시간간격을 레벨에 따라 설정 & 단어 새로이 생성
+		if (starttime - endtime > stagespeed && checkpause == false)//시간간격을 레벨에 따라 설정 & 단어 새로이 생성
 		{
 			for (int i = 0; i < playerInfo.getLife(); i++)
 			{
@@ -168,7 +168,11 @@ void GameManager::MainGame()
 			endtime = clock()/1000;
 		
 		}
-
+		else if (starttime - endtime >= 2 && checkpause == true)//특수단어 : 게임 2초 멈추기
+		{
+			checkpause = false;
+			endtime = clock() / 1000;
+		}
 		if (_kbhit())
 		{
 			if(wordmanager.DelWord((char)_getche(),&checkword) == true)
@@ -200,6 +204,7 @@ void GameManager::MainGame()
 							_curwordList.clear();
 							break;
 						case gamestop : // 일정시간 멈추기
+							checkpause = true;
 							break;
 						default :
 							playerInfo.SetPoint(10);
@@ -209,6 +214,7 @@ void GameManager::MainGame()
 							stage++;
 							stagespeed = 1 / stage;
 							playerInfo.SetPoint(-150);
+							DrawMap.Drawtext(map_width * 2 - 5, map_height, "       ", No);
 						}
 						
 						break;
