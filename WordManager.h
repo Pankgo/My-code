@@ -77,7 +77,7 @@ public :
 		wordInfo.SetwordSkill(rand() % 15 + 1);
 		_curwordList->push_back(wordInfo);
 	}
-	bool DelWord(char _word, string *checkWord)
+	bool InputWord(char _word, string *checkWord)
 	{
 		switch (_word)
 		{
