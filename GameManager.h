@@ -54,8 +54,6 @@ public:
 	}
 	void StartMenu()
 	{
-		int startX = map_width - 13;
-		int startY = 10;
 
 		DrawMap.Drawtext(startX,startY , "1.게임 시작", 0);
 		DrawMap.Drawtext(startX, startY+1, "2.랭크 출력", 0);
