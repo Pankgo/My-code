@@ -2,18 +2,13 @@
 
 void GameManager::StartScreen()//초기화면 메뉴출력(게임시작, 랭크 출력, 종료)
 {
-	int select;
-
-	while (1)
-	{
 	
-		system("cls");
-		DrawMap.DrawBox(map_width,map_height);
-		DrawMap.DrawTextBox(map_width, map_height);
-		StartMenu();
-		DrawMap.gotoxy(inboxTextx,inboxTexty);
-		cin >> select;
-		switch (select)
+	system("cls");
+	DrawMap.DrawBox(map_width,map_height);
+	DrawMap.DrawTextBox(map_width, map_height);
+	StartMenu();
+	
+	switch (DrawMap.MenuSelectCursor(3, 1, startX - 3, startY))
 		{
 		case Start:
 			MainGame();
@@ -24,7 +19,6 @@ void GameManager::StartScreen()//초기화면 메뉴출력(게임시작, 랭크 출력, 종료)
 		case End:
 			return;
 		}
-	}
 }
 bool GameManager::PrintStory(string group[26],int prtstart,int prtend)
 {
@@ -45,10 +39,11 @@ bool GameManager::PrintStory(string group[26],int prtstart,int prtend)
 		{
 			return true;
 		}
-		end = clock() / 1000;
+		end = clock() *0.001;
 		while (1)
 		{
-			start = clock() / 1000;
+			start = clock() * 0.001;
+			
 			if (start - end > 1)
 			{
 				for (int i = prtstart; i < prtend; i++)
@@ -58,12 +53,15 @@ bool GameManager::PrintStory(string group[26],int prtstart,int prtend)
 				}
 				break;
 			}
+			
 		}
 		if (_kbhit())
-		{
-			if ('s' == _getch()) return true;
-		}
+			{
+				if ('s' == _getch()) return true;
+			}
+			
 	}
+		
 	
 }
 
@@ -91,14 +89,7 @@ void GameManager::Story()//스토리 출력
 	system("cls");		
 	DrawMap.DrawBox(map_width, map_height);
 	DrawMap.DrawTextBox(map_width, map_height);
-	if (_kbhit())
-	{
-		if ('s' == _getch())return;
-	}
-	else
-	{
-		PrintStory(group, prtstart, prtend);
-	}
+	PrintStory(group, prtstart, prtend);
 }
 
 void GameManager::MainGame()
@@ -121,23 +112,46 @@ void GameManager::MainGame()
 	int starttime = 0, endtime = 0;
 	int stagespeed = 1;
 
-	playerInfo.Playerclear();//점수와 이름, 스테이지 초기화
+	playerInfo.Playerclear();
+	DrawMap.DrawBox(map_width, map_height);
+	DrawMap.DrawTextBox(map_width, map_height);
+	DrawMap.Drawtext(inboxTextx-6, inboxTexty-4, "이름 입력 ", No);
+	DrawMap.gotoxy(inboxTextx, inboxTexty);//점수와 이름, 스테이지 초기화
+
 	while (1)//스토리 출력 및 이름 입력
 	{
-		DrawMap.DrawBox(map_width, map_height);
-		DrawMap.DrawTextBox(map_width, map_height);
-		DrawMap.Drawtext(inboxTextx-6, inboxTexty, "이름 : ", No);
 		DrawMap.gotoxy(inboxTextx, inboxTexty);
-		cin >> playername;
-		if (playername.length() >= 10)
+		if (_kbhit())
 		{
-			DrawMap.Drawtext(inboxTextx - 6, inboxTexty, "글자제한!(10자이하)", No);
-			system("pause");
-			continue;
+			if (wordmanager.InputWord(_getch(), &playername) == false && playername.length() >= 10)
+			{
+				endtime = clock();
+				while (1)
+				{
+					starttime = clock();
+					DrawMap.DrawMidText("글자제한!(10자이하)", inboxTextx, inboxTexty);
+					if ((starttime - endtime) > 2)
+					{
+						DrawMap.DrawMidText("                ", inboxTextx, inboxTexty);
+						playername.clear();
+						break;
+					}
+
+				}
+			}
+			else if (wordmanager.InputWord(_getch(), &playername) == true)
+			{
+				playerInfo.Setname(playername);
+				break;
+			}
+			else
+			{
+				DrawMap.DrawMidText(playername, inboxTextx, inboxTexty);
+			}
 		}
-		playerInfo.Setname(playername);
-		break;
 	}
+
+	Story();
 
 	system("cls");
 	DrawMap.DrawBox(map_width, map_height);
@@ -175,7 +189,7 @@ void GameManager::MainGame()
 		}
 		if (_kbhit())
 		{
-			if(wordmanager.DelWord((char)_getche(),&checkword) == true)
+			if(wordmanager.InputWord((char)_getche(),&checkword) == true)
 			{
 
 				for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//검사를 통해 같은 단어가 있을 경우 삭제
