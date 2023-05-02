@@ -1,5 +1,8 @@
 #pragma once
 #include"Master.h"
+#define UP 'w'
+#define DOWN 's'
+#define ENTER 13
 
 class DrawMap
 {
@@ -14,12 +17,68 @@ class DrawMap
     };
     int box_width = 10, box_height = 5;//텍스트 박스 넓이, 높이
 public:
+    int MenuSelectCursor(int MenuLen, int AddCol, int x, int y)
+    {
+        int Select = 1;
+        RED
+            DrawPoint("▷", x, y);
+        WHITE
+            while (1)
+            {
+                switch (_getch())
+                {
+                case UP:
+                    if (Select - 1 >= 1)
+                    {
+                        ErasePoint(x, y);
+                        y -= AddCol;
+                        Select--;
+                    }
+                    break;
+                case DOWN:
+                    if (Select + 1 <= MenuLen)
+                    {
+                        ErasePoint(x, y);
+                        y += AddCol;
+                        Select++;
+                    }
+                    break;
+                case ENTER:
+                    return Select;
+                }
+                RED
+                    DrawPoint("▷", x, y);
+               WHITE
+            }
+    }
     void gotoxy(int x, int y)
     {
         COORD Cur;
         Cur.X = x;
         Cur.Y = y;
         SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Cur);
+    }
+    void ErasePoint(int x, int y)
+    {
+        gotoxy(x  , y);
+        cout << "  ";
+        gotoxy(-1, -1);
+        return;
+    }
+    void DrawPoint(string str, int x, int y)
+    {
+        gotoxy(x , y);
+        cout << str;
+        gotoxy(-1, -1);
+        return;
+    }
+    void DrawMidText(string str, int x, int y)
+    {
+        if (x > str.size() / 2)
+            x -= str.size() / 2;
+        gotoxy(x, y);
+        cout << str;
+        return;
     }
     void Drawtext(int x,int y, string str,int type)
     {
