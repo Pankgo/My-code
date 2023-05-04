@@ -50,6 +50,7 @@ bool GameManager::PrintStory(string group[26],int prtstart,int prtend)
 				{
 					DrawMap.Drawtext(startX, startY + (i - prtstart), "                                           ", 0);
 					DrawMap.Drawtext(startX, startY + (i - prtstart), group[i], 0);
+					DrawMap.DrawMidText("스킵버튼 : S", inboxTextx, inboxTexty);
 				}
 				break;
 			}
@@ -115,24 +116,24 @@ void GameManager::MainGame()
 	playerInfo.Playerclear();
 	DrawMap.DrawBox(map_width, map_height);
 	DrawMap.DrawTextBox(map_width, map_height);
-	DrawMap.Drawtext(inboxTextx-6, inboxTexty-4, "이름 입력 ", No);
+	DrawMap.Drawtext(inboxTextx - 4, inboxTexty - 4, "이름 입력 ", No);
 	DrawMap.gotoxy(inboxTextx, inboxTexty);//점수와 이름, 스테이지 초기화
 
 	while (1)//스토리 출력 및 이름 입력
 	{
-		DrawMap.gotoxy(inboxTextx, inboxTexty);
+		DrawMap.DrawMidText(playername, inboxTextx, inboxTexty);
 		if (_kbhit())
 		{
 			if (wordmanager.InputWord(_getch(), &playername) == false && playername.length() >= 10)
 			{
-				endtime = clock();
+				endtime = clock()*0.001;
 				while (1)
 				{
-					starttime = clock();
+					starttime = clock()*0.001;
 					DrawMap.DrawMidText("글자제한!(10자이하)", inboxTextx, inboxTexty);
 					if ((starttime - endtime) > 2)
 					{
-						DrawMap.DrawMidText("                ", inboxTextx, inboxTexty);
+						DrawMap.DrawMidText("                   ", inboxTextx, inboxTexty);
 						playername.clear();
 						break;
 					}
@@ -144,10 +145,7 @@ void GameManager::MainGame()
 				playerInfo.Setname(playername);
 				break;
 			}
-			else
-			{
-				DrawMap.DrawMidText(playername, inboxTextx, inboxTexty);
-			}
+			DrawMap.DrawMidText("                ", inboxTextx, inboxTexty);
 		}
 	}
 
@@ -158,93 +156,77 @@ void GameManager::MainGame()
 	DrawMap.gotoxy(inboxTextx, inboxTexty);
 	DrawMap.DrawTextBox(map_width, map_height);
 	DrawMap.gotoxy(inboxTextx, inboxTexty);
-	endtime = clock()/1000;
-	while (life!=0)//본게임
+	endtime = clock() / 1000;
+	while (life != 0)//본게임
 	{
-		
-		starttime = clock()/1000;
-		
+
+		starttime = clock() * 0.001;
 		if (starttime - endtime > stagespeed && checkpause == false)//시간간격을 레벨에 따라 설정 & 단어 새로이 생성
 		{
+			DrawMap.Drawtext(1, map_height, "라이프", No);
 			for (int i = 0; i < playerInfo.getLife(); i++)
 			{
-				DrawMap.Drawtext(5+i*2, map_height, "♥", No);
+				DrawMap.Drawtext(9+i*2, map_height, "♥", No);
 			}
 			DrawMap.Drawtext(map_width, map_height, "스테이지", No);
-			DrawMap.Drawtext(map_width+8, map_height, to_string(stage), No);
-			DrawMap.Drawtext(map_width*2-5, map_height, to_string(playerInfo.GetPoint()), No);
-			if(wordmanager.setwordY(&playerInfo,&_curwordList) == false) break;//현재 게임에 출력되는 단어 y좌표 변환
-			wordmanager.PrintWord(&_curwordList);//단어출력
-			DrawMap.DrawTextBox(map_width, map_height);	
-			DrawMap.Drawtext(inboxTextx, inboxTexty,checkword,No);
-			wordmanager.SetNewWord(&_curwordList);//새로운단어저장
-		
-			endtime = clock()/1000;
-		
+			DrawMap.Drawtext(map_width + 8, map_height, to_string(stage), No);
+			DrawMap.Drawtext(map_width * 2 - 10, map_height, "점수", No);
+			DrawMap.Drawtext(map_width * 2 - 5, map_height, to_string(playerInfo.GetPoint()), No);
+			if (wordmanager.setwordY(&playerInfo,map_height) == false) break;//현재 게임에 출력되는 단어 y좌표 변환
+			wordmanager.PrintWord();//단어출력
+			DrawMap.DrawTextBox(map_width, map_height);
+			DrawMap.DrawMidText(checkword, inboxTextx, inboxTexty);
+			wordmanager.SetNewWord();//새로운단어저장
+			endtime = clock() / 1000;
+
 		}
 		else if (starttime - endtime >= 2 && checkpause == true)//특수단어 : 게임 2초 멈추기
 		{
 			checkpause = false;
-			endtime = clock() / 1000;
+			endtime = clock() * 0.001;
 		}
 		if (_kbhit())
 		{
-			if(wordmanager.InputWord((char)_getche(),&checkword) == true)
+			if (wordmanager.InputWord((char)_getche(), &checkword) == true && wordmanager.Checkword(checkword) == true)
 			{
-
-				for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)//검사를 통해 같은 단어가 있을 경우 삭제
+				switch (wordmanager.GetwordSkill(checkword))
 				{
-					if (iter->Checkword(checkword) == true)
-					{
-						int type = iter->GetWordSkill();
-						DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), "                ",No);
-						_curwordList.erase(iter);
-						switch (type)
-						{
-						case speedup : //단어 떨어지는 속도증가
-							stagespeed -= 0.3;
-							break;
-						case speeddown : // 단어 떨어지는 속도 감소
-							stagespeed += 0.3;
-							break;
-						case doublepoint : // 점수두배획득
-							playerInfo.SetPoint(20);
-							break;
-						case screenclear : // 현재 출력되는 단어 삭제
-							for (vector<WordInfo>::iterator iter = _curwordList.begin(); iter < _curwordList.end(); iter++)
-							{
-								DrawMap.Drawtext(iter->getWord_x(), iter->getWord_y(), "                ", No);
-							}
-							_curwordList.clear();
-							break;
-						case gamestop : // 일정시간 멈추기
-							checkpause = true;
-							break;
-						default :
-							playerInfo.SetPoint(10);
-						}
-						if (playerInfo.GetPoint() == stage * 150)
-						{
-							stage++;
-							stagespeed = 1 / stage;
-							playerInfo.SetPoint(-150);
-							DrawMap.Drawtext(map_width * 2 - 5, map_height, "       ", No);
-						}
-						
-						break;
-					}
+				case speedup: //단어 떨어지는 속도증가
+					stagespeed -= 0.3;
+					break;
+				case speeddown: // 단어 떨어지는 속도 감소
+					stagespeed += 0.3;
+					break;
+				case doublepoint: // 점수두배획득
+					playerInfo.SetPoint(20);
+					break;
+				case screenclear: // 현재 출력되는 단어 삭제
+					wordmanager.AllDel();
+					break;
+				case gamestop: // 일정시간멈추기
+					checkpause = true;
+					break;
+				default:
+					playerInfo.SetPoint(10);
 				}
-				DrawMap.Drawtext(inboxTextx, inboxTexty, "                ", No);
-				DrawMap.gotoxy(inboxTextx + checkword.length(), inboxTexty);
+				if (playerInfo.GetPoint() == stage * 150)
+				{
+					stage++;
+					stagespeed = 1 / stage;
+					playerInfo.SetPoint(-150);
+					DrawMap.Drawtext(map_width * 2 - 5, map_height, "       ", No);
+				}
+				
 				checkword.clear();
 			}
-			
+			DrawMap.DrawMidText( "                ", inboxTextx,inboxTexty);
+			DrawMap.DrawMidText(checkword, inboxTextx, inboxTexty);
+
 		}
-		
 	}
-	_curwordList.clear();
+	wordmanager.AllDel();
 	playerInfo.Setstage(stage);
-	DrawMap.Drawtext(map_width, map_height+1, "게임종료!", No);
+	DrawMap.Drawtext(map_width, map_height + 1, "게임종료!", No);
 	system("pause");
 	rank.setPlayerRank(playerInfo);//플레이어 저장
 
