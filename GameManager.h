@@ -25,7 +25,6 @@ class GameManager
 		gamestop,
 	};
 	DrawMap DrawMap;//전체적인 게임배경 그리는 클래스
-	vector<WordInfo> _curwordList;//현재 게임에 출력되는 단어리시트
 	int map_width = 60, map_height = 30;//게임의 전체적인 x,y
 	int startX = map_width - 13;
 	int startY = 10;
@@ -48,10 +47,6 @@ public:
 	{
 		rank.SaveRank();
 	}
-	int GetMapWidth()
-	{
-		return map_width;
-	}
 	void StartMenu()
 	{
 
@@ -60,13 +55,9 @@ public:
 		DrawMap.Drawtext(startX, startY+2, "3.종료", 0);
 
 	}
-	int GetmapY()
+	int GetmapH()
 	{
 		return map_height;
-	}
-	int GetmapX()
-	{
-		return map_width;
 	}
 	void Story();
 	bool PrintStory(string group[26],int prtstart,int ptrend);
