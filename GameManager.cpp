@@ -105,12 +105,13 @@ void GameManager::MainGame()
 	int life = 7;
 	int select;
 	char answer[30];
+	bool flaginput =false;
 	string word;
 	ifstream load;
 	load.open("Word.txt");
 	int saveitem = 0;//현재 단어가 출력되는 개수
 	int randnum = 0;
-	int starttime = 0, endtime = 0;
+	int starttime = 0, endtime = 0,flagtime=0;
 	int stagespeed = 1;
 
 	playerInfo.Playerclear();
@@ -119,28 +120,46 @@ void GameManager::MainGame()
 	DrawMap.Drawtext(inboxTextx - 4, inboxTexty - 4, "이름 입력 ", No);
 	DrawMap.gotoxy(inboxTextx, inboxTexty);//점수와 이름, 스테이지 초기화
 
+
 	while (1)//스토리 출력 및 이름 입력
 	{
 		DrawMap.DrawMidText(playername, inboxTextx, inboxTexty);
 		if (_kbhit())
 		{
-			if (wordmanager.InputWord(_getch(), &playername) == false && playername.length() >= 10)
+			char ch = _getch();
+			bool flag = wordmanager.InputWord(ch, &playername);
+
+			/*if (flag)
+			{
+				playerInfo.Setname(playername);
+				break;
+			}
+			else if (playername.length() >= 10)
+			{
+
+			}*/
+
+			if (flag == false && playername.length() >= 10)
 			{
 				endtime = clock()*0.001;
 				while (1)
 				{
-					starttime = clock()*0.001;
+					starttime = clock()*0.001f;
 					DrawMap.DrawMidText("글자제한!(10자이하)", inboxTextx, inboxTexty);
-					if ((starttime - endtime) > 2)
+					if (_kbhit())
 					{
-						DrawMap.DrawMidText("                   ", inboxTextx, inboxTexty);
-						playername.clear();
-						break;
+						char ch = _getch();
+						if (ch == 8)
+						{
+							playername.pop_back();
+							DrawMap.DrawMidText("                ", inboxTextx, inboxTexty);
+							break;
+						}
 					}
 
 				}
 			}
-			else if (wordmanager.InputWord(_getch(), &playername) == true)
+			else if (flag == true)
 			{
 				playerInfo.Setname(playername);
 				break;
@@ -157,20 +176,22 @@ void GameManager::MainGame()
 	DrawMap.DrawTextBox(map_width, map_height);
 	DrawMap.gotoxy(inboxTextx, inboxTexty);
 	endtime = clock() / 1000;
+
+
+	DrawMap.Drawtext(1, map_height, "라이프", No);
+	DrawMap.Drawtext(map_width, map_height, "스테이지", No);
+	DrawMap.Drawtext(map_width * 2 - 10, map_height, "점수", No);
 	while (life != 0)//본게임
 	{
 
 		starttime = clock() * 0.001;
 		if (starttime - endtime > stagespeed && checkpause == false)//시간간격을 레벨에 따라 설정 & 단어 새로이 생성
 		{
-			DrawMap.Drawtext(1, map_height, "라이프", No);
 			for (int i = 0; i < playerInfo.getLife(); i++)
 			{
 				DrawMap.Drawtext(9+i*2, map_height, "♥", No);
 			}
-			DrawMap.Drawtext(map_width, map_height, "스테이지", No);
 			DrawMap.Drawtext(map_width + 8, map_height, to_string(stage), No);
-			DrawMap.Drawtext(map_width * 2 - 10, map_height, "점수", No);
 			DrawMap.Drawtext(map_width * 2 - 5, map_height, to_string(playerInfo.GetPoint()), No);
 			if (wordmanager.setwordY(&playerInfo,map_height) == false) break;//현재 게임에 출력되는 단어 y좌표 변환
 			wordmanager.PrintWord();//단어출력
@@ -187,42 +208,83 @@ void GameManager::MainGame()
 		}
 		if (_kbhit())
 		{
-			if (wordmanager.InputWord((char)_getche(), &checkword) == true && wordmanager.Checkword(checkword) == true)
+			bool flag = wordmanager.InputWord((char)_getche(), &checkword);
+			if (checkword.length() < 20)
 			{
-				switch (wordmanager.GetwordSkill(checkword))
+				if (flag == true)
 				{
-				case speedup: //단어 떨어지는 속도증가
-					stagespeed -= 0.3;
-					break;
-				case speeddown: // 단어 떨어지는 속도 감소
-					stagespeed += 0.3;
-					break;
-				case doublepoint: // 점수두배획득
-					playerInfo.SetPoint(20);
-					break;
-				case screenclear: // 현재 출력되는 단어 삭제
-					wordmanager.AllDel();
-					break;
-				case gamestop: // 일정시간멈추기
-					checkpause = true;
-					break;
-				default:
-					playerInfo.SetPoint(10);
+					if (wordmanager.Checkword(checkword) == true)
+					{
+						switch (wordmanager.GetwordSkill(checkword))
+						{
+						case speedup: //단어 떨어지는 속도증가
+							stagespeed -= 0.3;
+							break;
+						case speeddown: // 단어 떨어지는 속도 감소
+							stagespeed += 0.3;
+							break;
+						case doublepoint: // 점수두배획득
+							playerInfo.SetPoint(20);
+							break;
+						case screenclear: // 현재 출력되는 단어 삭제
+							wordmanager.AllDel();
+							break;
+						case gamestop: // 일정시간멈추기
+							checkpause = true;
+							break;
+						default:
+							playerInfo.SetPoint(10);
+						}
+					}
+					else
+					{
+						endtime = clock();
+						DrawMap.DrawMidText("틀렸습니다!", inboxTextx, inboxTexty);
+						while (1)
+						{
+							starttime = clock();
+							if (starttime - endtime > 5000)
+							{
+								break;
+							}
+							if (_kbhit())
+							{
+									while (_getch() != '\n');
+							}
+						}
+						endtime = clock() * 0.001;
+					}
+					checkword.clear();
 				}
-				if (playerInfo.GetPoint() == stage * 150)
-				{
-					stage++;
-					stagespeed = 1 / stage;
-					playerInfo.SetPoint(-150);
-					DrawMap.Drawtext(map_width * 2 - 5, map_height, "       ", No);
-				}
-				
-				checkword.clear();
 			}
-			DrawMap.DrawMidText( "                ", inboxTextx,inboxTexty);
-			DrawMap.DrawMidText(checkword, inboxTextx, inboxTexty);
+			else
+			{
+				DrawMap.DrawMidText("글자제한!(20자이하)", inboxTextx, inboxTexty);
+				while (1)
+				{
+					if (_kbhit())
+					{
+						char ch = _getch();
+						if (ch == 8)
+						{
+							checkword.pop_back();
+							break;
+						}
+					}
+				}
+			}
+			if (playerInfo.GetPoint() == stage * 150)
+			{
+				stage++;
+				stagespeed = 1 / stage;
+				playerInfo.SetPoint(-150);
+				DrawMap.Drawtext(map_width * 2 - 5, map_height, "       ", No);
+			}
 
+			DrawMap.DrawMidText("                ", inboxTextx, inboxTexty);
+			DrawMap.DrawMidText(checkword, inboxTextx, inboxTexty);
 		}
+
 	}
 	wordmanager.AllDel();
 	playerInfo.Setstage(stage);
