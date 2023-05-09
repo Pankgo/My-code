@@ -98,6 +98,7 @@ void GameManager::MainGame()
 	int gamepause = 2;
 	int timecheck = 0;
 	bool checkpause = false;
+	bool stopflag = false;
 	string checkword;
 	srand(time(NULL));
 	string playername = "";
@@ -105,14 +106,15 @@ void GameManager::MainGame()
 	int life = 7;
 	int select;
 	char answer[30];
-	bool flaginput =false;
+	bool flaginput = false;
 	string word;
 	ifstream load;
 	load.open("Word.txt");
 	int saveitem = 0;//현재 단어가 출력되는 개수
 	int randnum = 0;
-	int starttime = 0, endtime = 0,flagtime=0;
+	int starttime = 0, endtime = 0, flagtime = 0;
 	int stagespeed = 1;
+	int startstop = 0, endstop = 0;
 
 	playerInfo.Playerclear();
 	DrawMap.DrawBox(map_width, map_height);
@@ -129,22 +131,13 @@ void GameManager::MainGame()
 			char ch = _getch();
 			bool flag = wordmanager.InputWord(ch, &playername);
 
-			/*if (flag)
-			{
-				playerInfo.Setname(playername);
-				break;
-			}
-			else if (playername.length() >= 10)
-			{
-
-			}*/
 
 			if (flag == false && playername.length() >= 10)
 			{
-				endtime = clock()*0.001;
+				endtime = clock() * 0.001;
 				while (1)
 				{
-					starttime = clock()*0.001f;
+					starttime = clock() * 0.001f;
 					DrawMap.DrawMidText("글자제한!(10자이하)", inboxTextx, inboxTexty);
 					if (_kbhit())
 					{
@@ -168,7 +161,7 @@ void GameManager::MainGame()
 		}
 	}
 
-	Story();
+	//Story();
 
 	system("cls");
 	DrawMap.DrawBox(map_width, map_height);
@@ -183,21 +176,26 @@ void GameManager::MainGame()
 	DrawMap.Drawtext(map_width * 2 - 10, map_height, "점수", No);
 	while (life != 0)//본게임
 	{
-
+		
 		starttime = clock() * 0.001;
+		if (stopflag == true) { startstop = clock(); }
 		if (starttime - endtime > stagespeed && checkpause == false)//시간간격을 레벨에 따라 설정 & 단어 새로이 생성
 		{
 			for (int i = 0; i < playerInfo.getLife(); i++)
 			{
-				DrawMap.Drawtext(9+i*2, map_height, "♥", No);
+				DrawMap.Drawtext(9 + i * 2, map_height, "♥", No);
 			}
 			DrawMap.Drawtext(map_width + 8, map_height, to_string(stage), No);
 			DrawMap.Drawtext(map_width * 2 - 5, map_height, to_string(playerInfo.GetPoint()), No);
-			if (wordmanager.setwordY(&playerInfo,map_height) == false) break;//현재 게임에 출력되는 단어 y좌표 변환
+			if (wordmanager.setwordY(&playerInfo, map_height) == false) break;//현재 게임에 출력되는 단어 y좌표 변환
 			wordmanager.PrintWord();//단어출력
 			DrawMap.DrawTextBox(map_width, map_height);
-			DrawMap.DrawMidText(checkword, inboxTextx, inboxTexty);
+			if (stopflag == false) { DrawMap.DrawMidText(checkword, inboxTextx, inboxTexty); }
 			wordmanager.SetNewWord();//새로운단어저장
+			if (stopflag == true)
+			{
+				DrawMap.DrawMidText("틀렸습니다!", inboxTextx, inboxTexty);
+			}
 			endtime = clock() / 1000;
 
 		}
@@ -206,7 +204,12 @@ void GameManager::MainGame()
 			checkpause = false;
 			endtime = clock() * 0.001;
 		}
-		if (_kbhit())
+		else if (startstop - endstop > 7000 && stopflag == true)
+		{
+			while (_getch() != '\n');
+			stopflag = false;
+		}
+		if (_kbhit() && stopflag == false)
 		{
 			bool flag = wordmanager.InputWord((char)_getche(), &checkword);
 			if (checkword.length() < 20)
@@ -238,24 +241,22 @@ void GameManager::MainGame()
 					}
 					else
 					{
-						endtime = clock();
-						DrawMap.DrawMidText("틀렸습니다!", inboxTextx, inboxTexty);
-						while (1)
-						{
-							starttime = clock();
-							if (starttime - endtime > 5000)
-							{
-								break;
-							}
-							if (_kbhit())
-							{
-									while (_getch() != '\n');
-							}
-						}
-						endtime = clock() * 0.001;
+						stopflag = true;
+						endstop = clock();
 					}
+					endtime = clock() * 0.001;
 					checkword.clear();
 				}
+				if (playerInfo.GetPoint() == stage * 150)
+				{
+					stage++;
+					stagespeed = 1 / stage;
+					playerInfo.SetPoint(-150);
+					DrawMap.Drawtext(map_width * 2 - 5, map_height, "       ", No);
+				}
+
+				DrawMap.DrawMidText("                ", inboxTextx, inboxTexty);
+				DrawMap.DrawMidText(checkword, inboxTextx, inboxTexty);
 			}
 			else
 			{
@@ -273,25 +274,14 @@ void GameManager::MainGame()
 					}
 				}
 			}
-			if (playerInfo.GetPoint() == stage * 150)
-			{
-				stage++;
-				stagespeed = 1 / stage;
-				playerInfo.SetPoint(-150);
-				DrawMap.Drawtext(map_width * 2 - 5, map_height, "       ", No);
-			}
 
-			DrawMap.DrawMidText("                ", inboxTextx, inboxTexty);
-			DrawMap.DrawMidText(checkword, inboxTextx, inboxTexty);
 		}
-
 	}
 	wordmanager.AllDel();
 	playerInfo.Setstage(stage);
 	DrawMap.Drawtext(map_width, map_height + 1, "게임종료!", No);
 	system("pause");
 	rank.setPlayerRank(playerInfo);//플레이어 저장
-
 }
 
  void GameManager:: PrintRank()
