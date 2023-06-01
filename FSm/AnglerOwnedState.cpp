@@ -10,19 +10,31 @@ EnterFishAndFishing* EnterFishAndFishing::Instance()
 
 void EnterFishAndFishing::Enter(Angler* pAngler)
 {
-	if (pAngler->Location() != Location_Type::gold_mine)
+	if (pAngler->Location() != Location_Type::fish)
 	{
 		SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
-		std::cout << GetNameOfEntity(pAngler->ID()) << ":광산으로 걸어간다" << std::endl;
+		std::cout << GetNameOfEntity(pAngler->ID()) << ":낚시터로 걸어간다" << std::endl;
 
-		pAngler->ChangeLocation(Location_Type::gold_mine);
+		pAngler->ChangeLocation(Location_Type::fish);
 	}
 }
 
 void EnterFishAndFishing::Excute(Angler* pAngler)
 {
-	pAngler->SetFishCarried(1);
+	if (pAngler->CheckCount() == COUNT_FISHING)
+	{
+		std::cout << GetNameOfEntity(pAngler->ID()) << "물고기를 잡았다!" << std::endl;
+		pAngler->SetFishCarried(1);
+		pAngler->CountFishing(-1); // 다시초기화
+	}
+	else
+	{
+		pAngler->CountFishing(1);
+	}
 
+	
+	pAngler->IncreaseHungry();
+	pAngler->IncreaseThirsty();
 	pAngler->IncreaseFatigue();
 
 	SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
@@ -34,24 +46,31 @@ void EnterFishAndFishing::Excute(Angler* pAngler)
 		// 상점에 판매.
 		pAngler->ChangeState(VisitShopAndBuyOrSell::Instance());
 	}
+	else
+	{
+		if (pAngler->Thirsty())	// 목이 마르면,
+		{
+			// 목마름 해소를 위해 행동.
+			pAngler->ChangeState(QuenchThirst::Instance());
+		}
+		if (pAngler->Hungry())
+		{
+			// 목마름 해소를 위해 행동.
+			pAngler ->ChangeState(QuenchHungry::Instance());
+		}
+		if (pAngler->Fatigued())
+		{
+			std::cout << GetNameOfEntity(pAngler->ID()) << "피곤하니 집으로가자..." << std::endl;
+			pAngler->ChangeState(GoHomeAndSleepTilRested::Instance());
+		}
+	}
 
-	// 목이 마르면,
-	else if (pAngler->Thirsty())
-	{
-		// 목마름 해소를 위해 행동.
-		pAngler->ChangeState(QuenchThirst::Instance());
-	}
-	else if (pAngler->Hungry())
-	{
-		// 목마름 해소를 위해 행동.
-		pAngler ->ChangeState(QuenchHungry::Instance());
-	}
 }
 
 void EnterFishAndFishing::Exit(Angler* pAngler)
 {
 	SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
-	std::cout << GetNameOfEntity(pAngler->ID()) << ":물고기 " << pAngler->FishCarried() << "개를 가지고 낚시터을 떠난다" << std::endl;
+	std::cout << GetNameOfEntity(pAngler->ID()) << ":물고기 " << pAngler->FishCarried() << "개를 잡았다!" << std::endl;
 }
 // -------------------------------------------------------------
 // VisitShopAndBuyOrSell------------------------------------
@@ -82,8 +101,8 @@ void VisitShopAndBuyOrSell::Excute(Angler* pAngler)
 		pAngler->SetFishCarried(-5);
 		pAngler->SetMoney(5);
 		std::cout << GetNameOfEntity(pAngler->ID()) << ":\"물고기를 판매하였습니다.\"" << std::endl;
-
-		if (pAngler->MoneyFull())
+		std::cout << GetNameOfEntity(pAngler->ID()) << ": 현재 돈:" << pAngler->MoneyFull() << std::endl << std::endl;
+		if (pAngler->MoneyFull() >= MAX_MONEY)
 		{
 			pAngler->ChangeState(VisitBankAndDepositGold::Instance());
 		}
@@ -96,18 +115,25 @@ void VisitShopAndBuyOrSell::Excute(Angler* pAngler)
 	else
 	{
 		// 물이 부족하여 물을 사러 왔다.
-		if (pAngler->MoneyFull() <= 0)
+		if (pAngler->FishCarried() == 0) // 배고픔을 돈으로 해결
+		{
+			std::cout << GetNameOfEntity(pAngler->ID()) << ":\"돈을 소비하여 빵을 사서 배고픔 해결.\"" << std::endl;
+			pAngler->SetMoney(-1);
+			pAngler->EatFish();
+		}
+		else if (pAngler->MoneyFull() <= 0)
 		{
 			std::cout << GetNameOfEntity(pAngler->ID()) << ":\"돈이 부족하여 물고리를 판매하여 물병을 얻었습니다.\"" << std::endl;
 			pAngler->SetFishCarried(-1);
+			pAngler->SetBottle(2);
 		}
 		else
 		{
 			std::cout << GetNameOfEntity(pAngler->ID()) << ":\"돈을 소비하여 물병을 얻었습니다.\"" << std::endl;
 			pAngler->SetMoney(-1);
+			pAngler->SetBottle(2);
 		}
-		pAngler->SetBottle(2);
-		pAngler->ChangeState(EnterFishAndFishing::Instance()); // 물병 획득후 낚시터로 이동
+		pAngler->ChangeState(EnterFishAndFishing::Instance()); // 물병 획득후 또는 배고픔을 해결 한 뒤 낚시터로 이동
 	}
 }
 void VisitShopAndBuyOrSell::Exit(Angler* pAngler)
@@ -189,7 +215,7 @@ void GoHomeAndSleepTilRested::Enter(Angler* pAngler)
 void GoHomeAndSleepTilRested::Excute(Angler* pAngler)
 {
 	// 피로도를 확인.
-	if (!pAngler->Fatigued())
+	if (pAngler->GetFatigued()==0)
 	{
 		// 피로가 다 필리면 다시 금을 캐러같다.
 		SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
@@ -231,14 +257,18 @@ void QuenchThirst::Excute(Angler* pAngler)
 	// 갈증이 있다면,
 	if (pAngler->Thirsty())
 	{
-		if (!pAngler->Bottle())
+		if (pAngler->Bottle() == 0)
 		{
 			std::cout << GetNameOfEntity(pAngler->ID()) << "이런! 물이없네 ..." << std::endl;
 			pAngler->ChangeState(VisitShopAndBuyOrSell::Instance());
 		}
-		std::cout << GetNameOfEntity(pAngler->ID()) << "물을 마시니 시원하군!" << std::endl;
-		pAngler->DrinkWater();
-		pAngler->ChangeState(EnterFishAndFishing::Instance());
+		else
+		{
+			std::cout << GetNameOfEntity(pAngler->ID()) << "물을 마시니 시원하군!" << std::endl;
+			pAngler->DrinkWater();
+			pAngler->ChangeState(EnterFishAndFishing::Instance());
+		}
+		
 		
 	}
 	else
@@ -250,7 +280,14 @@ void QuenchThirst::Excute(Angler* pAngler)
 void QuenchThirst::Exit(Angler* pAngler)
 {
 	SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
-	std::cout << GetNameOfEntity(pAngler->ID()) << "갈증을 해결했으니 다시 낚시를 하자" << std::endl;
+	if (pAngler->Thirsty())
+	{
+		std::cout << GetNameOfEntity(pAngler->ID()) << " 상점에가자! " << std::endl;
+	}
+	else
+	{
+		std::cout << GetNameOfEntity(pAngler->ID()) << "갈증을 해결했으니 다시 낚시를 하자" << std::endl;
+	}
 }
 // ----------------------------------------------------------
 
@@ -269,12 +306,28 @@ void QuenchHungry::Enter(Angler* pAngler)
 
 void QuenchHungry::Excute(Angler* pAngler)
 {
-	pAngler->EatFish();
-	std::cout << GetNameOfEntity(pAngler->ID()) << " 야무지게 먹어야지! " << std::endl;
-	pAngler->ChangeState(EnterFishAndFishing::Instance());
+	if (pAngler->FishCarried() == 0)
+	{
+		std::cout << GetNameOfEntity(pAngler->ID()) << " 이런 물고기가 없군! " << std::endl;
+		pAngler->ChangeState(VisitShopAndBuyOrSell::Instance());
+	}
+	else
+	{
+		pAngler->EatFish();
+		std::cout << GetNameOfEntity(pAngler->ID()) << " 야무지게 먹어야지! " << std::endl;
+		pAngler->ChangeState(EnterFishAndFishing::Instance());
+	}
 }
 void QuenchHungry::Exit(Angler* pAngler)
 {
 	SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
-	std::cout << GetNameOfEntity(pAngler->ID()) << "배고픔을 해결했으니 다시 낚시를 하자" << std::endl;
+	if (pAngler->Hungry())
+	{
+		std::cout << GetNameOfEntity(pAngler->ID()) << " 상점에가자! " << std::endl;
+	}
+	else
+	{
+		std::cout << GetNameOfEntity(pAngler->ID()) << "배고픔을 해결했으니 다시 낚시를 하자" << std::endl;
+	}
+	
 }
