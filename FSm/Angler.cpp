@@ -5,14 +5,16 @@ Angler::Angler(const int& id) :
 	BaseGameEntity(id),
 	m_Location(Location_Type::shack),
 	m_nMoneyInBank(0),
+	m_nfish(0),
+	m_nbottle(3),
 	m_nThirsty(0),
+	m_nCurMoney(0),
+	m_nHungry(0),
 	m_nFatigue(0),
 	m_pCurrState(GoHomeAndSleepTilRested::Instance()) { }
 
 void Angler::Update()
 {
-	m_nThirsty += 1;
-	m_nHungry += 1;
 
 	if (m_pCurrState)
 	{
@@ -43,6 +45,7 @@ void Angler::AddToWealth(const int& value)
 	}
 }
 
+
 bool Angler::Thirsty() const
 {
 	if (THIRST_LEVEL <= m_nThirsty)
@@ -65,7 +68,7 @@ bool Angler::Hungry() const
 
 bool Angler::Fatigued() const
 {
-	if (TIREDNESS_THRESHOLD < m_nFatigue)
+	if (TIREDNESS_THRESHOLD  < m_nFatigue)
 	{
 		return true;
 	}
