@@ -21,6 +21,12 @@ enum IMAGE
 	IMAGE_END
 	
 };
+enum CHECKIMAGE
+{
+	STARTBUTTON,
+	BACKGROUND,
+	CARDIMAGE
+};
 
 class BitMapManager
 {
