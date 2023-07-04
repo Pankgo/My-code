@@ -2,6 +2,8 @@
 #include<Windows.h>
 
 
+
+
 class BitMap
 {
 private:
@@ -10,7 +12,7 @@ private:
 	SIZE m_Size;
 public:
 	void Init(HDC hdc,char* FileName);
-	void Draw(HDC hdc, int x, int y);
+	void Draw(HDC hdc, int x, int y, int check);
 	inline SIZE GetSize()
 	{
 		return m_Size;
