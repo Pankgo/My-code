@@ -4,8 +4,6 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HINSTANCE g_hInst;
 LPCTSTR lpszClass = TEXT("CARDGAME");
 
-#define CARDMAX 11
-
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmdParam, int nCmdShow)
 {
 	HWND hWnd;
@@ -41,48 +39,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;
 	PAINTSTRUCT ps;
-	//static Card card;
 	POINT Point;
 	switch (iMessage)
 	{
 	case WM_CREATE:
 		GameManager::GetInstance()->Init(hWnd);
-		//BitMapManager::GetInstance()->Init(hWnd);
-		//card.Init(IMAGE_DOG, 10, 10);
-
 		return 0;
 	case WM_LBUTTONDOWN:
 		Point.x = LOWORD(lParam);
 		Point.y = HIWORD(lParam);
-		//if (card.ColliderCheck(Point))
-		//{
-		//	InvalidateRect(hWnd, NULL, true);
-		//}
-		/*if (GameManager::GetInstance()->PageCheck())
+		if (GameManager::GetInstance()->ColliderCheck(Point))//이미지 위에 있는지 확인
 		{
-			if (GameManager::GetInstance()->GameStartCheck(Point))
+			switch (GameManager::GetInstance()->PageCheck())
 			{
-				InvalidateRect(hWnd, NULL, true);
+			case Start: GameManager::GetInstance()->GameStartCheck(Point); break;//게임화면 일경우 시작버튼 확인
+			default: GameManager::GetInstance()->CardCheck(Point); break;//게임중일경우 카드 뒤집기
 			}
 		}
-		else
-		{
-			if (card.ColliderCheck(Point))
-			{
-				InvalidateRect(hWnd, NULL, true);
-			}
-		}
-		if (GameManager::GetInstance()->ColliderCheck(Point)
-		{
-			switch (PageCheck())
-			{
-			case main: return GameStartCheck(Point);
-			default: return card.ColliderCheck(Point);
-			}
-		})
-		{
-			InvalidateRect(hWnd, NULL, true);
-		}*/
+		InvalidateRect(hWnd, NULL, true);
 
 		return 0;
 	case WM_PAINT:
