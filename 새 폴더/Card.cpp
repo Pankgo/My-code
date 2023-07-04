@@ -17,9 +17,9 @@ void Card::Init(IMAGE Index, int x, int y)
 	m_BitMapRect.right = m_BitMapRect.left + m_pBitMap[CARD_FRONT]->GetSize().cx;
 	m_BitMapRect.bottom = m_BitMapRect.top + m_pBitMap[CARD_FRONT]->GetSize().cy;
 }
-void Card::Draw(HDC hdc)
+void Card::Draw(HDC hdc,CHECKIMAGE check)
 {
-	m_pBitMap[m_eCardState]->Draw(hdc, m_ix, m_iy);
+	m_pBitMap[m_eCardState]->Draw(hdc, m_ix, m_iy,check);
 }
 bool Card::ColliderCheck(POINT point)
 {
