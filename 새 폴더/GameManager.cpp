@@ -22,10 +22,10 @@ GameManager::GameManager()
 
 }
 
-bool GameManager::PageCheck() {//페이지확인
+page GameManager::PageCheck() {//페이지확인
 	if (CurrStatue == Start)
-		return true;
-	return false;
+		return Start;
+	return Game;
 }
 bool GameManager::GameStartCheck(POINT point)
 {
@@ -39,7 +39,7 @@ bool GameManager::GameStartCheck(POINT point)
 }
 void GameManager::PageDraw(HDC hdc)//페이지 확인 후 그려내기
 {
-	BackGround->Draw(hdc, Back_X, Back_y);
+	BackGround->Draw(hdc, Back_X, Back_y,BACKGROUND);
 	if (CurrStatue == Start)
 		StartP(hdc);
 	else
@@ -71,7 +71,7 @@ void GameManager::StartP(HDC hdc)//시작화면 페이지
 
 		}
 	}*/
-	startbutton->Draw(hdc, startb_x, startb_y);
+	startbutton->Draw(hdc, startb_x, startb_y,STARTBUTTON);
 }
 void GameManager::GameP(HDC hdc)//게임화면 페이지
 {
@@ -82,9 +82,21 @@ GameManager::~GameManager()
 
 }
 
+bool GameManager::CardCheck(POINT point)//카드체크
+{
+	return true;
+}
+bool GameManager::ColliderCheck(POINT point)//시작화면에서 시작버튼이미지 눌렀는지확인
+{
+	/*if (PtInRect(&startRect, point))
+	{
+		return true;
+	}
+	return false; */
+	return true;
+}
 void GameManager::Init(HWND hWnd)
 {
-	cards = new Card[NORMAL];
 	BitMapManager::GetInstance()->Init(hWnd);
-	delete[] cards;
+	cards.clear();
 }
