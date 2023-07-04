@@ -19,7 +19,7 @@ private:
 public:
 	Card();
 	void Init(IMAGE Index, int x, int y);
-	void Draw(HDC hdc);
+	void Draw(HDC hdc,CHECKIMAGE check);
 	bool ColliderCheck(POINT point);
 	~Card();
 };
