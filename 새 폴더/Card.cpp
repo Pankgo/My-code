@@ -24,19 +24,24 @@ void Card::Draw(HDC hdc,CHECKIMAGE check)
 }
 bool Card::ColliderCheck(POINT point)
 {
-	if (PtInRect(&m_BitMapRect, point))
+	if ((m_eCardState != CARD_FRONT) && PtInRect(&m_BitMapRect, point))
 	{
 		return true;
 	}
 	return false;
 }
 
-void Card::ChangeState()
+void Card::ChangeState(bool result)
 {
-	if (m_eCardState == CARD_FRONT)
-		m_eCardState = CARD_REAR;
-	else
+	switch (result)
+	{
+	case true:
 		m_eCardState = CARD_FRONT;
+		break;
+	case false:
+		m_eCardState = CARD_REAR;
+		break;
+	}
 }
 
 Card::~Card()
