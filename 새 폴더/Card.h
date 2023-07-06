@@ -26,17 +26,11 @@ public:
 	void Init(IMAGE Index, int x, int y);
 	void Draw(HDC hdc,CHECKIMAGE check);
 	bool ColliderCheck(POINT point); //카드와 마우스 위치 확인
-	void ChangeState();//카드 상태 변경
+	void ChangeState(bool result);//카드 상태 변경
 	bool GetCardState() { if (m_eCardState == CARD_FRONT)return true; else return false; }//카드 상태확인
 	int GetX(){ return m_ix; }
 	int GetY() { return m_iy; }
 	IMAGE CheckBitMap() { return checkImageIndex; }//비트맵 확인
-	/*bool getChangeState() {
-		return CanChangeState;
-	}*/
-	/*void SetChangeState(bool result) {
-		CanChangeState = result;
-	}*/
 
 
 	~Card();
