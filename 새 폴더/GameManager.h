@@ -1,10 +1,13 @@
 #include<stdio.h>
 #include<Windows.h>
 #include"Card.h"
+#include"time.h"
+
 #define CARDMAX 12
 #define NORMAL 8 // 게임 난이도 설정
 #define WINDOWHEIGHT 640
 #define WINDOWWIDTH 490
+
 	enum page//화면종류
 	{
 		Start,
@@ -34,11 +37,14 @@
 		int try_x, try_y;
 		int cardcount = 0; //카드다 오픈되어있는지 확인
 		int CurrStatue;//페이지상태
+		bool gamestop = false;
 
 		std::vector<Card> cards;// [NORMAL] ;
 		std::vector<IMAGE>checkcards;//이미지 중복확인
 		std::vector<Getxy>xy;//2차원 백터를 이용한 xy좌표 저장백터
 		std::vector<Card>opencards;
+
+		Card* select1 = nullptr, * select2 = nullptr;
 
 	public:
 		static GameManager* GetInstance()
@@ -58,5 +64,7 @@
 		bool ColliderCheck(POINT point,page page);
 		void Init(HWND hWnd);
 		void CardCheck(POINT point);
+		void GameStop();
+		bool GetGameStop() { return gamestop; }
 	};
 
