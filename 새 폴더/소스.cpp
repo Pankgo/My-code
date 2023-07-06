@@ -52,11 +52,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		{
 			switch (GameManager::GetInstance()->PageCheck())
 			{
-				case Start: GameManager::GetInstance()->GameStart(); break;//게임화면 일경우 시작버튼 확인
-				case End: GameManager::GetInstance()->CardCheck(Point); break;
-				default: 
-					GameManager::GetInstance()->CardCheck(Point); 
-					break;//게임중일경우 카드 뒤집기
+			case Start: GameManager::GetInstance()->GameStart(); SetTimer(hWnd, 1, 1000, NULL); break;//게임화면 일경우 시작버튼 확인
+			case End: /*if(GameManager::GetInstance()->GameStop == true)CardCheck(Point); KillTimer(hWnd, 1); ;*/ break;
+			default: 
+				if (GameManager::GetInstance()->GetGameStop() == false)GameManager::GetInstance()->CardCheck(Point);
+				else GameManager::GetInstance()->GameStop();
+				break;//게임중일경우 카드 뒤집기
 			}
 		}
 		InvalidateRect(hWnd, NULL, true);
