@@ -21,15 +21,19 @@ void BitMap::Draw(HDC hdc, int x, int y, int check)
 	int height, width;
 	if (check == 1)//배경
 	{
-		height = m_Size.cx, width= m_Size.cy;
+		height = m_Size.cy, width= m_Size.cx;
 	}
 	else if (check == 0)//시작버튼
 	{
 		height = 100, width = 100;
 	}
-	else
+	else  if (check == 2) // 다시시작버튼
 	{
 		height = 100, width = 100;
+	}
+	else//카드
+	{
+		height = 80, width = 80;
 	}
 	StretchBlt(hdc, x, y, width, height, MemDC, 0, 0, m_Size.cx, m_Size.cy, SRCCOPY);
 }
