@@ -23,7 +23,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmd
 	WndClass.style = CS_HREDRAW | CS_VREDRAW;
 	RegisterClass(&WndClass);
 
-	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 490, 640,
+	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, WINDOWWIDTH, WINDOWHEIGHT,
 		NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
 
@@ -48,12 +48,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 		Point.x = LOWORD(lParam);
 		Point.y = HIWORD(lParam);
-		if (GameManager::GetInstance()->ColliderCheck(Point))//이미지 위에 있는지 확인
+		if (GameManager::GetInstance()->ColliderCheck(Point,GameManager::GetInstance()->PageCheck()))//이미지 위에 있는지 확인
 		{
 			switch (GameManager::GetInstance()->PageCheck())
 			{
-			case Start: GameManager::GetInstance()->GameStartCheck(Point); break;//게임화면 일경우 시작버튼 확인
-			default: GameManager::GetInstance()->CardCheck(Point); break;//게임중일경우 카드 뒤집기
+				case Start: GameManager::GetInstance()->GameStart(); break;//게임화면 일경우 시작버튼 확인
+				case End: GameManager::GetInstance()->CardCheck(Point); break;
+				default: 
+					GameManager::GetInstance()->CardCheck(Point); 
+					break;//게임중일경우 카드 뒤집기
 			}
 		}
 		InvalidateRect(hWnd, NULL, true);
