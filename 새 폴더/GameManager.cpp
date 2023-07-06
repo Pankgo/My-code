@@ -39,6 +39,20 @@ GameManager::GameManager()
 		}
 	}
 
+	//enum
+	//{
+	//	StartX = 50, StartY = 100,
+	//	W = 100, H = 100,
+	//	PaddingX = 10, PaddingY = 10
+	//};
+	//for (int x = 0; x < 4; x++)
+	//{
+	//	for (int y = 0; y < 4; y++)
+	//	{
+	//		getxy.x = StartX + x * (W + PaddingX);
+	//		getxy.y = StartY + y * (H + PaddingY);
+	//	}
+	//}
 }
 
 page GameManager::PageCheck() {//페이지확인
@@ -58,64 +72,55 @@ void GameManager::GameStart()//게임이 시작될경우 카드세팅
 	IMAGE image;
 	bool xycount = true;
 
-	while(set < NORMAL*2) // 카드 세팅
-	{
-		switch (imagecount)
-		{
-		case 0:
-			image = IMAGE(rand() % 10);
-			if (find(checkcards.begin(), checkcards.end(), image) != checkcards.end()) { continue; }//중복이미지가없을 경우 다시 뽑기
-			checkcards.push_back(image);
-			break;
+	std::vector<IMAGE> images;
 
-		}
-		while (1)//xy백터에서 위치뽑아내기
-		{
-			randxy = rand() % 16; //xy백터에서 가져올 인덱스 
-			for (auto iter = cards.begin(); iter < cards.end(); iter++)//반복자를 통해 중복 세팅 확인
-			{
-				if (iter->GetX() == xy[randxy].x)
-				{
-					if (iter->GetY() == xy[randxy].y)
-					{
-						xycount = false;
-						break;//통과못하면 다시
-					}
-				}
-			}
-			if (xycount == false)
-			{
-				xycount = true;
-				continue;
-			}
-			break;
-		}
-		//이미지 인덱스
-		card1.Init(image, xy[randxy].x, xy[randxy].y);
-		
+	int removeImage[2]; 
+	int randnum;
+	removeImage[0] = rand() % IMAGE_COUNT;
 	
-		cards.push_back(card1);//통과하면 세팅
-		set++;
-		switch (imagecount)
+	while (1) // 이미지10장중 랜덤으로 2장빼기
+	{
+		randnum = rand() % IMAGE_COUNT;
+		if (removeImage[0] == randnum)
 		{
-		case 1:
-			imagecount = 0;
-			break;
-		default:
-			imagecount++;
+			continue;
 		}
-		
+		else
+		{
+			removeImage[1] = randnum;
+			break;
+		}
 	}
+
+	for (int i = IMAGE_START; IMAGE_COUNT > i; i++) // 이미지 생성
+	{
+		if (i == removeImage[0] || i == removeImage[1]) continue;
+
+		images.push_back((IMAGE)i);
+		images.push_back((IMAGE)i);
+	}
+
+	for (int i = 0; images.size(); i++)
+	{
+		int image_index = rand() % images.size();
+		image = images[image_index];
+		images.erase(images.begin() + image_index);
+
+		card1.Init(image, xy[i].x, xy[i].y);
+		cards.push_back(card1);
+	}
+
 }
+
 void GameManager::PageDraw(HDC hdc)//페이지 확인 후 그려내기
 {
 	BackGround->Draw(hdc, Back_X, Back_y,BACKGROUND);
-	if (CurrStatue == Start)
-		StartP(hdc);
-	else if (CurrStatue == Game)
-		GameP(hdc);
-	else
-		EndP(hdc);
+	switch (CurrStatue)
+	{
+	case Start: StartP(hdc); break;
+	case Game: GameP(hdc); break;
+	default: EndP(hdc);	break;
+	}		
 }
 
 void GameManager::StartP(HDC hdc)//시작화면 페이지
@@ -141,37 +146,51 @@ GameManager::~GameManager()
 
 void GameManager::CardCheck(POINT point)//카드체크
 {
-	bool result = false;
-	int cardcount = 0;
 
-
-	for (auto iter1 = cards.begin(); iter1 < cards.end() && result == false; iter1++)
+	for (int i = 0 ; cards.size() > i; i++)
 	{
-		if (iter1->ColliderCheck(point))//이미지 위에 있는지 확인
+		if (cards[i].ColliderCheck(point))
 		{
-			for (auto iter2 = cards.begin(); iter2 < cards.end() && result == false; iter2++)//만약 같은 카드가 2개 다 오픈되어있을경우 안뒤집어짐
+			if (nullptr == select1) { select1 = &cards[i]; select1->ChangeState(true); }
+			else
 			{
-				if (iter2->CheckBitMap() == iter1->CheckBitMap())
+				select2 = &cards[i];
+				select2->ChangeState(true);
+				if (select1->CheckBitMap() == select2->CheckBitMap()) // 같은 이미지인지 확인
 				{
-					if (iter2->GetCardState() == true && iter1->GetCardState() == true)
-					{
-						result = true;
-					}
-					else
-					{
-						iter1->ChangeState();
-						result = true;
-					}
-					
+					select1 = nullptr;
+					select2 = nullptr;
 				}
-				
+				else
+				{
+					float oldclock = clock();
+					float newclock;
 
+					gamestop = true;
+					while (1)
+					{
+						newclock = clock();
+						if (newclock - oldclock > 2000)
+						{
+							break;
+						}
+					}
+				}
 			}
+			break;
 		}
-	
 	}
+
+
 	
-	
+}
+void GameManager::GameStop()
+{
+	select1->ChangeState(false);
+	select2->ChangeState(false);
+	// 선택된 두 카드 뒷면으로 돌리기
+	select1 = nullptr;
+	select2 = nullptr;
 }
 bool GameManager::ColliderCheck(POINT point,page page)//화면에서 이미지 눌렀는지확인
 {
