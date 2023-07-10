@@ -53,7 +53,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			switch (GameManager::GetInstance()->PageCheck())
 			{
 			case Start: GameManager::GetInstance()->GameStart(); SetTimer(hWnd, 1, 1000, NULL); break;//게임화면 일경우 시작버튼 확인
-			case End: /*if(GameManager::GetInstance()->GameStop == true)CardCheck(Point); KillTimer(hWnd, 1); ;*/ break;
+			case End: KillTimer(hWnd, 1); GameManager::GetInstance()->GoHome();  ; break;
 			default: 
 				if (GameManager::GetInstance()->GetGameStop() == false)GameManager::GetInstance()->CardCheck(Point);
 				else GameManager::GetInstance()->GameStop();
