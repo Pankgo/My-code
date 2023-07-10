@@ -56,7 +56,7 @@ GameManager::GameManager()
 }
 
 page GameManager::PageCheck() {//페이지확인
-	switch (CurrStatue)
+	/*switch (CurrStatue)
 	{
 	case Start:
 		return Start;
@@ -64,11 +64,11 @@ page GameManager::PageCheck() {//페이지확인
 		return End;
 	default:
 		return Game;
-	}
+	}*/
+	return (page)CurrStatue;
 }
 void GameManager::GameStart()//게임이 시작될경우 카드세팅
 {
-	starttime = GetTickCount();
 	if (CurrStatue == Start)
 		CurrStatue = Game;
 
@@ -181,7 +181,7 @@ void GameManager::CardCheck(POINT point)//카드체크
 		}
 	}
 
-	int opencount = 0;
+	int opencount = 0; // 카드가 다 앞으로 되어있는지 확인
 	for (int i = 0; cards.size() > i; i++)
 	{
 		if (cards[i].GetCardState() == true)
@@ -203,49 +203,87 @@ void GameManager::GoHome()
 { 
 	if (CurrStatue == End)
 		CurrStatue = Start;
-	//endtime = GetTickCount(); 
-	//int time = endtime - starttime;
-	//time_str += std::to_string(time);
 }
-void GameManager::GameStop()
+void GameManager::GameStop(HWND hwnd)
 {
 
-	float oldclock = clock();
-	float newclock;
-	while (1)
-	{
-		newclock = clock();
-		if (newclock - oldclock > 1000)
-		{
-			break;
-		}
-	}
 	select1->ChangeState(false);
 	select2->ChangeState(false);
 	// 선택된 두 카드 뒷면으로 돌리기
 	select1 = nullptr;
 	select2 = nullptr;
+	KillTimer(hwnd, 1);
 	gamestop = false;
 }
-bool GameManager::ColliderCheck(POINT point,page page)//화면에서 이미지 눌렀는지확인
+bool GameManager::ColliderCheck(POINT point,HWND hwnd)//화면에서 이미지 눌렀는지확인
 {
-	if (PtInRect(&startRect, point) && page == Start)
+	//page _page = GameManager::GetInstance()->PageCheck();
+	switch (gamestop)
 	{
-		return true;
-	}
-	else if (PtInRect(&tryAgain, point) && page == End)
-	{
-		return true;
-	}
-	else
-	{
-		for (auto iter = cards.begin(); iter < cards.end(); iter++)
+	case false:
+		switch (CurrStatue)
 		{
-			if (iter->ColliderCheck(point))return true;
+		case Start:
+			if (PtInRect(&startRect, point))
+			{
+				GameManager::GetInstance()->GameStart();
+				return true;
+			}
+			break;
+		case End:
+			if (PtInRect(&tryAgain, point))
+			{
+				GameManager::GetInstance()->GoHome();
+				return true;
+			}
+			break;
+		default:
+
+			for (auto iter = cards.begin(); iter < cards.end(); iter++)
+			{
+				if (iter->ColliderCheck(point))
+				{
+					GameManager::GetInstance()->CardCheck(point);
+					if (gamestop)
+					{
+						SetTimer(hwnd, 1, 2000, NULL);
+					}
+					return true;
+				}
+			}
+			break;
 		}
+		/*
+		if (PtInRect(&startRect, point) && _page == Start)
+		{
+			GameManager::GetInstance()->GameStart();
+			return true;
+		}
+		else if (PtInRect(&tryAgain, point) && _page == End)
+		{
+			GameManager::GetInstance()->GoHome();
+			return true;
+		}
+		else
+		{
+			for (auto iter = cards.begin(); iter < cards.end(); iter++)
+			{
+				if (iter->ColliderCheck(point) == true)
+				{
+					GameManager::GetInstance()->CardCheck(point);
+					if (gamestop == true)
+					{
+						SetTimer(hwnd, 1, 2000, NULL);
+					}
+					return true;
+				}
+			}
+		}*/
+		return true;
+	default:
+		return false;
 	}
-	
-	return false; 
+	 
 }
 void GameManager::Init(HWND hWnd)
 {
