@@ -48,20 +48,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 		Point.x = LOWORD(lParam);
 		Point.y = HIWORD(lParam);
-		if (GameManager::GetInstance()->ColliderCheck(Point,GameManager::GetInstance()->PageCheck()))//이미지 위에 있는지 확인
-		{
-			switch (GameManager::GetInstance()->PageCheck())
-			{
-			case Start: GameManager::GetInstance()->GameStart(); SetTimer(hWnd, 1, 1000, NULL); break;//게임화면 일경우 시작버튼 확인
-			case End: KillTimer(hWnd, 1); GameManager::GetInstance()->GoHome();  ; break;
-			default: 
-				if (GameManager::GetInstance()->GetGameStop() == false)GameManager::GetInstance()->CardCheck(Point);
-				else GameManager::GetInstance()->GameStop();
-				break;//게임중일경우 카드 뒤집기
-			}
-		}
-		InvalidateRect(hWnd, NULL, true);
+		if (GameManager::GetInstance()->ColliderCheck(Point,hWnd))//이미지 위에 있는지 확인
+			InvalidateRect(hWnd, NULL, true);
 
+		//if (GameManager::GetInstance()->ColliderCheck(Point,GameManager::GetInstance()->PageCheck()))//이미지 위에 있는지 확인
+		//{
+		//	switch (GameManager::GetInstance()->PageCheck())
+		//	{
+		//	case Start: GameManager::GetInstance()->GameStart(); break;//게임화면 일경우 시작버튼 확인
+		//	case End:  GameManager::GetInstance()->GoHome();  ; break;
+		//	default: 
+		//		if (GameManager::GetInstance()->GetGameStop() == false)GameManager::GetInstance()->CardCheck(Point);
+		//		else GameManager::GetInstance()->GameStop();
+		//		break;//게임중일경우 카드 뒤집기
+		//	}
+		//}
+		////if()GameManager::GetInstance()->GameStop();
+		//InvalidateRect(hWnd, NULL, true);
+
+		return 0;
+	case WM_TIMER:
+		GameManager::GetInstance()->GameStop(hWnd);
+		InvalidateRect(hWnd, NULL, true);
 		return 0;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
