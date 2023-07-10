@@ -39,8 +39,6 @@
 		int cardcount = 0; //카드다 오픈되어있는지 확인
 		int CurrStatue;//페이지상태
 		bool gamestop = false;
-		int starttime = 0;//시작시간
-		int endtime = 0;
 
 		std::vector<Card> cards;// [NORMAL] ;
 		std::vector<IMAGE>checkcards;//이미지 중복확인
@@ -65,10 +63,10 @@
 		void StartP(HDC hdc);//시작페이지
 		void EndP(HDC hdc);
 		~GameManager();
-		bool ColliderCheck(POINT point,page page);
+		bool ColliderCheck(POINT point,HWND hWnd);
 		void Init(HWND hWnd);
 		void CardCheck(POINT point);
-		void GameStop();
+		void GameStop(HWND hWnd);
 		void GoHome();
 		bool GetGameStop() { return gamestop; }
 	};
