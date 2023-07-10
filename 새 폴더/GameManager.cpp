@@ -6,7 +6,7 @@ GameManager::GameManager()
 {
 	BackGround = BitMapManager::GetInstance()->GetImage(IMAGE_BACKGROUND); //백그라운드 이미지 생성
 	startbutton = BitMapManager::GetInstance()->GetImage(IMAGE_STARTBUTTON);//시작버튼생성
-	tryagain = BitMapManager::GetInstance()->GetImage(IMAGE_STARTBUTTON);//시작버튼생성
+	tryagain = BitMapManager::GetInstance()->GetImage(IMAGE_TRY);//시작버튼생성
 	
 	Back_X = 0, Back_y = 0;
 	startb_x = 200,startb_y = 300;
@@ -56,12 +56,19 @@ GameManager::GameManager()
 }
 
 page GameManager::PageCheck() {//페이지확인
-	if (CurrStatue == Start)
+	switch (CurrStatue)
+	{
+	case Start:
 		return Start;
-	return Game;
+	case End:
+		return End;
+	default:
+		return Game;
+	}
 }
 void GameManager::GameStart()//게임이 시작될경우 카드세팅
 {
+	starttime = GetTickCount();
 	if (CurrStatue == Start)
 		CurrStatue = Game;
 
@@ -138,6 +145,7 @@ void GameManager::GameP(HDC hdc)//게임화면 페이지
 void GameManager::EndP(HDC hdc) // 결과창 도출
 {
 	tryagain->Draw(hdc, try_x, try_y, TRY);
+	
 }
 GameManager::~GameManager()
 {
@@ -146,51 +154,78 @@ GameManager::~GameManager()
 
 void GameManager::CardCheck(POINT point)//카드체크
 {
+	
 
 	for (int i = 0 ; cards.size() > i; i++)
 	{
 		if (cards[i].ColliderCheck(point))
 		{
-			if (nullptr == select1) { select1 = &cards[i]; select1->ChangeState(true); }
+			if (nullptr == select1) { select1 = &cards[i]; select1->ChangeState(true);  }
 			else
 			{
 				select2 = &cards[i];
 				select2->ChangeState(true);
 				if (select1->CheckBitMap() == select2->CheckBitMap()) // 같은 이미지인지 확인
 				{
+
 					select1 = nullptr;
 					select2 = nullptr;
+					
 				}
 				else
 				{
-					float oldclock = clock();
-					float newclock;
-
 					gamestop = true;
-					while (1)
-					{
-						newclock = clock();
-						if (newclock - oldclock > 2000)
-						{
-							break;
-						}
-					}
 				}
 			}
 			break;
 		}
 	}
 
+	int opencount = 0;
+	for (int i = 0; cards.size() > i; i++)
+	{
+		if (cards[i].GetCardState() == true)
+		{
+			opencount++;
+		}
+	}
+	if (opencount == NORMAL*2)
+	{
+		CurrStatue = End;
+	}
+
+
+
 
 	
 }
+void GameManager::GoHome() 
+{ 
+	if (CurrStatue == End)
+		CurrStatue = Start;
+	//endtime = GetTickCount(); 
+	//int time = endtime - starttime;
+	//time_str += std::to_string(time);
+}
 void GameManager::GameStop()
 {
+
+	float oldclock = clock();
+	float newclock;
+	while (1)
+	{
+		newclock = clock();
+		if (newclock - oldclock > 1000)
+		{
+			break;
+		}
+	}
 	select1->ChangeState(false);
 	select2->ChangeState(false);
 	// 선택된 두 카드 뒷면으로 돌리기
 	select1 = nullptr;
 	select2 = nullptr;
+	gamestop = false;
 }
 bool GameManager::ColliderCheck(POINT point,page page)//화면에서 이미지 눌렀는지확인
 {
