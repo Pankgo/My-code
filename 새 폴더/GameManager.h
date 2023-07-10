@@ -2,6 +2,7 @@
 #include<Windows.h>
 #include"Card.h"
 #include"time.h"
+#include <string>
 
 #define CARDMAX 12
 #define NORMAL 8 // 게임 난이도 설정
@@ -38,11 +39,14 @@
 		int cardcount = 0; //카드다 오픈되어있는지 확인
 		int CurrStatue;//페이지상태
 		bool gamestop = false;
+		int starttime = 0;//시작시간
+		int endtime = 0;
 
 		std::vector<Card> cards;// [NORMAL] ;
 		std::vector<IMAGE>checkcards;//이미지 중복확인
 		std::vector<Getxy>xy;//2차원 백터를 이용한 xy좌표 저장백터
 		std::vector<Card>opencards;
+		std::string time_str = "걸린 시간 :";
 
 		Card* select1 = nullptr, * select2 = nullptr;
 
@@ -65,6 +69,7 @@
 		void Init(HWND hWnd);
 		void CardCheck(POINT point);
 		void GameStop();
+		void GoHome();
 		bool GetGameStop() { return gamestop; }
 	};
 
