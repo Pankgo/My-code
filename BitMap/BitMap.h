@@ -1,7 +1,6 @@
 #pragma once
 #include<Windows.h>
 
-
 class BitMap
 {
 private:
@@ -9,8 +8,8 @@ private:
 	HBITMAP m_BitMap;
 	SIZE m_Size;
 public:
-	void Init(HDC hdc,char* FileName);
-	void Draw(HDC hdc, int x, int y);
+	void Init(HDC hdc, char* FileName);
+	void Draw(HDC hdc, int x, int y, int check);
 	inline SIZE GetSize()
 	{
 		return m_Size;
@@ -18,4 +17,3 @@ public:
 	BitMap();
 	~BitMap();
 };
-
