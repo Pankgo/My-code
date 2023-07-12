@@ -5,18 +5,30 @@
 enum IMAGE
 {
 	IMAGE_START,
-	IMAGE_DOG = 0,
-	IMAGE_TIGER,
-	IMAGE_DUCK,
-	IMAGE_ELEPHANT,
-	IMAGE_COW,
-	IMAGE_HORSE,
-	IMAGE_CAT,
-	IMAGE_MONKEY,
-	IMAGE_FROG,
-	IMAGE_CHICKEN,
-	IMAGE_BLACK,
+	IMAGE_BlackKing = 0,
+	IMAGE_BlackQueen,
+	IMAGE_BlackHorse,
+	IMAGE_BlackRook,
+	IMAGE_BlackBishop,
+	IMAGE_BlackPawn,
+	IMAGE_WhiteKing,
+	IMAGE_WhiteQueen,
+	IMAGE_WhiteHorse,
+	IMAGE_WhiteRook,
+	IMAGE_WhiteBishop,
+	IMAGE_WhitePawn,
+	IMAGE_BACKGROUND,
+	IMAGE_STARTBUTTON,
+	IMAGE_TRY,
 	IMAGE_END
+
+};
+enum CHECKIMAGE
+{
+	STARTBUTTON,
+	BACKGROUND,
+	TRY,
+	PiecesIMAGE
 };
 
 class BitMapManager
@@ -39,4 +51,3 @@ public:
 	void Init(HWND hWnd);
 	~BitMapManager();
 };
-
