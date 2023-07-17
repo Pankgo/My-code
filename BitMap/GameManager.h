@@ -16,27 +16,41 @@ enum page//화면종류
 	End
 };
 
+enum tile
+{
+	black,
+	white
+};
+
 class GameManager
 {
 	static GameManager* GameM;
-	struct Getxy //카드세팅에 필요한 xy좌표 구조체
+
+	struct Tile //카드세팅에 필요한 xy좌표 구조체
 	{
 		int x, y;
+		tile tile;
 	};
 
 
 	BitMap* startbutton; // 시작버튼이미지
 	BitMap* BackGround; // 백그라운드이미지
 	BitMap* tryagain; // 트라이어겐버튼
+	BitMap* blacktile; // 검은색 타일
+	BitMap* whitetile; // 하얀색 타일
 
 	RECT startRect;
 	RECT BackGroundRect;
 	RECT tryAgain;
+	RECT blacktileRect;
+	RECT whitetileRect;
+
+	std::vector<Tile> tiles; // 게임판 타일의 정보 저장
+	std::vector<Chess>pieces;//피스들의 정보 저장
 
 	int startb_x, startb_y;//시작버튼위치
 	int Back_X, Back_y;//백그라운드 위치
 	int try_x, try_y;
-	int cardcount = 0; //카드다 오픈되어있는지 확인
 	int CurrStatue;//페이지상태
 	bool gamestop = false;
 
@@ -56,13 +70,7 @@ public:
 	void EndP(HDC hdc);
 	~GameManager();
 	bool ColliderCheck(POINT point, HWND hWnd);
-	void Init(HWND hWnd)
-	{
-		BitMapManager::GetInstance()->Init(hWnd);
-
-	}
-
-	void GameStop(HWND hWnd);
+	void Init(HWND hWnd);
 	void GoHome();
 	bool GetGameStop() { return gamestop; }
 };
