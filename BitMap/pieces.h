@@ -25,6 +25,7 @@ public:
 	virtual void Move(); // 피스 움직이는 함수(각 피스마다 움직일수있는 칸이 다름)
 	void Init(IMAGE Index, int x, int y); // 정보 입력
 	void Draw(HDC hdc, CHECKIMAGE check); // 그리는 함수
+	void UpdateState(); //피스 이동가능 여부 업데이트
 	bool ColliderCheck(POINT point); //기물과 마우스 위치 확인
 
 
