@@ -28,6 +28,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmd
 
 	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, WINDOWWIDTH, WINDOWHEIGHT,
 		NULL, (HMENU)NULL, hInstance, NULL);
+
+	if (NULL == hWnd) return 0;
 	ShowWindow(hWnd, nCmdShow);
 
 	while (GetMessage(&Message, NULL, 0, 0))
@@ -46,25 +48,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	switch (iMessage)
 	{
 	case WM_CREATE:
-		//GameManager::GetInstance()->Init(hWnd);
+		GameManager::GetInstance()->Init(hWnd);
 		return 0;
-	//case WM_LBUTTONDOWN:
-	//	Point.x = LOWORD(lParam);
-	//	Point.y = HIWORD(lParam);
-	//	if (GameManager::GetInstance()->ColliderCheck(Point, hWnd))//이미지 위에 있는지 확인
-	//		InvalidateRect(hWnd, NULL, true);
-
-	//	
-	//	return 0;
-	//case WM_TIMER:
-	//	GameManager::GetInstance()->GameStop(hWnd);
-	//	InvalidateRect(hWnd, NULL, true);
-	//	return 0;
-	//case WM_PAINT:
-	//	hdc = BeginPaint(hWnd, &ps);
-	//	GameManager::GetInstance()->PageDraw(hdc);
-	//	EndPaint(hWnd, &ps);
-	//	return 0;
+	case WM_LBUTTONDOWN:
+		//Point.x = LOWORD(lParam);
+		//Point.y = HIWORD(lParam);
+		//if (GameManager::GetInstance()->ColliderCheck(Point, hWnd))//이미지 위에 있는지 확인
+		//	InvalidateRect(hWnd, NULL, true);
+		return 0;
+	case WM_TIMER:
+		/*GameManager::GetInstance()->GameStop(hWnd);
+		InvalidateRect(hWnd, NULL, true);
+		return 0;*/
+	case WM_PAINT:
+		hdc = BeginPaint(hWnd, &ps);
+		GameManager::GetInstance()->PageDraw(hdc);
+		EndPaint(hWnd, &ps);
+		return 0;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
