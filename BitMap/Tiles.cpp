@@ -38,5 +38,22 @@ void Tiles::Init(IMAGE Index,int x,int y)
 
 void Tiles::SetMoveableTiles()
 {
-	_tileInfo = plusmoveable;
+	if (_tileInfo == only)
+	{
+		_tileInfo = plusmoveable;
+	}
+	else
+	{
+		_tileInfo = only;
+	}
+}
+
+bool Tiles::ColliderCheck(POINT point)
+{
+	if (_tileInfo == plusmoveable)
+	{
+		SetMoveableTiles();
+		return true;
+	}
+	return false;
 }
