@@ -1,43 +1,75 @@
 #include<stdio.h>
 #include<Windows.h>
-#include"pieces.h"
-#include"time.h"
 #include <string>
 #include <vector>
 #include "BitMap.h"
+
+#include"pieces.h"
+#include"Tiles.h"
+#include"Horse.h"
+#include"King.h"
+#include"Pawn.h"
+#include"Queen.h"
+#include"Rook.h"
+#include"BiShop.h"
+
+
+#define WINDOWWIDTH 660 
+#define WINDOWHEIGHT 690
+
 
 //윈도우 틀 등을 가지고 있어야된다
 
 
 enum page//화면종류
 {
-	Start,
+	MAIN,
 	Game,
 	End
 };
 
-enum tile
+enum piecesType
 {
-	black,
-	white
+	_king,
+	_queen,
+	_knight,
+	_rook,
+	_bishop,
+	_pawn
 };
+
+enum piecesColor
+{
+	_BLACK,
+	_WHITE
+};
+
+
 
 class GameManager
 {
-	static GameManager* GameM;
-
-	struct Tile //카드세팅에 필요한 xy좌표 구조체
+	enum piecesTypex //x고정좌표
 	{
-		int x, y;
-		tile tile;
+		FROOKX = 0, //왼쪽 비숍 x좌표
+		FHORSEX = 80, // 왼쪽 나이트 x좌표
+		FBISHOPX = 160, // 왼쪽 비숍 x좌표
+		KINGX= 240,
+		QUEENX = 320,
+		SBISHOPX = 400,//오른쪽 비숍 x좌표
+		SHORSEX = 480,//오른쪽 비숍 x좌표
+		SROOKX= 560,//오른쪽 비숍 x좌표
+
+
 	};
+
+	static GameManager* GameM;
 
 
 	BitMap* startbutton; // 시작버튼이미지
 	BitMap* BackGround; // 백그라운드이미지
 	BitMap* tryagain; // 트라이어겐버튼
-	BitMap* blacktile; // 검은색 타일
-	BitMap* whitetile; // 하얀색 타일
+	BitMap* blacktile;
+	BitMap* whitetile;
 
 	RECT startRect;
 	RECT BackGroundRect;
@@ -45,8 +77,8 @@ class GameManager
 	RECT blacktileRect;
 	RECT whitetileRect;
 
-	std::vector<Tile> tiles; // 게임판 타일의 정보 저장
-	std::vector<Chess>pieces;//피스들의 정보 저장
+	std::vector<Tiles> tiles; // 게임판 타일의 정보 저장
+	std::vector<std::shared_ptr<_Chess>>pieces;//피스들의 정보 저장
 
 	int startb_x, startb_y;//시작버튼위치
 	int Back_X, Back_y;//백그라운드 위치
@@ -72,5 +104,7 @@ public:
 	bool ColliderCheck(POINT point, HWND hWnd);
 	void Init(HWND hWnd);
 	void GoHome();
+	void TilesSet();
+	void PiecesSet();
 	bool GetGameStop() { return gamestop; }
 };
