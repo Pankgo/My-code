@@ -7,8 +7,6 @@ GameManager::GameManager()
 	BackGround = BitMapManager::GetInstance()->GetImage(IMAGE_BACKGROUND); //백그라운드 이미지 생성
 	startbutton = BitMapManager::GetInstance()->GetImage(IMAGE_STARTBUTTON);//시작버튼생성
 	tryagain = BitMapManager::GetInstance()->GetImage(IMAGE_TRY);//시작버튼생성
-	blacktile = BitMapManager::GetInstance()->GetImage(IMAGE_BLACKTILE); //백그라운드 이미지 생성
-	whitetile = BitMapManager::GetInstance()->GetImage(IMAGE_WHITETILE);//시작버튼생성
 
 	
 	Back_X = 0, Back_y = 0;
@@ -30,51 +28,125 @@ GameManager::GameManager()
 	tryAgain.right = 300;
 	tryAgain.bottom = 450;
 
-	Tile newtile;
-	tile starttile;
+	TilesSet();
+	PiecesSet();
 
-	for (int x = 50, i = 0; i < 8; i++, x += 100)//타일 생성
+}
+void GameManager::TilesSet() // 타일세팅
+{
+	tile starttile;
+	Tiles newtile;
+
+	for (int x = 0, i = 0; i < 8; i++, x += 80)//타일 생성
 	{
-		starttile;
-		switch (i & 2)
+		switch (i % 2)
 		{
-			case 1:
-				starttile = white;
-				break;
-			default :
-				starttile = black;
+		case 1:
+			starttile = white;
+			break;
+		default:
+			starttile = black;
 		}
-		for (int y = 100, j = 0; j < 8; j++, y += 100)
+		for (int y = 0, j = 0; j < 8; j++, y += 80)
 		{
-			newtile.x = x;
-			newtile.y = y;
-			newtile.tile = starttile;
+
 			switch (starttile)
 			{
 			case white:
+				newtile.Init(IMAGE_WHITETILE, x, y);
 				starttile = black;
 				break;
-			default :
+			default:
+				newtile.Init(IMAGE_BLACKTILE, x, y);
 				starttile = white;
 			}
 			tiles.push_back(newtile);
-		 
+
+		}
+	}
+}
+
+void GameManager::PiecesSet() // 피스세팅
+{
+	King king;
+	Queen queen;
+	Horse horse;
+	Rook rook;
+	BiShop bishop;
+	Pawn pawn;
+
+	int x = 0, y = 80; // 화이트 폰 초기 위치
+	IMAGE startcolor = IMAGE_WhitePawn;
+	for (int pawn_count = 0; pawn_count < 16; pawn_count++) // 폰 이미지 및 위치 세팅
+	{
+		if (pawn_count == 8)
+		{
+			x = 0; y = 480; //블랙 폰 초기위치
+			startcolor = IMAGE_BlackPawn;
+		}
+		pawn.SetXY(x, y, startcolor);
+		pieces.push_back(std::make_shared<Pawn>(pawn));
+		x += 80;
+	}
+	x = 0; y = 0;
+	for (int pieces_count = 0; pieces_count < 5; pieces_count++) // 나머지 기물들 이미지 및 위치 세팅
+	{
+		switch ((piecesType)pieces_count)
+		{
+		case _king: 
+			king.SetXY(KINGX, y, IMAGE_WhiteKing);
+			pieces.push_back(std::make_shared<King>(king));
+			king.SetXY(KINGX, y+80*7, IMAGE_BlackKing);
+			pieces.push_back(std::make_shared<King>(king));
+			break;
+		case _queen: 
+			queen.SetXY(QUEENX, y, IMAGE_WhiteQueen);
+			pieces.push_back(std::make_shared<Queen>(queen));
+			queen.SetXY(QUEENX, y + 80 * 7, IMAGE_BlackQueen);
+			pieces.push_back(std::make_shared<Queen>(queen));
+			break;
+		case _knight: 
+			horse.SetXY(FHORSEX, y, IMAGE_WhiteHorse);
+			pieces.push_back(std::make_shared<Horse>(horse));
+			horse.SetXY(SHORSEX, y, IMAGE_WhiteHorse);
+			pieces.push_back(std::make_shared<Horse>(horse));
+			horse.SetXY(FHORSEX, y + 80 * 7, IMAGE_BlackHorse);
+			pieces.push_back(std::make_shared<Horse>(horse));
+			horse.SetXY(SHORSEX, y + 80 * 7, IMAGE_BlackHorse);
+			pieces.push_back(std::make_shared<Horse>(horse));
+			break; 
+		case _rook: 
+			rook.SetXY(FROOKX, y, IMAGE_WhiteRook);
+			pieces.push_back(std::make_shared<Rook>(rook));
+			rook.SetXY(SROOKX, y, IMAGE_WhiteRook);
+			pieces.push_back(std::make_shared<Rook>(rook));
+			rook.SetXY(FROOKX, y + 80 * 7, IMAGE_BlackRook);
+			pieces.push_back(std::make_shared<Rook>(rook));
+			rook.SetXY(SROOKX, y + 80 * 7, IMAGE_BlackRook);
+			pieces.push_back(std::make_shared<Rook>(rook));
+			break;
+		case _bishop: 
+			bishop.SetXY(FBISHOPX, y, IMAGE_WhiteBishop);
+			pieces.push_back(std::make_shared<BiShop>(bishop));
+			bishop.SetXY(SBISHOPX, y, IMAGE_WhiteBishop);
+			pieces.push_back(std::make_shared<BiShop>(bishop));
+			bishop.SetXY(FBISHOPX, y + 80 * 7, IMAGE_BlackBishop);
+			pieces.push_back(std::make_shared<BiShop>(bishop));
+			bishop.SetXY(SBISHOPX, y + 80 * 7, IMAGE_BlackBishop);
+			pieces.push_back(std::make_shared<BiShop>(bishop));
+			break;
 		}
 	}
 
 }
-
 page GameManager::PageCheck() {//페이지확인
 
 	return (page)CurrStatue;
 }
 void GameManager::GameStart()//게임이 시작될경우 카드세팅
 {
-	if (CurrStatue == Start)
+	if (CurrStatue == MAIN)
 		CurrStatue = Game;
-
-	
-	
 }
 
 void GameManager::PageDraw(HDC hdc)//페이지 확인 후 그려내기
@@ -94,23 +166,30 @@ void GameManager::StartP(HDC hdc)//시작화면 페이지
 }
 void GameManager::GameP(HDC hdc)//게임화면 페이지
 {
-
+	
+	for (auto iter = tiles.begin(); iter < tiles.end(); iter++)
+	{
+		iter->Draw(hdc,(CHECKIMAGE)3,false);
+	}
+	for (auto iter = pieces.begin(); iter < pieces.end(); iter++)
+	{
+		(*iter)->Draw(hdc, (CHECKIMAGE)4);
+	}
 }
 void GameManager::EndP(HDC hdc) // 결과창 도출
 {
 	tryagain->Draw(hdc, try_x, try_y, TRY);
 	
 }
-GameManager::~GameManager()
+GameManager::~GameManager() 
 {
-
 }
 
 
 void GameManager::GoHome() 
 { 
 	if (CurrStatue == End)
-		CurrStatue = Start;
+		CurrStatue = MAIN;
 }
 
 bool GameManager::ColliderCheck(POINT point,HWND hwnd)//화면에서 이미지 눌렀는지확인
@@ -120,24 +199,28 @@ bool GameManager::ColliderCheck(POINT point,HWND hwnd)//화면에서 이미지 눌렀는지
 	case false:
 		switch (CurrStatue)
 		{
-		case Start:
+		case MAIN:
 			if (PtInRect(&startRect, point))
 			{
-				GameManager::GetInstance()->GameStart();
+				GameStart();
 				return true;
 			}
 			break;
 		case End:
 			if (PtInRect(&tryAgain, point))
 			{
-				GameManager::GetInstance()->GoHome();
+				GoHome();
 				return true;
 			}
 			break;
 		default:
 			for (auto iter = pieces.begin(); iter < pieces.end(); iter++)
 			{
-
+			if ((*iter)->ColliderCheck(point)) // 해당기물이 선택되었다면 초록색 범위의 타일 그리기
+				{
+				(*iter)->Move(&tiles, pieces);
+					return true;
+				}
 			}
 		}
 		return true;
