@@ -1,35 +1,42 @@
-#include <iostream>
 #include "BitMapManager.h"
+#include "Tiles.h"
+#pragma once
 
 
-enum PIECES
+ enum Color
 {
-	PIECES_MOVE,
-	PIECES_NONMOVE,
-	PIECES_END
+	_black,
+	_white
+};
+enum _piecesType
+{
+	_King,
+	_Queen,
+	_Knight,
+	_Rook,
+	_Bishop,
+	_Pawn
 };
 
+class _Chess {
 
-
-class Chess {
-
-	IMAGE pices; //피스 구분
-	BitMap* pices_Image; //피스이미지
+	Color color;
+	_piecesType type;
+	IMAGE pieces; //피스 구분
+	BitMap* pieces_Image; //피스이미지
 	RECT pices_rect; // 규격
 	int P_x, P_y; // 현재 피스 위치
-	PIECES mypieces_state;//피스가 움직일수 있는지 없는지확인
-	
 
 public:
-	Chess();
-	virtual void Move(); // 피스 움직이는 함수(각 피스마다 움직일수있는 칸이 다름)
-	void Init(IMAGE Index, int x, int y); // 정보 입력
+	_Chess();
+	virtual void Move(std::vector <Tiles>* tiles, std::vector<std::shared_ptr<_Chess>>pieces) = 0; // 피스 움직이는 함수(각 피스마다 움직일수있는 칸이 다름)
+	void SetXY(int x, int y, IMAGE Index);// 정보 입력
 	void Draw(HDC hdc, CHECKIMAGE check); // 그리는 함수
-	void UpdateState(); //피스 이동가능 여부 업데이트
 	bool ColliderCheck(POINT point); //기물과 마우스 위치 확인
-
-
-
+	_piecesType GetType() { return type; }
+	Color GetColor() { return color; }
+	int GetX() { return P_x; }
+	int GetY(){ return P_y; }
 
 
 
