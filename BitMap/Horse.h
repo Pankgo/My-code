@@ -12,7 +12,7 @@ class Horse : public _Chess
 
 public:
 
-	void Move(std::vector<Tiles>* tiles, std::vector<std::shared_ptr<_Chess>>pieces) override
+	void SetMove(Tiles tiles[64], std::vector<_Chess*>pieces) override
 	{
 		int curX = GetX();
 		int curY = GetY();
@@ -78,15 +78,16 @@ public:
 
 		for (auto iter = horse.begin(); iter < horse.end(); iter++)
 		{
-			for (auto iter2 = tiles->begin(); iter2 < tiles->end(); iter2++)
+			for (int i = 0; i< 64; i++)
 			{
-				if (iter->x == iter2->GetTx() && iter->y== iter2->GetTy()) // 반복문을 돌려 나이츠의 움직일수있는 판의 좌표와 
+				if (iter->x == tiles[i].GetTx() && iter->y== tiles[i].GetTy()) // 반복문을 돌려 나이츠의 움직일수있는 판의 좌표와 
 				{														//동일한 판들의 정보(범위 여부) 보여줌
-					iter2->SetMoveableTiles();
+					tiles[i].SetMoveableTiles();
 				}
 			}
 		}
 
 
+		horse.clear();
 	}
 };
