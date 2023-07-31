@@ -13,7 +13,6 @@
 #include"Rook.h"
 #include"BiShop.h"
 
-
 #define WINDOWWIDTH 660 
 #define WINDOWHEIGHT 690
 
@@ -77,14 +76,15 @@ class GameManager
 	RECT blacktileRect;
 	RECT whitetileRect;
 
-	std::vector<Tiles> tiles; // 게임판 타일의 정보 저장
-	std::vector<std::shared_ptr<_Chess>>pieces;//피스들의 정보 저장
+	//std::vector<Tiles> tiles; // 게임판 타일의 정보 저장
+	Tiles tiles[64] ;
+	std::vector<_Chess*>pieces;//피스들의 정보 저장
 
 	int startb_x, startb_y;//시작버튼위치
 	int Back_X, Back_y;//백그라운드 위치
 	int try_x, try_y;
 	int CurrStatue;//페이지상태
-	bool gamestop = false;
+	bool piecesmove = false;
 
 public:
 	static GameManager* GetInstance()
@@ -106,5 +106,4 @@ public:
 	void GoHome();
 	void TilesSet();
 	void PiecesSet();
-	bool GetGameStop() { return gamestop; }
 };
