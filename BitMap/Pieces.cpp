@@ -8,6 +8,12 @@ void _Chess::Draw(HDC hdc, CHECKIMAGE check)// 그리는 함수
 
 }
 
+void _Chess::Move(int T_x, int T_y) // 선택된 타일의 xy좌표를 가져와 피스 좌표 변환
+{
+	P_x = T_x;
+	P_y = T_y;
+}
+
 void _Chess::SetXY(int x, int y, IMAGE Index)
 {
 	switch (Index) // 후에 선택되었을때 피스 색깔 및 종류를 구분짓기 위해 세팅
@@ -72,6 +78,8 @@ bool _Chess::ColliderCheck(POINT point) //기물과 마우스 위치 확인
 {
 	if (PtInRect(&pices_rect, point)) 
 	{ 
+		selectpieces = true;
 		return true; 
-	};
+	}
+	return false;
 }
