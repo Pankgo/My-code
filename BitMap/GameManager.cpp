@@ -36,6 +36,7 @@ void GameManager::TilesSet() // 타일세팅
 {
 	tile starttile;
 	Tiles newtile;
+	int start = 0;
 
 	for (int x = 0, i = 0; i < 8; i++, x += 80)//타일 생성
 	{
@@ -60,7 +61,7 @@ void GameManager::TilesSet() // 타일세팅
 				newtile.Init(IMAGE_BLACKTILE, x, y);
 				starttile = white;
 			}
-			tiles.push_back(newtile);
+			tiles[start++]= newtile;
 
 		}
 	}
@@ -85,7 +86,7 @@ void GameManager::PiecesSet() // 피스세팅
 			startcolor = IMAGE_BlackPawn;
 		}
 		pawn.SetXY(x, y, startcolor);
-		pieces.push_back(std::make_shared<Pawn>(pawn));
+		pieces.push_back(new Pawn(pawn));
 		x += 80;
 	}
 	x = 0; y = 0;
@@ -95,45 +96,45 @@ void GameManager::PiecesSet() // 피스세팅
 		{
 		case _king: 
 			king.SetXY(KINGX, y, IMAGE_WhiteKing);
-			pieces.push_back(std::make_shared<King>(king));
+			pieces.push_back(new King(king));
 			king.SetXY(KINGX, y+80*7, IMAGE_BlackKing);
-			pieces.push_back(std::make_shared<King>(king));
+			pieces.push_back(new King(king));
 			break;
 		case _queen: 
 			queen.SetXY(QUEENX, y, IMAGE_WhiteQueen);
-			pieces.push_back(std::make_shared<Queen>(queen));
+			pieces.push_back(new Queen(queen));
 			queen.SetXY(QUEENX, y + 80 * 7, IMAGE_BlackQueen);
-			pieces.push_back(std::make_shared<Queen>(queen));
+			pieces.push_back(new Queen(queen));
 			break;
 		case _knight: 
 			horse.SetXY(FHORSEX, y, IMAGE_WhiteHorse);
-			pieces.push_back(std::make_shared<Horse>(horse));
+			pieces.push_back(new Horse(horse));
 			horse.SetXY(SHORSEX, y, IMAGE_WhiteHorse);
-			pieces.push_back(std::make_shared<Horse>(horse));
+			pieces.push_back(new Horse(horse));
 			horse.SetXY(FHORSEX, y + 80 * 7, IMAGE_BlackHorse);
-			pieces.push_back(std::make_shared<Horse>(horse));
+			pieces.push_back(new Horse(horse));
 			horse.SetXY(SHORSEX, y + 80 * 7, IMAGE_BlackHorse);
-			pieces.push_back(std::make_shared<Horse>(horse));
+			pieces.push_back(new Horse(horse));
 			break; 
 		case _rook: 
 			rook.SetXY(FROOKX, y, IMAGE_WhiteRook);
-			pieces.push_back(std::make_shared<Rook>(rook));
+			pieces.push_back(new Rook(rook));
 			rook.SetXY(SROOKX, y, IMAGE_WhiteRook);
-			pieces.push_back(std::make_shared<Rook>(rook));
+			pieces.push_back(new Rook(rook));
 			rook.SetXY(FROOKX, y + 80 * 7, IMAGE_BlackRook);
-			pieces.push_back(std::make_shared<Rook>(rook));
+			pieces.push_back(new Rook(rook));
 			rook.SetXY(SROOKX, y + 80 * 7, IMAGE_BlackRook);
-			pieces.push_back(std::make_shared<Rook>(rook));
+			pieces.push_back(new Rook(rook));
 			break;
 		case _bishop: 
 			bishop.SetXY(FBISHOPX, y, IMAGE_WhiteBishop);
-			pieces.push_back(std::make_shared<BiShop>(bishop));
+			pieces.push_back(new BiShop(bishop));
 			bishop.SetXY(SBISHOPX, y, IMAGE_WhiteBishop);
-			pieces.push_back(std::make_shared<BiShop>(bishop));
+			pieces.push_back(new BiShop(bishop));
 			bishop.SetXY(FBISHOPX, y + 80 * 7, IMAGE_BlackBishop);
-			pieces.push_back(std::make_shared<BiShop>(bishop));
+			pieces.push_back(new BiShop(bishop));
 			bishop.SetXY(SBISHOPX, y + 80 * 7, IMAGE_BlackBishop);
-			pieces.push_back(std::make_shared<BiShop>(bishop));
+			pieces.push_back(new BiShop(bishop));
 			break;
 		}
 	}
@@ -167,9 +168,9 @@ void GameManager::StartP(HDC hdc)//시작화면 페이지
 void GameManager::GameP(HDC hdc)//게임화면 페이지
 {
 	
-	for (auto iter = tiles.begin(); iter < tiles.end(); iter++)
+	for (int i = 0;  i < 64; i++)
 	{
-		iter->Draw(hdc,(CHECKIMAGE)3,false);
+		tiles[i].Draw(hdc, (CHECKIMAGE)3, false);
 	}
 	for (auto iter = pieces.begin(); iter < pieces.end(); iter++)
 	{
@@ -194,39 +195,53 @@ void GameManager::GoHome()
 
 bool GameManager::ColliderCheck(POINT point,HWND hwnd)//화면에서 이미지 눌렀는지확인
 {
-	switch (gamestop)
+	switch (CurrStatue)
 	{
-	case false:
-		switch (CurrStatue)
+	case MAIN:
+		if (PtInRect(&startRect, point))
 		{
-		case MAIN:
-			if (PtInRect(&startRect, point))
-			{
-				GameStart();
-				return true;
-			}
-			break;
-		case End:
-			if (PtInRect(&tryAgain, point))
-			{
-				GoHome();
-				return true;
-			}
-			break;
-		default:
+			GameStart();
+			return true;
+		}
+		break;
+	case End:
+		if (PtInRect(&tryAgain, point))
+		{
+			GoHome();
+			return true;
+		}
+		break;
+	default:
+		if (piecesmove == false)
+		{
 			for (auto iter = pieces.begin(); iter < pieces.end(); iter++)
 			{
-			if ((*iter)->ColliderCheck(point)) // 해당기물이 선택되었다면 초록색 범위의 타일 그리기
+				if ((*iter)->ColliderCheck(point)) // 해당기물이 선택되었다면 초록색 범위의 타일 그리기
 				{
-				(*iter)->Move(&tiles, pieces);
+					(*iter)->SetMove(tiles, pieces);
 					return true;
 				}
 			}
 		}
-		return true;
-	default:
-		return false;
+		else
+		{
+			for (int i = 0; i < 64; i++)
+			{
+				if (tiles[i].ColliderCheck(point))//타일을 반복문을 통해 클릭이 되었을떄 해당 타일이 피스가 움직일수있는 범위의 타일중 하나이면
+				{
+					for (auto iter = pieces.begin(); iter < pieces.end(); iter++)
+					{
+						if ((*iter)->CheckSelect()) 
+						{
+							(*iter)->Move(tiles[i].GetTx(), tiles[i].GetTy());// 좌표 변환
+						}
+					}
+					return true;
+				}
+			}
+		}
 	}
+	return false;
 	 
 }
 void GameManager::Init(HWND hWnd)
