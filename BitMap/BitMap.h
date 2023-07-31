@@ -1,5 +1,18 @@
 #pragma once
+#pragma comment(lib, "msimg32.lib") 
 #include<Windows.h>
+
+enum type
+{
+Start,
+Background,
+Try,
+Tile,
+Pieces
+
+};
+
+
 
 class BitMap
 {
