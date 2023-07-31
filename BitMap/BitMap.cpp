@@ -21,15 +21,24 @@ void BitMap::Draw(HDC hdc, int x, int y, int check)
 	int height, width;
 	switch (check)
 	{
-		case 0:height = 100, width = 100; break; //시작버튼
-		case 1 :height = m_Size.cy, width = m_Size.cx; break; //배경
-		case 2: height = 100, width = 100; break;//다시시작버튼
-		case 3: height = m_Size.cy, width = m_Size.cx; // 타일
-		default: height = 100, width = 100;//카드
-
+	case Start:height = 100, width = 100; break; //시작버튼
+	case Background:height = m_Size.cy, width = m_Size.cx;  break; //배경
+	case Try: height = 100, width = 100;  break;//다시시작버튼
+	case Tile: height = 80, width = 80; break; // 타일
+	case Pieces: height = 80, width = 80;  break;
 	}
-	StretchBlt(hdc, x, y, width, height, MemDC, 0, 0, m_Size.cx, m_Size.cy, SRCCOPY);
+
+	switch (check)
+	{
+	case Pieces:
+		TransparentBlt(hdc, x, y, width, height, MemDC, 0, 0, m_Size.cx, m_Size.cy, RGB(255, 0, 255));
+		break;
+	default:
+		StretchBlt(hdc, x, y, width, height, MemDC, 0, 0, m_Size.cx, m_Size.cy, SRCCOPY);
+	}
+
 }
+	
 
 BitMap::~BitMap()
 {
