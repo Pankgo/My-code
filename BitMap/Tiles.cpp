@@ -50,9 +50,10 @@ void Tiles::SetMoveableTiles()
 
 bool Tiles::ColliderCheck(POINT point)
 {
-	if (_tileInfo == plusmoveable)
+
+	if (PtInRect(&_tile, point) && _tileInfo == plusmoveable)
 	{
-		SetMoveableTiles();
+
 		return true;
 	}
 	return false;
