@@ -13,7 +13,7 @@
 #include"Rook.h"
 #include"BiShop.h"
 
-#define WINDOWWIDTH 660 
+#define WINDOWWIDTH 660
 #define WINDOWHEIGHT 690
 
 
@@ -85,6 +85,7 @@ class GameManager
 	int try_x, try_y;
 	int CurrStatue;//페이지상태
 	bool piecesmove = false;
+	piecesColor gameturn = _WHITE; //현재 게임턴상태
 
 public:
 	static GameManager* GetInstance()
