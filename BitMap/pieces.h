@@ -30,8 +30,8 @@ class _Chess {
 
 public:
 	_Chess();
-	virtual void SetMove(Tiles tiles[], std::vector<_Chess*>pieces) = 0; // 피스 움직이는 함수(각 피스마다 움직일수있는 칸이 다름)
-	void Move(int T_x , int T_y);
+	virtual bool SetMove(Tiles tiles[], std::vector<_Chess*>pieces) = 0; // 피스 움직이는 함수(각 피스마다 움직일수있는 칸이 다름)
+	void Move(int T_x , int T_y, Tiles tiles[64]);
 	void SetXY(int x, int y, IMAGE Index);// 정보 입력
 	void Draw(HDC hdc, CHECKIMAGE check); // 그리는 함수
 	bool ColliderCheck(POINT point); //기물과 마우스 위치 확인
@@ -40,7 +40,9 @@ public:
 	int GetX() { return P_x; }
 	int GetY(){ return P_y; }
 	bool CheckSelect() { if (selectpieces) { return true; } return false; }
-
+	void Catch( std::vector<_Chess*>pieces);//상대피스를 잡았을때
+	bool CheckPieces(int x, int y, std::vector<_Chess*>pieces); // 같은 색상인지 검사
+	bool CheckColor(int x, int y, std::vector<_Chess*>pieces); // 색깔 검사
 
 
 };
