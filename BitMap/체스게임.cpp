@@ -51,15 +51,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		GameManager::GetInstance()->Init(hWnd);
 		return 0;
 	case WM_LBUTTONDOWN:
-		//Point.x = LOWORD(lParam);
-		//Point.y = HIWORD(lParam);
-		//if (GameManager::GetInstance()->ColliderCheck(Point, hWnd))//이미지 위에 있는지 확인
-		//	InvalidateRect(hWnd, NULL, true);
+		Point.x = LOWORD(lParam);
+		Point.y = HIWORD(lParam);
+		if (GameManager::GetInstance()->ColliderCheck(Point, hWnd))//이미지 위에 있는지 확인
+			InvalidateRect(hWnd, NULL, true);
 		return 0;
-	case WM_TIMER:
-		/*GameManager::GetInstance()->GameStop(hWnd);
-		InvalidateRect(hWnd, NULL, true);
-		return 0;*/
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		GameManager::GetInstance()->PageDraw(hdc);
