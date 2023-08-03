@@ -218,10 +218,14 @@ bool GameManager::ColliderCheck(POINT point,HWND hwnd)//화면에서 이미지 눌렀는지
 			{
 				if ((*iter)->ColliderCheck(point)) // 해당기물이 선택되었다면 초록색 범위의 타일 그리기
 				{
-					(*iter)->SetMove(tiles, pieces);
-					return true;
+					if ((*iter)->SetMove(tiles, pieces))
+					{
+						piecesmove = true;
+						return true;
+					}
 				}
 			}
+			return true;
 		}
 		else
 		{
@@ -233,15 +237,19 @@ bool GameManager::ColliderCheck(POINT point,HWND hwnd)//화면에서 이미지 눌렀는지
 					{
 						if ((*iter)->CheckSelect()) 
 						{
-							(*iter)->Move(tiles[i].GetTx(), tiles[i].GetTy());// 좌표 변환
+							(*iter)->Move(tiles[i].GetTx(), tiles[i].GetTy(),tiles);// 좌표 변환
+							piecesmove = false;
+
+							return true;
 						}
+
 					}
-					return true;
 				}
 			}
 		}
 	}
 	return false;
+
 	 
 }
 void GameManager::Init(HWND hWnd)
