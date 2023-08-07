@@ -29,29 +29,101 @@ public:
 				{
 				case 1:
 					_xy.y = curY - 160;
+					if (_xy.y <= 0)
+					{
+						_xy.pass = false;
+						
+					}
+					else
+					{
+						_xy.pass = true;
+					}
 					horse[4] = _xy;
 					_xy.y = curY + 160;
+					if (_xy.y > 640)
+					{
+						_xy.pass = false;
+					}
+					else
+					{
+						_xy.pass = true;
+					}
 					horse[5] = _xy;
 					break;
 				case -1:
 					_xy.y = curY - 160;
+					if (_xy.y <= 0)
+					{
+						_xy.pass = false;
+
+					}
+					else
+					{
+						_xy.pass = true;
+					}
 					horse[2] = _xy;
 					_xy.y = curY + 160;
+					if (_xy.y > 640)
+					{
+						_xy.pass = false;
+					}
+					else
+					{
+						_xy.pass = true;
+					}
 					horse[3] = _xy;
 					break;
 				case -2:
 					_xy.y = curY - 80;
+					if (_xy.y <= 0)
+					{
+						_xy.pass = false;
+
+					}
+					else
+					{
+						_xy.pass = true;
+					}
 					horse[0] = _xy;
 					_xy.y = curY + 80;
+					if (_xy.y > 640)
+					{
+						_xy.pass = false;
+					}
+					else
+					{
+						_xy.pass = true;
+					}
 					horse[1] = _xy;
 					break;
 				case 2:
 					_xy.y = curY - 80;
+					if (_xy.y <= 0)
+					{
+						_xy.pass = false;
+
+					}
+					else
+					{
+						_xy.pass = true;
+					}
 					horse[6] = _xy;
 					_xy.y = curY + 80;
+					if (_xy.y > 640)
+					{
+						_xy.pass = false;
+					}
+					else
+					{
+						_xy.pass = true;
+					}
 					horse[7] = _xy;
 					break;
 				}
+			}
+			else
+			{
+				_xy.pass = false;
 			}
 			
 
@@ -60,12 +132,14 @@ public:
 		int knightcount = 0; // 모두 다 못움직이는 건지 확인
 		for (int i = 0; i < 8; i++)
 		{
-			for (auto iter = pieces.begin(); (*iter)->GetColor() == GetColor() && iter < pieces.end(); iter++)
+			for (auto iter = pieces.begin(); iter < pieces.end(); iter++)
 			{
-				if ((*iter)->GetX() == horse[i].x && (*iter)->GetY() == horse[i].y ) // 반복문을 돌려 현재 게임판들의 피스들의 좌표와 있을경우 삭제
+				if (horse[i].x == (*iter)->GetX() && horse[i].y == (*iter)->GetY())
 				{
-					horse[i].pass = false;
-					knightcount++;
+					if (GetColor() == (*iter)->GetColor())
+					{
+						horse[i].pass = false;
+					}
 				}
 			}
 		}
@@ -86,7 +160,11 @@ public:
 					tiles[j].SetMoveableTiles();
 				}
 			}
+			horse[i].x = NULL;
+			horse[i].y = NULL;
+			horse[i].pass = true;
 		}
+		
 		return true;
 	}
 };
