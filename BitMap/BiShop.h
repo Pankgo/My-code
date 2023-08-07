@@ -43,7 +43,10 @@ public:
 				newxy.x = x2;
 				newxy.y = y2;
 				bishop.push_back(newxy);
-				
+				if (CheckColor(x2, y2, pieces))
+				{
+					plus1 = false;
+				}
 				break;
 			case false:
 				plus1 = false;
@@ -55,6 +58,10 @@ public:
 				newxy.x = x1;
 				newxy.y = y2;
 				bishop.push_back(newxy);
+				if (CheckColor(x1, y2, pieces))
+				{
+					plus2 = false;
+				}
 				break;
 			case false:
 				plus2 = false;
@@ -66,6 +73,10 @@ public:
 				newxy.x = x2;
 				newxy.y = y1;
 				bishop.push_back(newxy);
+				if (CheckColor(x2, y1, pieces))
+				{
+					plus3 = false;
+				}
 				break;
 			case false:
 				plus3 = false;
@@ -77,6 +88,10 @@ public:
 				newxy.x = x1;
 				newxy.y = y1;
 				bishop.push_back(newxy);
+				if (CheckColor(x1, y1, pieces))
+				{
+					plus4 = false;
+				}
 				break;
 			case false:
 				plus4 = false;
