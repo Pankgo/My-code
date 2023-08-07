@@ -13,6 +13,8 @@
 #include"Rook.h"
 #include"BiShop.h"
 
+#pragma once
+
 #define WINDOWWIDTH 660
 #define WINDOWHEIGHT 690
 
