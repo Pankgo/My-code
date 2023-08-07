@@ -22,7 +22,7 @@ private:
 	SIZE m_Size;
 public:
 	void Init(HDC hdc, char* FileName);
-	void Draw(HDC hdc, int x, int y, int check);
+	void Draw(HDC hdc, int x, int y, int check, bool moveabletiles);
 	inline SIZE GetSize()
 	{
 		return m_Size;
