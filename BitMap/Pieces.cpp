@@ -8,7 +8,7 @@ void _Chess::Draw(HDC hdc, CHECKIMAGE check)// 그리는 함수
 
 }
 
-void _Chess::Move(int T_x, int T_y, Tiles tiles[64]) // 선택된 타일의 xy좌표를 가져와 피스 좌표 변환
+bool _Chess::Move(int T_x, int T_y, Tiles tiles[64], std::vector<_Chess*> *pieces) // 선택된 타일의 xy좌표를 가져와 피스 좌표 변환
 {
 	selectpieces = false;
 	P_x = T_x;
@@ -24,6 +24,19 @@ void _Chess::Move(int T_x, int T_y, Tiles tiles[64]) // 선택된 타일의 xy좌표를 �
 			tiles[i].SetMoveableTiles();
 		}
 	}
+	for (auto iter = pieces->begin(); iter < pieces->end(); iter++) // 상대피스 잡기
+	{
+		if ((*iter)->GetX() == P_x && (*iter)->GetY() == P_y && (*iter)->GetColor() != color)
+		{
+			if ((*iter)->GetType() == _King)
+			{
+				return true;
+			}
+			pieces->erase(iter);
+			return false;
+		}
+	}
+	return false;
 }
 
 void _Chess::SetXY(int x, int y, IMAGE Index)
@@ -43,8 +56,9 @@ void _Chess::SetXY(int x, int y, IMAGE Index)
 		type = _Queen;
 		break;
 	case IMAGE_WhiteQueen:
-		color = _black;
+		color = _white;
 		type = _Queen;
+		break;
 	case IMAGE_BlackHorse:
 		color = _black;
 		type = _Knight;
@@ -88,9 +102,9 @@ void _Chess::SetXY(int x, int y, IMAGE Index)
 	pices_rect.bottom = pices_rect.top + 80;
 }
 
-bool _Chess::ColliderCheck(POINT point) //기물과 마우스 위치 확인
+bool _Chess::ColliderCheck(POINT point,int _color) //기물과 마우스 위치 확인
 {
-	if (PtInRect(&pices_rect, point)) 
+	if (PtInRect(&pices_rect, point) && _color == color) 
 	{ 
 		selectpieces = true;
 		return true; 
@@ -98,10 +112,6 @@ bool _Chess::ColliderCheck(POINT point) //기물과 마우스 위치 확인
 	return false;
 }
 
-void _Chess::Catch(std::vector<_Chess*>pieces) // 상대피스잡을경우
-{
-
-}
 
 bool _Chess::CheckColor(int x, int y, std::vector<_Chess*> pieces)
 {
@@ -116,6 +126,7 @@ bool _Chess::CheckColor(int x, int y, std::vector<_Chess*> pieces)
 			return false;
 		}
 	}
+	return false;
 }
 
 bool _Chess::CheckPieces(int x, int y, std::vector<_Chess*> pieces)
@@ -132,14 +143,10 @@ bool _Chess::CheckPieces(int x, int y, std::vector<_Chess*> pieces)
 	{
 		if (x == (*iter1)->GetX() && y == (*iter1)->GetY() )// 해당 위치에 피스가 있을경우 리턴
 		{
-			if (GetColor() != (*iter1)->GetColor())
-			{
-				return true;
-			}
-			return false;
+			return true;
 		}
 	}
-	return true;
+	return false;
 }
 
 
