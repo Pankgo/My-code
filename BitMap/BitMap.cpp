@@ -16,7 +16,7 @@ void BitMap::Init(HDC hdc,char* FileName)
 	m_Size.cx = BitMap_Info.bmWidth;
 	m_Size.cy = BitMap_Info.bmHeight;
 }
-void BitMap::Draw(HDC hdc, int x, int y, int check)
+void BitMap::Draw(HDC hdc, int x, int y, int check,bool moveabletiles)
 {
 	int height, width;
 	switch (check)
@@ -33,6 +33,19 @@ void BitMap::Draw(HDC hdc, int x, int y, int check)
 	case Pieces:
 		TransparentBlt(hdc, x, y, width, height, MemDC, 0, 0, m_Size.cx, m_Size.cy, RGB(255, 0, 255));
 		break;
+	case Tile:
+		if (moveabletiles)
+		{
+			BLENDFUNCTION bf;
+			ZeroMemory(&bf, sizeof(bf));
+			bf.SourceConstantAlpha = 100; // 원하는 값(0 ~ 255)
+			AlphaBlend(hdc, 100, 100, 50, 50, MemDC, 0, 0, 32, 32, bf);
+		}
+		else
+		{
+			StretchBlt(hdc, x, y, width, height, MemDC, 0, 0, m_Size.cx, m_Size.cy, SRCCOPY);
+		}
+		
 	default:
 		StretchBlt(hdc, x, y, width, height, MemDC, 0, 0, m_Size.cx, m_Size.cy, SRCCOPY);
 	}
