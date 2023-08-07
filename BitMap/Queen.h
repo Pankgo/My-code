@@ -12,7 +12,7 @@ class Queen : public _Chess
 	std::vector<xy> queen;
 public:
 	Queen() {};
-	bool SetMove(Tiles tiles[64], std::vector<_Chess*>pieces) override
+	std::vector<POINT>  SetMove( std::vector<_Chess*>pieces) override
 	{
 		int curY = GetY();//현재 퀸의 x좌표
 		int curX = GetX();//현재 퀸의 y좌표
@@ -37,7 +37,7 @@ public:
 			x2 = curX - count * 80;
 			y1 = curY + count * 80;
 			y2 = curY - count * 80;
-			switch (plus1 && !CheckPieces(x2, y2, pieces) && x2 >= 0 && y2 >=0) // 왼쪽 위 검사
+			switch (plus1 && CheckPieces(x2, y2, pieces)) // 왼쪽 위 검사
 			{
 			case true:
 				newxy.x = x2;
@@ -52,7 +52,7 @@ public:
 				plus1 = false;
 				break;
 			}
-			switch (plus2 && !CheckPieces(x1, y2, pieces) && x1 < 640 && y2 > 0)// 오른쪽 위 검사
+			switch (plus2 && CheckPieces(x1, y2, pieces))// 오른쪽 위 검사
 			{
 			case true:
 				newxy.x = x1;
@@ -67,7 +67,7 @@ public:
 				plus2 = false;
 				break;
 			}
-			switch (plus3 && !CheckPieces(x2, y1, pieces)&& x2 > 0 && y1 < 640) // 왼쪽 아래 검사
+			switch (plus3 && CheckPieces(x2, y1, pieces)) // 왼쪽 아래 검사
 			{
 			case true:
 				newxy.x = x2;
@@ -82,7 +82,7 @@ public:
 				plus3 = false;
 				break;
 			}
-			switch (plus4 && !CheckPieces(x1, y1, pieces) && x1 < 640 && y1 < 640)// 오른쪽 아래 검사
+			switch (plus4 && CheckPieces(x1, y1, pieces))// 오른쪽 아래 검사
 			{
 			case true:
 				newxy.x = x1;
@@ -108,7 +108,7 @@ public:
 			x2 = curX - count * 80;
 			y1 = curY + count * 80;
 			y2 = curY - count * 80;
-			switch (plus1 && !CheckPieces(curX, y2, pieces)) // 상
+			switch (plus1 && CheckPieces(curX, y2, pieces)) // 상
 			{
 			case true:
 				newxy.x = curX;
@@ -123,7 +123,7 @@ public:
 				plus1 = false;
 				break;
 			}
-			switch (plus2 && !CheckPieces(curX, y1, pieces))// 하
+			switch (plus2 && CheckPieces(curX, y1, pieces))// 하
 			{
 			case true:
 				newxy.x = curX;
@@ -138,7 +138,7 @@ public:
 				plus2 = false;
 				break;
 			}
-			switch (plus3 && !CheckPieces(x2, curY, pieces)) // 좌
+			switch (plus3 && CheckPieces(x2, curY, pieces)) // 좌
 			{
 			case true:
 				newxy.x = x2;
@@ -153,7 +153,7 @@ public:
 				plus3 = false;
 				break;
 			}
-			switch (plus4 && !CheckPieces(x1, curY, pieces))// 우
+			switch (plus4 && CheckPieces(x1, curY, pieces))// 우
 			{
 			case true:
 				newxy.x = x1;
