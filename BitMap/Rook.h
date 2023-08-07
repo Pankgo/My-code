@@ -14,123 +14,87 @@ public:
 	{
 		int curY = GetY();//현재 룩의 y좌표
 		int curX = GetX();//현재 룩의 x좌표
-		bool checkX1 = true;
-		bool checkX2 = true;
-		bool checkY1 = true;
-		bool checkY2 = true;
+		
+		int count = 1;//한칸씩 상하좌우 좌표 변화(x + count*80, y - count* 80 or x - count * 80 ; y + count * 80)
+		bool plus1 = true; //상
+		bool plus2 = true; //하
+		bool plus3 = true; //좌
+		bool plus4 = true; //우
+
+		int x1 = 0;
+		int y1 = 0;
+		int x2 = 0;
+		int y2 = 0;
 
 		xy newxy;
 		
-
-
-		for (int X = 1; curX + X*80 < 640 || curX - X * 80 > 0; X++) // y좌표에서 그대로에서 x타일만 변화며 움직일수있는 타일설정
+		for (int count = 1; plus1 == true || plus2 == true || plus3 == true || plus4 == true; count++) // 맵크기에서 벗어나면안됨
 		{
-			newxy.y = curY;
-			int newx = curX + X * 80;
-			switch (checkX1)
+			x1 = curX + count * 80;
+			x2 = curX - count * 80;
+			y1 = curY + count * 80;
+			y2 = curY - count * 80;
+			switch (plus1 && CheckPieces(curX, y2, pieces)) // 상
 			{
 			case true:
-				for (auto iter = pieces.begin(); iter < pieces.end(); iter++)
+				newxy.x = curX;
+				newxy.y = y2;
+				rook.push_back(newxy);
+				if (CheckColor(curX, y2, pieces))
 				{
-					if ((*iter)->GetX() == newx && (*iter)->GetY() == curY  || newx > 640)
-					{
-						if ((*iter)->GetColor() != GetColor())
-						{
-							newxy.x = newx;
-							rook.push_back(newxy);
-						}
-						checkX1 = false;
-
-					}
+					plus1 = false;
 				}
 				break;
-			}
-			if (checkX1) // 검사를 통해 해당x좌표에서 같은 색깔의 피스가 있다면 그 뒤로는 삽입못하게 막는다.
-			{
-				newxy.x = newx;
-				rook.push_back(newxy);
-			}
-			newx = curX - X * 80;
-			switch (checkX2)
-			{
-			case true:
-				for (auto iter = pieces.begin(); iter < pieces.end(); iter++)
-				{
-					if ((*iter)->GetX() == newx && (*iter)->GetY() == curY || newx < 0 )
-					{
-						if ((*iter)->GetColor() != GetColor())
-						{
-							newxy.x = newx;
-							rook.push_back(newxy);
-						}
-						 checkX2 = false;
-
-					}
-				}
+			case false:
+				plus1 = false;
 				break;
 			}
-			if (checkX2)
-			{
-				newxy.x = newx;
-				rook.push_back(newxy);
-			}
-
-		}
-
-		for (int Y = 1; curY + Y * 80 < 640 || curY - Y * 80 > 0; Y++) // x좌표에서 그대로에서 y타일만 변화며 움직일수있는 타일설정
-		{
-			newxy.x = curX;
-			int newy = curY + Y * 80;
-			switch (checkY1)
+			switch (plus2 && CheckPieces(curX, y1, pieces))// 하
 			{
 			case true:
-				for (auto iter = pieces.begin(); iter < pieces.end(); iter++)// 검사를 통해 해당좌표에서 같은 색깔의 피스가 있다면 그 뒤로는 삽입못하게 막는다.
+				newxy.x = curX;
+				newxy.y = y1;
+				rook.push_back(newxy);
+				if (CheckColor(curX, y1, pieces))
 				{
-					if ((*iter)->GetY() == newy && (*iter)->GetX() == curX  || newy > 640)
-					{
-						if ((*iter)->GetColor() != GetColor())
-						{
-							newxy.y = newy;
-							rook.push_back(newxy);
-						}
-						checkY1 = false;
-
-					}
+					plus2 = false;
 				}
 				break;
+			case false:
+				plus2 = false;
+				break;
 			}
-			if (checkY1)
-			{
-				newxy.y = newy;
-				rook.push_back(newxy);
-			}
-
-			newy = curY - Y * 80;
-			switch (checkY2)
+			switch (plus3 && CheckPieces(x2, curY, pieces)) // 좌
 			{
 			case true:
-				for (auto iter = pieces.begin(); iter < pieces.end(); iter++)
+				newxy.x = x2;
+				newxy.y = curY;
+				rook.push_back(newxy);
+				if (CheckColor(x2, curY, pieces))
 				{
-					if ((*iter)->GetX() == curX && (*iter)->GetY() == newy  || newy < 0)
-					{
-						if ((*iter)->GetColor() != GetColor())
-						{
-							newxy.y = newy;
-							rook.push_back(newxy);
-						}
-						checkY2 = false;
-
-					}
+					plus3 = false;
 				}
+				break;
+			case false:
+				plus3 = false;
+				break;
+			}
+			switch (plus4 && CheckPieces(x1, curY, pieces))// 우
+			{
+			case true:
+				newxy.x = x1;
+				newxy.y = curY;
+				rook.push_back(newxy);
+				if (CheckColor(x1, curY, pieces))
+				{
+					plus4 = false;
+				}
+				break;
+			case false:
+				plus4 = false;
 				break;
 			}
 
-			if (checkY2)
-			{
-				newxy.y = newy;
-				rook.push_back(newxy);
-			}
-			
 		}
 
 		if (rook.size() == 0)
