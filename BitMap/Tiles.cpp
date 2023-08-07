@@ -5,10 +5,10 @@ void Tiles::Draw(HDC hdc, CHECKIMAGE check, bool moveabletiles)
 	switch (_tileInfo)
 	{
 	case only:
-		tiles_Image[only]->Draw(hdc, t_x, t_y, check);
+		tiles_Image[only]->Draw(hdc, t_x, t_y, check,false);
 		break;
 	case plusmoveable :
-		tiles_Image[plusmoveable]->Draw(hdc, t_x, t_y, check);
+		tiles_Image[only]->Draw(hdc, t_x, t_y, check, true);
 		break;
 	}
 	
