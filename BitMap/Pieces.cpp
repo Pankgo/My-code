@@ -4,7 +4,7 @@ _Chess::_Chess(){}
 
 void _Chess::Draw(HDC hdc, CHECKIMAGE check)// 그리는 함수
 {
-	pieces_Image->Draw(hdc, P_x, P_y, check);
+	pieces_Image->Draw(hdc, P_x, P_y, check,false);
 
 }
 
@@ -143,10 +143,14 @@ bool _Chess::CheckPieces(int x, int y, std::vector<_Chess*> pieces)
 	{
 		if (x == (*iter1)->GetX() && y == (*iter1)->GetY() )// 해당 위치에 피스가 있을경우 리턴
 		{
-			return true;
+			if((*iter1)->GetColor() != GetColor())//같은 색상이 아닐경우 리턴
+			{
+				return true;
+			}
+			return false; // 같은 색상일 경우 false리턴
 		}
 	}
-	return false;
+	return true; // 피스가 없어도 이동가능하니 true
 }
 
 
