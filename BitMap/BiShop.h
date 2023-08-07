@@ -10,7 +10,7 @@ class BiShop : public _Chess
 	std::vector<xy> bishop;
 
 public:
-	bool SetMove(Tiles tiles[64], std::vector<_Chess*>pieces) override
+	std::vector<POINT>  SetMove(std::vector<_Chess*>pieces) override
 	{
 		int curY = GetY();
 		int curX = GetX();
