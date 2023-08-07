@@ -214,16 +214,23 @@ bool GameManager::ColliderCheck(POINT point,HWND hwnd)//화면에서 이미지 눌렀는지
 		}
 		break;
 	default:
+		std::vector<POINT> moveablexy;
 		if (piecesmove == false)
 		{
 			for (auto iter = pieces.begin(); iter < pieces.end(); iter++)
 			{
-				if ((*iter)->ColliderCheck(point, gameturn)) // 해당기물이 선택되었다면 초록색 범위의 타일 그리기
+				if ((*iter)->ColliderCheck(point, gameturn))
 				{
-					if ((*iter)->SetMove(tiles, pieces))
+					moveablexy = (*iter)->SetMove(pieces);
+				}
+			}
+			for (auto iter = moveablexy.begin(); iter < moveablexy.end(); iter++) // 해당기물이 선택되었다면 초록색 범위의 타일 그리기
+			{
+				for (int i = 0; i < 64; i++)
+				{
+					if (tiles[i].GetTx() == iter->x && tiles[i].GetTy() == iter->y)
 					{
-						piecesmove = true;
-						return true;
+						tiles[i].SetMoveableTiles();
 					}
 				}
 			}
