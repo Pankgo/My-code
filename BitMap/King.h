@@ -14,44 +14,115 @@ public:
 		int curY = GetY();
 		int curX = GetX();
 		xy _newxy;
-		_newxy.pass = true;
-		int count = 0;
-		for (int i = -1; i < 2; i++) // 초기 이동할수있는위치세팅
+
+		int kingcount = 0;
+
+		int x1 = curX + 80;
+		int x2 = curX - 80;
+		int y1 = curY + 80;
+		int y2 = curY - 80;
+
+
+		//대각선 세팅
+		switch (CheckPieces(x2, y2, pieces)) // 왼쪽 위 검사
 		{
-			for (int j = -1; j < 2; j++)
-			{
-				_newxy.x = curX + -80 * i;
-				_newxy.y = curY + -80 * i;
-				if (_newxy.x != 0 && _newxy.y != 0)
-				{
-					king[count++] = _newxy;
-				}
-			}
+		case true:
+			_newxy.x = x2;
+			_newxy.y = y2;
+			king[0] = _newxy;
+			break;
+		default:
+			kingcount++;
+			king[0].pass= false;
+		}
+		switch (CheckPieces(x1, y2, pieces))// 오른쪽 위 검사
+		{
+		case true:
+			_newxy.x = x1;
+			_newxy.y = y2;
+			king[1] = _newxy;
+			break;
+		default:
+			king[1].pass = false;
+			kingcount++;
+		}
+		switch ( CheckPieces(x2, y1, pieces)) // 왼쪽 아래 검사
+		{
+		case true:
+			_newxy.x = x2;
+			_newxy.y = y1;
+			king[2] = _newxy;
+			break;
+		default:
+			king[2].pass = false;
+			kingcount++;
+		}
+		switch (CheckPieces(x1, y1, pieces))// 오른쪽 아래 검사
+		{
+		case true:
+			_newxy.x = x1;
+			_newxy.y = y1;
+			king[3] = _newxy ;
+			break;
+		default:
+			king[3].pass = false;
+			kingcount++;
+		}
+		//상하좌우
+		switch (CheckPieces(curX, y2, pieces)) // 상
+		{
+		case true:
+			_newxy.x = curX;
+			_newxy.y = y2;
+			king[4] = _newxy;
+			break;
+		default:
+			king[4].pass = false;
+			kingcount++;
+		}
+		switch (CheckPieces(curX, y1, pieces))// 하
+		{
+		case true:
+			_newxy.x = curX;
+			_newxy.y = y1;
+			king[5] = _newxy;
+			break;
+		default:
+			king[5].pass = false;
+			kingcount++;
+		}
+		switch (CheckPieces(x2, curY, pieces)) // 좌
+		{
+		case true:
+			_newxy.x = x2;
+			_newxy.y = curY;
+			king[6] = _newxy;
+			break;
+		default:
+			king[6].pass = false;
+			kingcount++;
+		}
+		switch (CheckPieces(x1, curY, pieces))// 우
+		{
+		case true:
+			_newxy.x = x1;
+			_newxy.y = curY;
+			king[7] = _newxy;
+			break;
+		default:
+			king[7].pass = false;
+			kingcount++;
 		}
 
-		int kingcount = 0; // 모두다 못움직이는지 확인
-		for (int i = 0; i < 8; i++) // 같은 색깔의 피스가 있을경우 움직이지 못하도록한다.
-		{
-			for (auto iter = pieces.begin(); iter < pieces.end(); iter++)
-			{
-				if (king[i].x == (*iter)->GetX() && king[i].y == (*iter)->GetY() && GetColor() == (*iter)->GetColor())
-				{
-					king[i].pass = false;
-					kingcount++;
-				}
-			}
-		}
 		if (kingcount == 8)
 		{
 			return false;
 		}
-
-
 		for (int i = 0; i < 8; i++) //타일설정
 		{
 			for (int iter = 0; iter < 64; iter++)
 			{
-				if (king[i].x == tiles[iter].GetTx()&& king[i].y == tiles[iter].GetTy())
+				if ( king[i].pass == true && king[i].x == tiles[iter].GetTx() && king[i].y == tiles[iter].GetTy())
 				{
 					tiles[iter].SetMoveableTiles();
 				}
