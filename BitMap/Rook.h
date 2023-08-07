@@ -10,7 +10,7 @@ class Rook : public _Chess
 	std::vector<xy> rook;
 public:
 	Rook() {};
-	bool SetMove(Tiles tiles[64], std::vector<_Chess*>pieces) override
+	std::vector<POINT>  SetMove( std::vector<_Chess*>pieces) override
 	{
 		int curY = GetY();//ÇöÀç ·èÀÇ yÁÂÇ¥
 		int curX = GetX();//ÇöÀç ·èÀÇ xÁÂÇ¥
