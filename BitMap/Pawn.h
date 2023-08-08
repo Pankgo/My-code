@@ -1,12 +1,12 @@
-#include "pieces.h"
 #pragma once
 
+#include "pieces.h"
 
 class Pawn : public _Chess
 {
 
 public:
-	std::vector<POINT> SetMove(std::vector<_Chess*>pieces) override
+	virtual std::vector<POINT> SetMove(std::vector<_Chess*>pieces) override
 	{
 		std::vector<POINT> moveable;
 		
