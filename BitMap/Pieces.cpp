@@ -113,21 +113,6 @@ bool _Chess::ColliderCheck(POINT point,int _color) //기물과 마우스 위치 확인
 }
 
 
-bool _Chess::CheckColor(int x, int y, std::vector<_Chess*> pieces)
-{
-	for (auto iter1 = pieces.begin(); iter1 < pieces.end(); iter1++) //타일설정
-	{
-		if (x == (*iter1)->GetX() && y == (*iter1)->GetY())// 해당 위치에 피스가 있을경우 리턴
-		{
-			if (GetColor() != (*iter1)->GetColor())
-			{
-				return true;
-			}
-			return false;
-		}
-	}
-	return false;
-}
 
 bool _Chess::CheckPieces(int x, int y, std::vector<_Chess*> pieces)
 {
