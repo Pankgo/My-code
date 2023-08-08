@@ -1,3 +1,4 @@
+#pragma once
 #include<stdio.h>
 #include<Windows.h>
 #include <string>
@@ -5,15 +6,8 @@
 #include "BitMap.h"
 
 #include"pieces.h"
-#include"Tiles.h"
-#include"Horse.h"
-#include"King.h"
-#include"Pawn.h"
-#include"Queen.h"
-#include"Rook.h"
-#include"BiShop.h"
 
-#pragma once
+
 
 #define WINDOWWIDTH 660
 #define WINDOWHEIGHT 690
