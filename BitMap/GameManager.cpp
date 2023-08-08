@@ -1,5 +1,13 @@
 #include "GameManager.h"
 
+#include"Tiles.h"
+#include"Horse.h"
+#include"King.h"
+#include"Pawn.h"
+#include"Queen.h"
+#include"Rook.h"
+#include"BiShop.h"
+
 GameManager* GameManager::GameM = NULL;
 
 GameManager::GameManager()
@@ -144,7 +152,7 @@ page GameManager::PageCheck() {//페이지확인
 
 	return (page)CurrStatue;
 }
-void GameManager::GameStart()//게임이 시작될경우 카드세팅
+void  GameManager::GameStart()//게임이 시작될경우 카드세팅
 {
 	if (CurrStatue == MAIN)
 		CurrStatue = Game;
@@ -152,7 +160,7 @@ void GameManager::GameStart()//게임이 시작될경우 카드세팅
 
 void GameManager::PageDraw(HDC hdc)//페이지 확인 후 그려내기
 {
-	BackGround->Draw(hdc, Back_X, Back_y,BACKGROUND);
+	BackGround->Draw(hdc, Back_X, Back_y,BACKGROUND,false);
 	switch (CurrStatue)
 	{
 	case Start: StartP(hdc); break;
@@ -163,7 +171,12 @@ void GameManager::PageDraw(HDC hdc)//페이지 확인 후 그려내기
 
 void GameManager::StartP(HDC hdc)//시작화면 페이지
 {
-	startbutton->Draw(hdc, startb_x, startb_y,STARTBUTTON);
+	startbutton->Draw(hdc, startb_x, startb_y,STARTBUTTON, false);
+}
+void GameManager::EndP(HDC hdc) // 결과창 도출
+{
+	tryagain->Draw(hdc, try_x, try_y, TRY, false);
+	
 }
 void GameManager::GameP(HDC hdc)//게임화면 페이지
 {
@@ -177,18 +190,14 @@ void GameManager::GameP(HDC hdc)//게임화면 페이지
 		(*iter)->Draw(hdc, (CHECKIMAGE)4);
 	}
 }
-void GameManager::EndP(HDC hdc) // 결과창 도출
-{
-	tryagain->Draw(hdc, try_x, try_y, TRY);
-	
-}
+
 GameManager::~GameManager() 
 {
 }
 
 
 void GameManager::GoHome() 
-{ 
+{
 	if (CurrStatue == End)
 		CurrStatue = MAIN;
 }
