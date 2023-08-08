@@ -1,7 +1,7 @@
-#include "BitMapManager.h"
-#include "Tiles.h"
 #pragma once
 
+#include "BitMapManager.h"
+#include "Tiles.h"
 
  enum Color
 {
@@ -44,7 +44,6 @@ public:
 	int GetY(){ return P_y; }
 	bool CheckSelect() { if (selectpieces) { return true; } return false; }
 	bool CheckPieces(int x, int y, std::vector<_Chess*>pieces); // 같은 색상인지 검사
-	bool CheckColor(int x, int y, std::vector<_Chess*>pieces); // 색깔 검사
 
 
 };
