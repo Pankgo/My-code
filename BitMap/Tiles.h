@@ -1,6 +1,7 @@
+#pragma once
 #include <iostream>
 #include "BitMapManager.h"
-#pragma once
+
 
 enum tile
 {
