@@ -8,18 +8,51 @@ class Horse : public _Chess
 
 public:
 
-	std::vector<POINT>  SetMove(std::vector<_Chess*>pieces) override
+	virtual std::vector<POINT>  SetMove(std::vector<_Chess*>pieces) override
 	{
 		std::vector<POINT> moveable;
 
 		int curY = GetY();
 		int curX = GetX();
 
-		int x1 = curX + 80;
-		int x2 = curX - 80;
-		int y1 = curY + 80;
-		int y2 = curY - 80;
+		int count = 1;
 
+		if (CheckPieces(curX - 80 * count , curY - count * 80 * 2 , pieces) ) // (-,+) 대각선
+		{
+			moveable.push_back({ curX - 80 * count , curY - count * 80 * 2 });
+		}
+		if (CheckPieces(curX + 80 * count, curY - count * 80 * 2, pieces)) // (-,+) 대각선
+		{
+			moveable.push_back({ curX + 80 * count, curY - count * 80 * 2 });
+		}
+		if (CheckPieces(curX - 80 * count, curY + count * 80 * 2, pieces)) // (-,+) 대각선
+		{
+			moveable.push_back({ curX - 80 * count, curY + count * 80 * 2 });
+		}
+		if (CheckPieces(curX + 80 * count, curY + count * 80 * 2, pieces)) // (-,+) 대각선
+		{
+			moveable.push_back({ curX + 80 * count, curY + count * 80 * 2 });
+		}
+	
+
+		if (CheckPieces(curX - 80 * count * 2, curY - count * 80 , pieces)) // (-,+) 대각선
+		{
+			moveable.push_back({ curX - 80 * count * 2, curY - count * 80 });
+		}
+		if (CheckPieces(curX - 80 * count * 2, curY + count * 80 , pieces)) // (-,+) 대각선
+		{
+			moveable.push_back({ curX - 80 * count * 2, curY + count * 80 });
+		}
+		if (CheckPieces(curX + 80 * count *2, curY + count * 80, pieces)) // (-,+) 대각선
+		{
+			moveable.push_back({ curX + 80 * count * 2, curY + count * 80 });
+		}
+		if (CheckPieces(curX + 80 * count *2 , curY - count * 80 , pieces)) // (-,+) 대각선
+		{
+			moveable.push_back({ curX + 80 * count * 2 , curY - count * 80 });
+		}
+
+		return moveable;
 
 
 	}
