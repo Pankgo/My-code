@@ -40,6 +40,7 @@ void BitMap::Draw(HDC hdc, int x, int y, int check,bool moveabletiles)
 			ZeroMemory(&bf, sizeof(bf));
 			bf.SourceConstantAlpha = 100; // 원하는 값(0 ~ 255)
 			AlphaBlend(hdc, 100, 100, 50, 50, MemDC, 0, 0, 32, 32, bf);
+
 		}
 		else
 		{
