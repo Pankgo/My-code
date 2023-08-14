@@ -116,7 +116,7 @@ bool _Chess::ColliderCheck(POINT point,int _color) //기물과 마우스 위치 확인
 
 bool _Chess::CheckPieces(int x, int y, std::vector<_Chess*> pieces)
 {
-	if (x < 0 || x > 560)
+ 	if (x < 0 || x > 560)
 	{
 		return false;
 	}
@@ -134,6 +134,10 @@ bool _Chess::CheckPieces(int x, int y, std::vector<_Chess*> pieces)
 			}
 			return false; // 같은 색상일 경우 false리턴
 		}
+	}
+	if (type == _Pawn && P_x != x)
+	{
+		return false;
 	}
 	return true; // 피스가 없어도 이동가능하니 true
 }
