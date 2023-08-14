@@ -19,12 +19,13 @@ class BitMap
 private:
 	HDC MemDC;
 	HBITMAP m_BitMap;
-	HBITMAP alphaBitmap;
-	HBITMAP OldBitmap; 
 	SIZE m_Size;
+	HBITMAP alphaBitmap;
 public:
 	void Init(HDC hdc, char* FileName);
-	void Draw(HDC hdc, int x, int y, int check, bool moveabletiles);
+	void Alpha(HDC hdc, int x, int y,int check);
+	void Trans(HDC hdc, int x, int y,int check);
+	void Stretch(HDC hdc, int x, int y,int check);
 	inline SIZE GetSize()
 	{
 		return m_Size;
