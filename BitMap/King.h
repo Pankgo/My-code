@@ -3,7 +3,20 @@
 
 class King : public _Chess
 {
+
 public:
+	virtual void Set(int x, int y) override
+	{
+		if (y == 0)
+		{
+		
+			SetXY(x, y, IMAGE_WhiteKing, _white);
+		}
+		else
+		{
+			SetXY(x, y, IMAGE_BlackKing, _black);
+		}
+	}
 	virtual std::vector<POINT>  SetMove(std::vector<_Chess*>pieces) override
 	{
 
