@@ -3,9 +3,19 @@
 
 class Rook : public _Chess
 {
-
 public:
 	Rook() {};
+	virtual void Set(int x, int y) override
+	{
+		if (y == 0)
+		{
+			SetXY(x, y, IMAGE_WhiteRook,_white,_Rook);
+		}
+		else
+		{
+			SetXY(x, y, IMAGE_BlackRook,_black, _Rook);
+		}
+	}
 	virtual std::vector<POINT>  SetMove(std::vector<_Chess*>pieces) override
 	{
 
