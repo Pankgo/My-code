@@ -19,6 +19,8 @@ class BitMap
 private:
 	HDC MemDC;
 	HBITMAP m_BitMap;
+	HBITMAP alphaBitmap;
+	HBITMAP OldBitmap; 
 	SIZE m_Size;
 public:
 	void Init(HDC hdc, char* FileName);
