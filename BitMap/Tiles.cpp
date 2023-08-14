@@ -5,10 +5,11 @@ void Tiles::Draw(HDC hdc, CHECKIMAGE check, bool moveabletiles)
 	switch (_tileInfo)
 	{
 	case only:
-		tiles_Image[only]->Draw(hdc, t_x, t_y, check,false);
+		tiles_Image->Stretch(hdc, t_x, t_y, Tile);
 		break;
 	case plusmoveable :
-		tiles_Image[only]->Draw(hdc, t_x, t_y, check, true);
+		tiles_Image->Stretch(hdc, t_x, t_y, Tile);
+		tiles_Image->Alpha(hdc, t_x, t_y, Tile);
 		break;
 	}
 	
@@ -17,8 +18,8 @@ void Tiles::Draw(HDC hdc, CHECKIMAGE check, bool moveabletiles)
 void Tiles::Init(IMAGE Index,int x,int y)
 {
 	_tileInfo = only;
-	tiles_Image[only] = BitMapManager::GetInstance()->GetImage(Index);
-	tiles_Image[plusmoveable] = BitMapManager::GetInstance()->GetImage(IMAGE_MOVEABLETILE);
+	tiles_Image = BitMapManager::GetInstance()->GetImage(Index);
+	alphaBitmap = (HBITMAP)LoadImage(NULL, L"RES//017.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 	t_x = x;
 	t_y = y;
 	_tile.left = x;
