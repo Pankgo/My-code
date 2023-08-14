@@ -4,8 +4,21 @@
 
 class Queen : public _Chess
 {
+	
 public:
-	Queen() {};
+	virtual void Set(int x, int y) override
+	{
+		if (y == 0)
+		{
+			
+			SetXY(x, y,IMAGE_WhiteQueen,_white,_Queen);
+		}
+		else
+		{
+		
+			SetXY(x, y, IMAGE_BlackQueen,_black, _Queen);
+		}
+	}
 	virtual std::vector<POINT>  SetMove(std::vector<_Chess*>pieces) override
 	{
 
