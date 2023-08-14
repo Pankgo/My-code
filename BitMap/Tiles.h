@@ -17,11 +17,12 @@ enum tiles_state
 class Tiles
 {
 	int t_x, t_y;
-	BitMap* tiles_Image[3];
+	BitMap* tiles_Image;
 	tile tile;
 	RECT _tile;
 	tiles_state _tileInfo;
-
+	HBITMAP m_BitMap;
+	HBITMAP alphaBitmap;
 
 public:
 	void Draw(HDC hdc, CHECKIMAGE check, bool moveabletiles); // 그리는 함수
