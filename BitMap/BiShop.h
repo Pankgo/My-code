@@ -2,10 +2,26 @@
 
 #include "pieces.h"
 
+
+
 class BiShop : public _Chess
 {
-
+	BitMap* pieces_Image; //피스이미지
+	Color color;
 public:
+	virtual void Set(int x, int y) override
+	{
+		if (y == 0)
+		{
+			color = _white;
+			SetXY(x, y, IMAGE_WhiteBishop,_white);
+		}
+		else
+		{
+			color = _black;
+			SetXY(x, y, IMAGE_BlackBishop,_black);
+		}
+	}
 	virtual std::vector<POINT> SetMove(std::vector<_Chess*>pieces) override
 	{
 		std::vector<POINT> moveable;
