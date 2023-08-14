@@ -28,8 +28,8 @@ class _Chess {
 	int P_x, P_y; // 현재 피스 위치
 	bool selectpieces = false;
 
-protected:
-	bool firstMove = false;
+//protected:
+//	bool firstMove = false;
 
 public:
 	_Chess();
