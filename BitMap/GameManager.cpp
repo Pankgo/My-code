@@ -93,7 +93,7 @@ void GameManager::PiecesSet() // 피스세팅
 			x = 0; y = 480; //블랙 폰 초기위치
 			startcolor = IMAGE_BlackPawn;
 		}
-		pawn.SetXY(x, y, startcolor);
+		pawn.Set(x, y);
 		pieces.push_back(new Pawn(pawn));
 		x += 80;
 	}
@@ -103,45 +103,45 @@ void GameManager::PiecesSet() // 피스세팅
 		switch ((piecesType)pieces_count)
 		{
 		case _king: 
-			king.SetXY(KINGX, y, IMAGE_WhiteKing);
+			king.Set(KINGX, y);
 			pieces.push_back(new King(king));
-			king.SetXY(KINGX, y+80*7, IMAGE_BlackKing);
+			king.Set(KINGX, y + 80 * 7);
 			pieces.push_back(new King(king));
 			break;
 		case _queen: 
-			queen.SetXY(QUEENX, y, IMAGE_WhiteQueen);
+			queen.Set(QUEENX, y);
 			pieces.push_back(new Queen(queen));
-			queen.SetXY(QUEENX, y + 80 * 7, IMAGE_BlackQueen);
+			queen.Set(QUEENX, y + 80 * 7);
 			pieces.push_back(new Queen(queen));
 			break;
 		case _knight: 
-			horse.SetXY(FHORSEX, y, IMAGE_WhiteHorse);
+			horse.Set(FHORSEX, y);
 			pieces.push_back(new Horse(horse));
-			horse.SetXY(SHORSEX, y, IMAGE_WhiteHorse);
+			horse.Set(SHORSEX, y);
 			pieces.push_back(new Horse(horse));
-			horse.SetXY(FHORSEX, y + 80 * 7, IMAGE_BlackHorse);
+			horse.Set(FHORSEX, y + 80 * 7);
 			pieces.push_back(new Horse(horse));
-			horse.SetXY(SHORSEX, y + 80 * 7, IMAGE_BlackHorse);
+			horse.Set(SHORSEX, y + 80 * 7);
 			pieces.push_back(new Horse(horse));
 			break; 
 		case _rook: 
-			rook.SetXY(FROOKX, y, IMAGE_WhiteRook);
+			rook.Set(FROOKX, y);
 			pieces.push_back(new Rook(rook));
-			rook.SetXY(SROOKX, y, IMAGE_WhiteRook);
+			rook.Set(SROOKX, y);
 			pieces.push_back(new Rook(rook));
-			rook.SetXY(FROOKX, y + 80 * 7, IMAGE_BlackRook);
+			rook.Set(FROOKX, y + 80 * 7);
 			pieces.push_back(new Rook(rook));
-			rook.SetXY(SROOKX, y + 80 * 7, IMAGE_BlackRook);
+			rook.Set(SROOKX, y + 80 * 7);
 			pieces.push_back(new Rook(rook));
 			break;
 		case _bishop: 
-			bishop.SetXY(FBISHOPX, y, IMAGE_WhiteBishop);
+			bishop.Set(FBISHOPX, y);
 			pieces.push_back(new BiShop(bishop));
-			bishop.SetXY(SBISHOPX, y, IMAGE_WhiteBishop);
+			bishop.Set(SBISHOPX, y);
 			pieces.push_back(new BiShop(bishop));
-			bishop.SetXY(FBISHOPX, y + 80 * 7, IMAGE_BlackBishop);
+			bishop.Set(FBISHOPX, y + 80 * 7);
 			pieces.push_back(new BiShop(bishop));
-			bishop.SetXY(SBISHOPX, y + 80 * 7, IMAGE_BlackBishop);
+			bishop.Set(SBISHOPX, y + 80 * 7);
 			pieces.push_back(new BiShop(bishop));
 			break;
 		}
@@ -160,7 +160,6 @@ void  GameManager::GameStart()//게임이 시작될경우 카드세팅
 
 void GameManager::PageDraw(HDC hdc)//페이지 확인 후 그려내기
 {
-	BackGround->Draw(hdc, Back_X, Back_y,BACKGROUND,false);
 	switch (CurrStatue)
 	{
 	case Start: StartP(hdc); break;
@@ -171,11 +170,11 @@ void GameManager::PageDraw(HDC hdc)//페이지 확인 후 그려내기
 
 void GameManager::StartP(HDC hdc)//시작화면 페이지
 {
-	startbutton->Draw(hdc, startb_x, startb_y,STARTBUTTON, false);
+	startbutton->Stretch(hdc, startb_x, startb_y,STARTBUTTON);
 }
 void GameManager::EndP(HDC hdc) // 결과창 도출
 {
-	tryagain->Draw(hdc, try_x, try_y, TRY, false);
+	tryagain->Stretch(hdc, try_x, try_y, TRY);
 	
 }
 void GameManager::GameP(HDC hdc)//게임화면 페이지
@@ -230,8 +229,7 @@ bool GameManager::ColliderCheck(POINT point,HWND hwnd)//화면에서 이미지 눌렀는지
 			{
 				if ((*iter)->ColliderCheck(point, gameturn))
 				{
-					moveablexy = (*iter)->SetMove(pieces); 
-					break;
+					moveablexy = (*iter)->SetMove(pieces);
 				}
 			}
 			for (auto iter = moveablexy.begin(); iter < moveablexy.end(); iter++) // 해당기물이 선택되었다면 초록색 범위의 타일 그리기
