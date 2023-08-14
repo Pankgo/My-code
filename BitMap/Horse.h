@@ -5,9 +5,18 @@
 
 class Horse : public _Chess
 {
-
 public:
-
+	virtual void Set(int x, int y) override
+	{
+		if (y == 0)
+		{
+			SetXY(x, y, IMAGE_WhiteHorse,_white);
+		}
+		else
+		{
+			SetXY(x, y, IMAGE_BlackHorse,_black);
+		}
+	}
 	virtual std::vector<POINT>  SetMove(std::vector<_Chess*>pieces) override
 	{
 		std::vector<POINT> moveable;
