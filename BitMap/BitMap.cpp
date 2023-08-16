@@ -10,7 +10,6 @@ void BitMap::Init(HDC hdc,char* FileName)
 {
 	MemDC = CreateCompatibleDC(hdc);
 	m_BitMap = (HBITMAP)LoadImageA(NULL, FileName, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
-	alphaBitmap = (HBITMAP)LoadImage(NULL, L"RES//017.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 	BITMAP BitMap_Info;
 	GetObject(m_BitMap, sizeof(BitMap_Info), &BitMap_Info);
 	m_Size.cx = BitMap_Info.bmWidth;
@@ -56,11 +55,13 @@ void BitMap::Alpha(HDC hdc, int x, int y,int check)
 	{
 		height = 80; width = 80;
 	}
-	SelectObject(MemDC, alphaBitmap);
+	SelectObject(MemDC, m_BitMap);
 	BLENDFUNCTION bf;
 	ZeroMemory(&bf, sizeof(bf));
-	bf.SourceConstantAlpha = 100; // 원하는 값(0 ~ 255)
-	AlphaBlend(hdc, x, y, width, height, MemDC, 0, 0, width, height, bf);
+	bf.SourceConstantAlpha = 100; 
+	//StretchBlt(hdc, x, y, width, height, MemDC, 0, 0, m_Size.cx, m_Size.cy, SRCCOPY);
+
+	AlphaBlend(hdc, x, y, width, height, MemDC, 0, 0, m_Size.cx,  m_Size.cy, bf);
 }
 
 BitMap::~BitMap()
