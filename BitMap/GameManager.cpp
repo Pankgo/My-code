@@ -232,15 +232,19 @@ bool GameManager::ColliderCheck(POINT point,HWND hwnd)//화면에서 이미지 눌렀는지
 					moveablexy = (*iter)->SetMove(pieces);
 				}
 			}
-			for (auto iter = moveablexy.begin(); iter < moveablexy.end(); iter++) // 해당기물이 선택되었다면 초록색 범위의 타일 그리기
+			if (moveablexy.size() != 0)
 			{
-				for (int i = 0; i < 64; i++)
+				for (auto iter = moveablexy.begin(); iter < moveablexy.end(); iter++) // 해당기물이 선택되었다면 초록색 범위의 타일 그리기
 				{
-					if (tiles[i].GetTx() == iter->x && tiles[i].GetTy() == iter->y)
+					for (int i = 0; i < 64; i++)
 					{
-						tiles[i].SetMoveableTiles();
+						if (tiles[i].GetTx() == iter->x && tiles[i].GetTy() == iter->y)
+						{
+							tiles[i].SetMoveableTiles();
+						}
 					}
 				}
+				piecesmove = true;
 			}
 			return true;
 		}
