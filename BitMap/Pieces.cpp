@@ -66,11 +66,12 @@ bool _Chess::ColliderCheck(POINT point,int _color) //기물과 마우스 위치 확인
 
 bool _Chess::CheckPieces(int x, int y, std::vector<_Chess*> pieces)
 {
-	if (x < 0 || x > 560)
+	enemypieces = false;
+	if (x < 0 || x > MAXCHESSWIDTH)
 	{
 		return false;
 	}
-	if (y < 0 || y > 560)
+	if (y < 0 || y > MAXCHESSHEIGHT)
 	{
 		return false;
 	}
@@ -78,8 +79,9 @@ bool _Chess::CheckPieces(int x, int y, std::vector<_Chess*> pieces)
 	{
 		if (x == (*iter1)->GetX() && y == (*iter1)->GetY() )// 해당 위치에 피스가 있을경우 리턴
 		{
-			if((*iter1)->GetColor() != GetColor())//같은 색상이 아닐경우 리턴
+			if((*iter1)->GetColor() != GetColor() )//같은 색상이 아닐경우 리턴 폰은 상대방이 앞에있어도 대각선으로밖에 못잡는다.
 			{
+				enemypieces = true;
 				return true;
 			}
 			return false; // 같은 색상일 경우 false리턴
