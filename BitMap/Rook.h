@@ -34,7 +34,11 @@ public:
 		{
 			if (CheckPieces(curX, curY + count * 80, pieces) && down) // го
 			{
-				moveable.push_back({ curX - 80 * count, curY + count * 80 });
+				moveable.push_back({ curX, curY + count * 80 });
+				if (Checkenemy())
+				{
+					down = false;
+				}
 			}
 			else
 			{
@@ -42,7 +46,11 @@ public:
 			}
 			if (CheckPieces(curX, curY - count * 80, pieces) && up) // ╩С
 			{
-				moveable.push_back({ curX - 80 * count, curY + count * 80 });
+				moveable.push_back({ curX, curY - count * 80 });
+				if (Checkenemy())
+				{
+					up = false;
+				}
 			}
 			else
 			{
@@ -50,7 +58,11 @@ public:
 			}
 			if (CheckPieces(curX + 80 * count, curY, pieces) && right) // ©Л
 			{
-				moveable.push_back({ curX - 80 * count, curY + count * 80 });
+				moveable.push_back({ curX + 80 * count, curY });
+				if (Checkenemy())
+				{
+					right = false;
+				}
 			}
 			else
 			{
@@ -58,7 +70,11 @@ public:
 			}
 			if (CheckPieces(curX - 80 * count, curY, pieces) && left) //аб
 			{
-				moveable.push_back({ curX - 80 * count, curY + count * 80 });
+				moveable.push_back({ curX - 80 * count, curY });
+				if (Checkenemy())
+				{
+					left = false;
+				}
 			}
 			else
 			{
