@@ -14,12 +14,12 @@ public:
 		if (y == 0)
 		{
 			color = _white;
-			SetXY(x, y, IMAGE_WhiteBishop,_white);
+			SetXY(x, y, IMAGE_WhiteBishop,_white,_Bishop);
 		}
 		else
 		{
 			color = _black;
-			SetXY(x, y, IMAGE_BlackBishop,_black);
+			SetXY(x, y, IMAGE_BlackBishop,_black, _Bishop);
 		}
 	}
 	virtual std::vector<POINT> SetMove(std::vector<_Chess*>pieces) override
@@ -48,6 +48,10 @@ public:
 			if (CheckPieces(curX - 80 * count, curY + count * 80, pieces) && left1) // (-,+) 대각선
 			{
 				moveable.push_back({ curX - 80 * count, curY + count * 80 });
+				if (Checkenemy())
+				{
+					left1 = false;
+				}
 			}
 			else
 			{
@@ -55,7 +59,11 @@ public:
 			}
 			if (CheckPieces(curX - 80 * count, curY - count * 80, pieces) && left2) // (-,-) 대각선
 			{
-				moveable.push_back({ curX - 80 * count, curY + count * 80 });
+				moveable.push_back({ curX - 80 * count, curY - count * 80 });
+				if (Checkenemy())
+				{
+					left2 = false;
+				}
 			}
 			else
 			{
@@ -63,7 +71,11 @@ public:
 			}
 			if (CheckPieces(curX + 80 * count, curY - count * 80, pieces) && right1) // (+,-) 대각선
 			{
-				moveable.push_back({ curX - 80 * count, curY + count * 80 });
+				moveable.push_back({ curX + 80 * count, curY - count * 80 });
+				if (Checkenemy())
+				{
+					right1 = false;
+				}
 			}
 			else
 			{
@@ -71,11 +83,16 @@ public:
 			}
 			if (CheckPieces(curX + 80 * count, curY + count * 80, pieces) && right2) // (+,+) 대각선
 			{
-				moveable.push_back({ curX - 80 * count, curY + count * 80 });
+				moveable.push_back({ curX + 80 * count, curY + count * 80 });
+				if (Checkenemy())
+				{
+					right2 = false;
+				}
 			}
 			else
 			{
 				right2 = false;
+
 			}
 		}
 
