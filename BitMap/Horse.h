@@ -10,11 +10,11 @@ public:
 	{
 		if (y == 0)
 		{
-			SetXY(x, y, IMAGE_WhiteHorse,_white);
+			SetXY(x, y, IMAGE_WhiteHorse,_white,_Knight);
 		}
 		else
 		{
-			SetXY(x, y, IMAGE_BlackHorse,_black);
+			SetXY(x, y, IMAGE_BlackHorse,_black, _Knight);
 		}
 	}
 	virtual std::vector<POINT>  SetMove(std::vector<_Chess*>pieces) override
