@@ -3,6 +3,10 @@
 #include "BitMapManager.h"
 #include "Tiles.h"
 
+
+#define MAXCHESSWIDTH  560
+#define MAXCHESSHEIGHT 560
+
  enum Color
 {
 	_black,
@@ -31,6 +35,7 @@ class _Chess {
 	int P_x, P_y; // 현재 피스 위치
 	bool selectpieces = false;
 	int height = 80, width = 80;
+	bool enemypieces = false;
 
 
 public:
@@ -47,6 +52,7 @@ public:
 	int GetY(){ return P_y; }
 	bool CheckSelect() { if (selectpieces) { return true; } return false; }
 	bool CheckPieces(int x, int y, std::vector<_Chess*>pieces); // 같은 색상인지 검사
+	bool Checkenemy(){ return enemypieces; }
 
 
 };
