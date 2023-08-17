@@ -25,6 +25,10 @@ public:
 		int curY = GetY();
 		int curX = GetX();
 
+		if (curY == 80 || curY == 480)//해당폰이 초기위치일경우 firstmove true로 설정
+		{
+			firstMove = true;
+		}
 
 		int forward = GetColor() ? 1 : -1;
 		const int size = firstMove ? 2 : 1;
