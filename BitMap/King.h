@@ -30,38 +30,27 @@ public:
 		int y1 = curY + 80;
 		int y2 = curY - 80;
 
-		for (int i = 0; i < 1; i++) //상하좌우 세팅
-		{
-			switch (i)
+	//상하좌우
+			if (CheckPieces(curX - 80, curY, pieces))
 			{
-			case 0:
-				if (CheckPieces(curX - 80, curY, pieces))
-				{
-					moveable.push_back({ curX - 80, curY });
-				}
-				if (CheckPieces(curX + 80, curY, pieces))
-				{
-					moveable.push_back({ curX + 80, curY });
-				}
-				break;
-			case 1:
-				if (CheckPieces(curX, curY+80, pieces))
-				{
-					moveable.push_back({ curX, curY +80});
-				}
-				if (CheckPieces(curX, curY, pieces))
-				{
-					moveable.push_back({ curX , curY - 80});
-				}
-				break;
+				moveable.push_back({ curX - 80, curY });
 			}
-		}
-
-		for (int i = 0; i < 1; i++) //대각선 세팅
-		{
-			switch (i)
+			if (CheckPieces(curX + 80, curY, pieces))
 			{
-			case 0:
+				moveable.push_back({ curX + 80, curY });
+			}
+
+			if (CheckPieces(curX, curY+80, pieces))
+			{
+				moveable.push_back({ curX, curY +80});
+			}
+			if (CheckPieces(curX, curY - 80, pieces))
+			{
+				moveable.push_back({ curX , curY - 80});
+			}
+
+			//대각선
+
 				if (CheckPieces(curX - 80, curY + 80, pieces))
 				{
 					moveable.push_back({ curX - 80, curY + 80 });
@@ -70,8 +59,7 @@ public:
 				{
 					moveable.push_back({ curX - 80, curY - 80});
 				}
-				break;
-			case 1:
+
 				if (CheckPieces(curX + 80, curY + 80, pieces))
 				{
 					moveable.push_back({ curX + 80, curY + 80 });
@@ -80,10 +68,7 @@ public:
 				{
 					moveable.push_back({ curX + 80 , curY - 80 });
 				}
-				break;
-			}
-		}
-		
+
 
 
 		return moveable;
