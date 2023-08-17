@@ -18,8 +18,8 @@ GameManager::GameManager()
 
 	
 	Back_X = 0, Back_y = 0;
-	startb_x = 200,startb_y = 300;
-	try_x = 200, try_y = 300;
+	startb_x = WINDOWWIDTH/2-50,startb_y = WINDOWHEIGHT /2 -50 ;
+	try_x = WINDOWWIDTH / 2 - 50, try_y = WINDOWHEIGHT / 2 - 50;
 	
 	BackGroundRect.left = 500;
 	BackGroundRect.top = 500;
@@ -28,17 +28,18 @@ GameManager::GameManager()
 
 	startRect.left = 0;
 	startRect.top = 0;
-	startRect.right = 300;
-	startRect.bottom = 450;
+	startRect.right = startb_x + 100;
+	startRect.bottom = startb_y +100;
 
 	tryAgain.left = 0;
 	tryAgain.top = 0;
-	tryAgain.right = 300;
-	tryAgain.bottom = 450;
+	tryAgain.right = try_x + 100;
+	tryAgain.bottom = try_y + 100;
 
 	TilesSet();
 	PiecesSet();
 
+	gameturn = _WHITE;
 }
 void GameManager::TilesSet() // 타일세팅
 {
@@ -56,6 +57,7 @@ void GameManager::TilesSet() // 타일세팅
 		default:
 			starttile = black;
 		}
+
 		for (int y = 0, j = 0; j < 8; j++, y += 80)
 		{
 
@@ -177,6 +179,7 @@ void GameManager::EndP(HDC hdc) // 결과창 도출
 	tryagain->Stretch(hdc, try_x, try_y, TRY);
 	
 }
+
 void GameManager::GameP(HDC hdc)//게임화면 페이지
 {
 	
@@ -230,6 +233,10 @@ bool GameManager::ColliderCheck(POINT point,HWND hwnd)//화면에서 이미지 눌렀는지
 				if ((*iter)->ColliderCheck(point, gameturn))
 				{
 					moveablexy = (*iter)->SetMove(pieces);
+					if (moveablexy.size() == 0)
+					{
+						(*iter)->Changeselectpieces();
+					}
 				}
 			}
 			if (moveablexy.size() != 0)
@@ -256,16 +263,16 @@ bool GameManager::ColliderCheck(POINT point,HWND hwnd)//화면에서 이미지 눌렀는지
 				{
 					for (auto iter = pieces.begin(); iter < pieces.end(); iter++)
 					{
-						if ((*iter)->CheckSelect())
+						if ((*iter)->CheckSelect() && (*iter)->GetColor() == gameturn )
 						{
+							piecesmove = false;
 							if ((*iter)->Move(tiles[i].GetTx(), tiles[i].GetTy(), tiles, &pieces))
 							{
 								pieces.clear();
 								CurrStatue = End;
+								gameturn = _WHITE;
 								return true;
-
 							}// 좌표 변환
-							piecesmove = false;
 							switch (gameturn)
 							{
 							case _WHITE:
@@ -276,11 +283,23 @@ bool GameManager::ColliderCheck(POINT point,HWND hwnd)//화면에서 이미지 눌렀는지
 							}
 							return true;
 						}
-						
 
 					}
 				}
 			}
+			piecesmove = false; // 해당 피스를 선택후 다시 무를때
+			for (int i = 0; i < 64; i++) // 초록색 범위 지우기
+			{
+				if (tiles[i].Getstate() == plusmoveable)
+				{
+					tiles[i].SetMoveableTiles();
+				}
+			}
+			for (auto iter = pieces.begin(); iter < pieces.end(); iter++)
+			{
+				(*iter)->Changeselectpieces();
+			}
+			return true;
 		}
 	}
 	return false;
