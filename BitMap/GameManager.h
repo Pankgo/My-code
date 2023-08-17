@@ -9,8 +9,8 @@
 
 
 
-#define WINDOWWIDTH 660
-#define WINDOWHEIGHT 690
+#define WINDOWWIDTH 650
+#define WINDOWHEIGHT 680
 
 
 
