@@ -3,6 +3,9 @@
 #include "BitMapManager.h"
 #include "Tiles.h"
 
+#define  MAXCHESSWIDTH 560
+#define	 MAXCHESSHEIGHT 560
+
 
  enum Color
 {
