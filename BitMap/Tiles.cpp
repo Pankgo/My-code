@@ -29,7 +29,7 @@ void Tiles::Init(IMAGE Index,int x,int y)
 		break;
 	default:
 		tile = white;
-
+		break;
 	}
 }
 
