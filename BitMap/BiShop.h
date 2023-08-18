@@ -57,6 +57,7 @@ public:
 			{
 				left1 = false;
 			}
+
 			if (CheckPieces(curX - 80 * count, curY - count * 80, pieces) && left2) // (-,-) 대각선
 			{
 				moveable.push_back({ curX - 80 * count, curY - count * 80 });
@@ -69,6 +70,7 @@ public:
 			{
 				left2 = false;
 			}
+
 			if (CheckPieces(curX + 80 * count, curY - count * 80, pieces) && right1) // (+,-) 대각선
 			{
 				moveable.push_back({ curX + 80 * count, curY - count * 80 });
@@ -81,6 +83,7 @@ public:
 			{
 				right1 = false;
 			}
+
 			if (CheckPieces(curX + 80 * count, curY + count * 80, pieces) && right2) // (+,+) 대각선
 			{
 				moveable.push_back({ curX + 80 * count, curY + count * 80 });
