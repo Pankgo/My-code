@@ -26,9 +26,9 @@ public:
 
 		int count = 1;
 
-		if (CheckPieces(curX - 80 * count , curY - count * 80 * 2 , pieces) ) // (-,+) 대각선
+		if (CheckPieces(curX - 80, curY - 80 * 2 , pieces) ) // (-,+) 대각선
 		{
-			moveable.push_back({ curX - 80 * count , curY - count * 80 * 2 });
+			moveable.push_back({ curX - 80, curY - 80 * 2 });
 		}
 		if (CheckPieces(curX + 80 * count, curY - count * 80 * 2, pieces)) // (-,+) 대각선
 		{
