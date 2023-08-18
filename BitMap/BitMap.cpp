@@ -9,7 +9,8 @@ BitMap::BitMap()
 void BitMap::Init(HDC hdc,char* FileName)
 {
 	MemDC = CreateCompatibleDC(hdc);
-	m_BitMap = (HBITMAP)LoadImageA(NULL, FileName, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	m_BitMap = (HBITMAP)LoadImageA(NULL, FileName, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);	
+	SelectObject(MemDC, m_BitMap);
 	BITMAP BitMap_Info;
 	GetObject(m_BitMap, sizeof(BitMap_Info), &BitMap_Info);
 	m_Size.cx = BitMap_Info.bmWidth;
@@ -18,15 +19,17 @@ void BitMap::Init(HDC hdc,char* FileName)
 void BitMap::Stretch(HDC hdc, int x, int y,int check)
 {
 	int height, width;
-	if (check == Start || check == Try)
+	switch (check)
 	{
+	case Start:
+	case Try:
 		height = 100; width = 100;
-	}
-	else
-	{
+		break;
+	default:
 		height = 80; width = 80;
+		break;
 	}
-	SelectObject(MemDC, m_BitMap);
+
 	StretchBlt(hdc, x, y, width, height, MemDC, 0, 0, m_Size.cx, m_Size.cy, SRCCOPY);
 
 }
@@ -41,7 +44,7 @@ void BitMap::Trans(HDC hdc, int x, int y,int check)
 	{
 		height = 80; width = 80;
 	}
-	SelectObject(MemDC, m_BitMap);
+
 	TransparentBlt(hdc, x, y, width, height, MemDC, 0, 0, m_Size.cx, m_Size.cy, RGB(255, 0, 255));
 }
 void BitMap::Alpha(HDC hdc, int x, int y,int check)
@@ -55,7 +58,7 @@ void BitMap::Alpha(HDC hdc, int x, int y,int check)
 	{
 		height = 80; width = 80;
 	}
-	SelectObject(MemDC, m_BitMap);
+
 	BLENDFUNCTION bf;
 	ZeroMemory(&bf, sizeof(bf));
 	bf.SourceConstantAlpha = 100; 
