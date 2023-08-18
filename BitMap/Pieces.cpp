@@ -75,6 +75,7 @@ bool _Chess::CheckPieces(int x, int y, std::vector<_Chess*> pieces)
 	{
 		return false;
 	}
+
 	for (auto iter1 = pieces.begin(); iter1 < pieces.end(); iter1++) //타일설정
 	{
 		if (x == (*iter1)->GetX() && y == (*iter1)->GetY() )// 해당 위치에 피스가 있을경우 리턴
@@ -87,10 +88,12 @@ bool _Chess::CheckPieces(int x, int y, std::vector<_Chess*> pieces)
 			return false; // 같은 색상일 경우 false리턴
 		}
 	}
+
 	if (type == _Pawn && P_x != x)
 	{
 		return false;
 	}
+
 	return true; // 피스가 없어도 이동가능하니 true
 }
 
