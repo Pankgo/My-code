@@ -1,6 +1,5 @@
 #include"GameManager.h"
 
-
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HINSTANCE g_hInst;
 LPCTSTR lpszClass = TEXT("CHESSGAME");
