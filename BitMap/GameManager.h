@@ -13,7 +13,6 @@
 #define WINDOWHEIGHT 680
 
 
-
 //윈도우 틀 등을 가지고 있어야된다
 
 
