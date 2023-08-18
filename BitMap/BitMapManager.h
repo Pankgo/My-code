@@ -5,24 +5,30 @@
 enum IMAGE
 {
 	IMAGE_START,
+
 	IMAGE_BlackKing = 0,
 	IMAGE_BlackQueen,
 	IMAGE_BlackHorse,
 	IMAGE_BlackRook,
 	IMAGE_BlackBishop,
 	IMAGE_BlackPawn,
+
 	IMAGE_WhiteKing,
 	IMAGE_WhiteQueen,
 	IMAGE_WhiteHorse,
 	IMAGE_WhiteRook,
 	IMAGE_WhiteBishop,
 	IMAGE_WhitePawn,
+
 	IMAGE_BACKGROUND,
+
 	IMAGE_STARTBUTTON,
 	IMAGE_TRY,
+
 	IMAGE_WHITETILE,
 	IMAGE_BLACKTILE,
 	IMAGE_MOVEABLETILE,
+
 	IMAGE_END
 
 };
