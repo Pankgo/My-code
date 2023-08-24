@@ -1,9 +1,15 @@
 #include <Windows.h>
+#include "BackGround.h"
+#include <vector>
+
+#define WINDOWWIDTH 1000
+#define WINDOWHEIGHT 500
+
 
 class GameManager
 {
 	static GameManager* GameM;
-	
+
 	GameManager() {}
 
 
@@ -11,6 +17,11 @@ class GameManager
 	HDC hdc, backDC;
 
 	int width, height;
+
+	BackGround background1[5];
+	BackGround background2[5];
+	BackGround background3[5];
+
 
 	HBITMAP MyCreateDIBSection(HDC hdc, int width, int height)
 	{
@@ -41,3 +52,4 @@ public:
 	void Update(float deltatime);
 	void Release();
 	void Destroy();
+};
