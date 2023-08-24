@@ -32,8 +32,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
     HWND hWnd = CreateWindowW(szWindowClass, L"CIRCUS", WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
-        CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+        CW_USEDEFAULT, CW_USEDEFAULT, WINDOWWIDTH, WINDOWHEIGHT ,nullptr, nullptr, hInstance, nullptr);
 
+    
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
 
